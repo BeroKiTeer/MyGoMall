@@ -1,0 +1,33 @@
+syntax="proto3";
+
+package auth;
+
+option go_package="/auth";
+
+// 定义认证相关的服务接口
+service AuthService {
+  // 通过用户 ID 生成 Token
+  rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
+  // 验证 Token 的有效性
+  rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+}
+
+// 生成 Token 请求的消息格式
+message DeliverTokenReq {
+  int32  user_id= 1;      // 用户 ID
+}
+
+// 验证 Token 请求的消息格式
+message VerifyTokenReq {
+  string token = 1;     // 要验证的 Token
+}
+
+// 生成 Token 响应的消息格式
+message DeliveryResp {
+  string token = 1;     // 生成的 Token
+}
+
+// 验证 Token 响应的消息格式
+message VerifyResp {
+  bool res = 1;         // 验证 token 是否有效
+}

@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package order;
+
+import "cart.proto";
+
+option go_package = "order";
+
+// 定义了订单相关的服务接口。
+service OrderService {
+  // 创建新订单。
+  rpc PlaceOrder(PlaceOrderReq) returns (PlaceOrderResp);
+  // 获取用户的订单列表。
+  rpc ListOrder(ListOrderReq) returns (ListOrderResp);
+  // 标记订单为已支付。
+  rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp);
+}
+
+// 用户的地址信息。
+message Address {
+  string street_address = 1;       // 街道地址。
+  string city = 2;                 // 城市。
+  string state = 3;                // 州或省。
+  string country = 4;              // 国家。
+  string zip_code = 5;             // 邮政编码。
+}
+
+// 创建订单的请求消息。
+message PlaceOrderReq {
+  uint32 user_id = 1;                 // 用户 ID。
+  string user_currency = 2;           // 用户的货币类型。
+  Address address = 3;                // 用户的地址信息。
+  string email = 4;                   // 用户的邮箱。
+  repeated OrderItem order_items = 5; // 订单中的商品列表。
+}
+
+// 订单中的一项商品。
+message OrderItem {
+  cart.CartItem item = 1; // 购物车中的商品信息。
+  float cost = 2;         // 商品的单价。
+}
+
+// 订单的基本信息。
+message OrderResult {
+  string order_id = 1; // 订单 ID。
+}
+
+// 创建订单的响应消息
+message PlaceOrderResp {
+  OrderResult order = 1; // 新建的订单信息
+}
+
+// 获取订单列表的请求消息
+message ListOrderReq {
+  uint32 user_id = 1;         // 用户 ID
+}
+
+// Order 表示一个订单的详细信息
+message Order {
+  repeated OrderItem order_items = 1;     // 订单中的商品列表
+  string order_id = 2;                    // 订单 ID
+  uint32 user_id = 3;                     // 用户 ID
+  string user_currency = 4;               // 货币类型
+  Address address = 5;                    // 地址信息
+  string email = 6;                       // 邮箱
+  int32 created_at = 7;                   // 订单创建时间
+}
+
+// 获取订单列表的响应消息。
+message ListOrderResp {
+  repeated Order orders = 1;        // 用户的订单列表
+}
+
+// 标记订单已支付的请求消息。
+message MarkOrderPaidReq {
+  uint32 user_id = 1;             // 用户 ID
+  string order_id = 2;            // 订单 ID
+}
+
+// 标记订单已支付的响应消息。
+message MarkOrderPaidResp {
+  string status = 1;                // 状态，"success" 或 "error"。
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "payment";
+
+// 定义了支付相关的服务接口
+service PaymentService {
+  // 用于发起支付操作
+  rpc Charge(ChargeReq) returns (ChargeResp) {}
+}
+
+// 用户的信用卡信息
+message CreditCardInfo {
+  string credit_card_number = 1;            // 信用卡号
+  int32 credit_card_cvv = 2;                // 信用卡 CVV
+  int32 credit_card_expiration_year = 3;    // 信用卡到期年份
+  int32 credit_card_expiration_month = 4;   // 信用卡到期月份
+}
+
+// 支付操作的请求消息
+message ChargeReq {
+  float amount = 1;                   // 支付金额
+  CreditCardInfo credit_card = 2;     // 信用卡信息
+  string order_id = 3;                // 订单 ID
+  uint32 user_id = 4;                 // 用户 ID
+}
+
+// 支付操作的响应消息
+message ChargeResp {
+  string transaction_id = 1;          // 交易 ID
+}

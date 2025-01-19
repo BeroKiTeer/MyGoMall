@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "/product";
+
+// 定义商品目录相关的服务接口。
+service ProductCatalogService {
+  // 列出商品。
+  rpc ListProducts(ListProductsReq) returns (ListProductsResp);
+  // 获取指定商品的详细信息。
+  rpc GetProduct(GetProductReq) returns (GetProductResp);
+  // 搜索商品。
+  rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp);
+}
+// 列出商品的请求消息
+message ListProductsReq {
+  int32 page = 1;             // 当前页码
+  int64 page_size = 2;        // 每页商品数量
+  string category_name = 3;   // 商品类别名称
+}
+
+// 表示一个商品的信息。
+message Product {
+  uint32 id = 1;                          // 商品 ID
+  string name = 2;                        // 商品名称
+  string description = 3;                 // 商品描述
+  string picture = 4;                     // 商品图片 URL
+  float price = 5;                        // 商品价格
+  repeated string categories = 6;         // 商品所属类别
+}
+
+// 列出商品的响应消息。
+message ListProductsResp {
+  repeated Product products = 1;        // 商品列表
+}
+
+// 获取指定商品详细信息的请求消息
+message GetProductReq {
+  uint32 id = 1; // 商品 ID
+}
+
+// 获取指定商品详细信息的响应消息
+message GetProductResp {
+  Product product = 1;          // 商品详细信息。
+}
+
+// 搜索商品的请求消息。
+message SearchProductsReq {
+  string query = 1;             // 搜索关键字。
+}
+
+// 搜索商品的响应消息。
+message SearchProductsResp {
+  repeated Product results = 1;     // 搜索结果列表。
+}

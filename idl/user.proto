@@ -1,0 +1,36 @@
+syntax="proto3";
+
+package user;
+
+option go_package="/user";
+
+// 定义了用户相关的服务接口
+service UserService {
+  // 注册新用户
+  rpc Register(RegisterReq) returns (RegisterResp);
+  // 用户登录
+  rpc Login(LoginReq) returns (LoginResp);
+}
+
+// 注册用户的请求消息
+message RegisterReq {
+  string email = 1;          // 用户邮箱
+  string password = 2;       // 用户密码
+  string confirm_password = 3; // 确认密码
+}
+
+// 注册用户的响应消息
+message RegisterResp {
+  int32 user_id = 1; // 用户 ID
+}
+
+// 用户登录的请求消息
+message LoginReq {
+  string email = 1;    // 用户邮箱
+  string password = 2; // 用户密码
+}
+
+// 用户登录的响应消息。
+message LoginResp {
+  int32 user_id = 1; // 用户 ID
+}

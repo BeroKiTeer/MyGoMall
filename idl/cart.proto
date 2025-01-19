@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package cart;
+
+option go_package = '/cart';
+
+// 定义购物车相关的服务接口
+service CartService {
+  // 用于向购物车添加商品
+  rpc AddItem(AddItemReq) returns (AddItemResp) {}
+  // 获取购物车的详情
+  rpc GetCart(GetCartReq) returns (GetCartResp) {}
+  // 清空购物车
+  rpc EmptyCart(EmptyCartReq) returns (EmptyCartResp) {}
+}
+
+// 购物车中的一项商品
+message CartItem {
+  uint32 product_id = 1;      // 商品ID
+  int32  quantity = 2;        // 商品数量
+}
+
+// 向购物车添加商品请求
+message AddItemReq {
+  uint32 user_id = 1;         // 用户ID
+  CartItem item = 2;          // 要添加的商品信息
+}
+
+// 向购物车添加商品响应
+message AddItemResp {}
+
+// 清空购物车的请求消息
+message EmptyCartReq {
+  uint32 user_id = 1;         // 用户ID
+}
+
+// 获取购物车详情请求
+message GetCartReq {
+  uint32 user_id = 1;         // 用户ID
+}
+
+// 获取购物车详情响应
+message GetCartResp {
+  Cart cart = 1;                // 购物车详情
+}
+
+// 用户的购物车
+message Cart {
+  uint32 user_id = 1;             // 用户ID
+  repeated CartItem items = 2;    // 购物车中的商品列表
+}
+
+// 清空购物车响应
+message EmptyCartResp {}
