@@ -4,7 +4,7 @@ package order;
 
 import "cart.proto";
 
-option go_package = "order";
+option go_package = "/order";
 
 // 定义了订单相关的服务接口。
 service OrderService {
@@ -27,11 +27,11 @@ message Address {
 
 // 创建订单的请求消息。
 message PlaceOrderReq {
-  uint32 user_id = 1;                 // 用户 ID。
-  string user_currency = 2;           // 用户的货币类型。
-  Address address = 3;                // 用户的地址信息。
-  string email = 4;                   // 用户的邮箱。
-  repeated OrderItem order_items = 5; // 订单中的商品列表。
+  uint32 user_id = 1;                 // 用户 ID
+  string user_currency = 2;           // 用户的货币类型
+  Address address = 3;                // 用户的地址信息
+  string email = 4;                   // 用户的邮箱
+  repeated OrderItem order_items = 5; // 订单中的商品列表
 }
 
 // 订单中的一项商品。

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package payment;
 
-option go_package = "payment";
+option go_package = "/payment";
 
 // 定义了支付相关的服务接口
 service PaymentService {
