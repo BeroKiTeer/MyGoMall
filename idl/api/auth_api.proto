@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package api.auth;
+
+option go_package = "api/auth";
+
+service YourService {
+  rpc Method (Req) returns () {
+
+  }
+}
