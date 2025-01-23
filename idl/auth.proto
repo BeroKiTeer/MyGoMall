@@ -10,6 +10,8 @@ service AuthService {
   rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
   // 验证 Token 的有效性
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+  // 续期 Token
+  rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp);
 }
 
 // 生成 Token 请求的消息格式
@@ -30,4 +32,13 @@ message DeliveryResp {
 // 验证 Token 响应的消息格式
 message VerifyResp {
   bool res = 1;         // 验证 token 是否有效
+}
+
+message RefreshTokenReq {
+  string token = 1;
+}
+
+message RefreshTokenResp {
+  string new_token = 1;
+  int64 expiration = 2;
 }
