@@ -16,7 +16,7 @@ service AuthService {
 
 // 生成 Token 请求的消息格式
 message DeliverTokenReq {
-  int32  user_id= 1;      // 用户 ID
+  int32 user_id = 1;    // 用户 ID
 }
 
 // 验证 Token 请求的消息格式
