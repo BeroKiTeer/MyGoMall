@@ -44,12 +44,6 @@ jobs:
       - name: Tidy Go modules
         run: go mod tidy
 
-      - name: Generate Kitex Code (Protobuf)
-        run: |
-          for file in idl/*.proto; do
-            kitex generate -I idl --protobuf "$file"
-          done
-
       - name: Lint
         run: go vet ./...
 
