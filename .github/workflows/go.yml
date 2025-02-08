@@ -1,7 +1,7 @@
 # This workflow will build and test a Golang project
 # More info: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
+name: Kitex CI
 
 on:
   push:
@@ -13,7 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      matrix:
+        go-version: [ '1.21', '1.22', '1.23' ]  # 多版本测试
       fail-fast: false
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -31,14 +34,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
+      - name: Install Kitex & Dependencies
+        run: |
+          go install github.com/cloudwego/kitex/tool/cmd/kitex@latest
+          go install github.com/cloudwego/thriftgo@latest
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
       - name: Tidy Go modules
         run: go mod tidy
+
+      - name: Generate Kitex Code
+        run: |
+          kitex generate -I idl --thrift plugin=thriftgo
+          # 如果 `idl` 在 `rpc/idl/`，则改为：
+          # kitex generate -I rpc/idl --thrift plugin=thriftgo
 
       - name: Lint
         run: go vet ./...
 
-      - name: Build
-        run: go build -v ./...
+      - name: Build Kitex Services
+        run: go build -v ./rpc_gen/...
 
-      - name: Run Tests
-        run: go test -v -cover ./...
+      - name: Run Kitex Tests
+        run: go test -v -cover ./test/...
