@@ -34,21 +34,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Install Kitex & Dependencies
+      - name: Install Kitex & Protobuf Dependencies
         run: |
           go install github.com/cloudwego/kitex/tool/cmd/kitex@latest
-          go install github.com/cloudwego/thriftgo@latest
           go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
 
       - name: Tidy Go modules
         run: go mod tidy
 
-      - name: Generate Kitex Code
+      - name: Generate Kitex Code (Protobuf)
         run: |
-          kitex generate -I idl --thrift plugin=thriftgo
-          # 如果 `idl` 在 `rpc/idl/`，则改为：
-          # kitex generate -I rpc/idl --thrift plugin=thriftgo
+          for file in idl/*.proto; do
+            kitex generate -I idl --protobuf "$file"
+          done
 
       - name: Lint
         run: go vet ./...
