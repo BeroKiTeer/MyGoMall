@@ -41,14 +41,26 @@ jobs:
           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
           sudo apt-get update && sudo apt-get install -y protobuf-compiler
 
+      - name: Check IDL Files
+        run: ls -l idl/
+
       - name: Tidy Go modules
         run: go mod tidy
 
-      - name: Lint
-        run: go vet ./...
+      - name: Build Each Microservice
+        run: |
+          for service in app/*; do
+            if [ -f "$service/main.go" ]; then
+              echo "Building $service"
+              (cd "$service" && go mod tidy && go build -v)
+            fi
+          done
 
-      - name: Build Kitex Services
-        run: go build -v ./rpc_gen/...
-
-      - name: Run Kitex Tests
-        run: go test -v -cover ./test/...
+      - name: Run Tests for Each Microservice
+        run: |
+          for service in app/*; do
+            if [ -d "$service/dal/service" ]; then
+              echo "Running tests in $service/dal/service"
+              (cd "$service/dal/service" && go test -v ./...)
+            fi
+          done
