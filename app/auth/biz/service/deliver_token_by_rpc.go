@@ -18,17 +18,24 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 }
 
 var ctx = context.Background()
+
+// 这里默认 redis 地址是 localhost:6379。未来可能需要更改
 var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
 
 func GenerateJWT(userID int32) (string, error) {
 
-	key := make([]byte, 32)
-	_, err := rand.Read(key)
+	secretKey := make([]byte, 32)
+	// 随机造一个密钥
+	_, err := rand.Read(secretKey)
 	if err != nil {
 		return "", err
 	}
 
-	err = rdb.Set(ctx, strconv.Itoa(int(userID)), key, time.Hour).Err()
+	// 把 userID 转为 string 类型 存到 key 里面，密钥是刚刚随机生成的
+	err = rdb.Set(ctx, strconv.Itoa(int(userID)), secretKey, time.Hour).Err()
+	if err != nil {
+		return "", err
+	}
 
 	// 创建一个 token 对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -39,7 +46,7 @@ func GenerateJWT(userID int32) (string, error) {
 	})
 
 	// 使用密钥对 token 进行签名
-	return token.SignedString(key)
+	return token.SignedString(secretKey)
 }
 
 // Run create note info
@@ -47,5 +54,9 @@ func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.De
 
 	token, err := GenerateJWT(req.UserId)
 
-	return &auth.DeliveryResp{Token: token}, err
+	if err != nil {
+		return nil, err
+	}
+
+	return &auth.DeliveryResp{Token: token}, nil
 }
