@@ -39,8 +39,8 @@ func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserIn
 		Username:    string(row.Username),
 		PhoneNumber: string(row.PhoneNumber),
 		Address:     string(row.Address),
-		CreatedAt:   row.CreatedAt.Format(constant.TIME_FORMAT),
-		UpdatedAt:   row.UpdatedAt.Format(constant.TIME_FORMAT),
+		CreatedAt:   row.CreatedAt.Format(constant.TimeFormat),
+		UpdatedAt:   row.UpdatedAt.Format(constant.TimeFormat),
 	}
 	// 0-普通用户, 1-管理员
 	if row.Role == 0 {
