@@ -1,4 +1,4 @@
-module common
+module github.com/BeroKiTeer/MyGoMall/common
 
 go 1.23.2
 

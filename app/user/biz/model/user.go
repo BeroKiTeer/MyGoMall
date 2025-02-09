@@ -12,8 +12,8 @@ type User struct {
 	PhoneNumber    string `gorm:"unique"`
 	Email          string `gorm:"unique"`
 	Address        string
-	Status         bool
-	Role           bool
+	Status         int8
+	Role           int8
 }
 
 func (u User) TableName() string {
@@ -22,5 +22,10 @@ func (u User) TableName() string {
 
 func GetByEmail(db *gorm.DB, ctx context.Context, email string) (user *User, err error) {
 	err = db.WithContext(ctx).Where("email = ?", email).First(&user).Error
+	return
+}
+
+func GetUserById(db *gorm.DB, ctx context.Context, id int32) (user *User, err error) {
+	err = db.WithContext(ctx).Where("id = ?", id).First(&user).Error
 	return
 }
