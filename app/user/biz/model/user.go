@@ -26,8 +26,14 @@ func GetByEmail(db *gorm.DB, ctx context.Context, email string) (user *User, err
 	return
 }
 
+// 创建一条新的用户记录
 func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
+}
+
+// 删除一条用户记录
+func DeleteUser(db *gorm.DB, user *User) error {
+	return db.Delete(user).Error
 }
 
 func GetUserById(db *gorm.DB, ctx context.Context, id int32) (user *User, err error) {
