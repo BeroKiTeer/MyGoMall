@@ -18,28 +18,28 @@
 
 - **主键策略**：UUID
 
-  | 字段名          | 数据类型       | 是否主键 | 是否允许为空 | 默认值                                          | 备注                                 |
-  | --------------- | -------------- | -------- | ------------ | ----------------------------------------------- | ------------------------------------ |
-  | `id`            | `BIGINT`       | ✅        | ❌            | `AUTO_INCREMENT`                                | 主键，自增                           |
-  | `email`         | `VARCHAR(255)` | ❌        | ✅            | `NULL`                                          | 用户邮箱（可选）                     |
-  | `username`      | `VARCHAR(100)` | ❌        | ❌            | `NULL`                                          | 用户名                               |
-  | `password_hash` | `VARCHAR(255)` | ❌        | ❌            | `NULL`                                          | 加密存储的用户密码                   |
-  | `phone_number`  | `VARCHAR(20)`  | ❌        | ❌            | `NULL`                                          | 手机号码，唯一索引                   |
-  | `address`       | `TEXT`         | ❌        | ✅            | `NULL`                                          | 用户地址（可选）                     |
-  | `role`          | `TINYINT`      | ❌        | ❌            | `0`                                             | 用户角色（0-普通用户, 1-管理员）     |
-  | `status`        | `TINYINT`      | ❌        | ❌            | `0`                                             | 账户状态（0-正常, 1-禁用, 2-待审核） |
-  | `created_at`    | `DATETIME`     | ❌        | ✅            | `CURRENT_TIMESTAMP`                             | 账户创建时间                         |
-  | `updated_at`    | `DATETIME`     | ❌        | ✅            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 账户更新时间                         |
+  | 字段名            | 数据类型       | 是否主键 | 是否允许为空 | 默认值                                          | 备注                                 |
+  | ----------------- | -------------- | -------- | ------------ | ----------------------------------------------- | ------------------------------------ |
+  | `id`              | `INT`          | ✅        | ❌            | `AUTO_INCREMENT`                                | 主键，自增                           |
+  | `email`           | `VARCHAR(255)` | ❌        | ✅            | `NULL`                                          | 用户邮箱（可选）                     |
+  | `username`        | `VARCHAR(100)` | ❌        | ❌            | `NULL`                                          | 用户名                               |
+  | `password_hashed` | `VARCHAR(255)` | ❌        | ❌            | `NULL`                                          | 加密存储的用户密码                   |
+  | `phone_number`    | `VARCHAR(20)`  | ❌        | ❌            | `NULL`                                          | 手机号码，唯一索引                   |
+  | `address`         | `TEXT`         | ❌        | ✅            | `NULL`                                          | 用户地址（可选）                     |
+  | `role`            | `TINYINT`      | ❌        | ❌            | `0`                                             | 用户角色（0-普通用户, 1-管理员）     |
+  | `status`          | `TINYINT`      | ❌        | ❌            | `0`                                             | 账户状态（0-正常, 1-禁用, 2-待审核） |
+  | `created_at`      | `DATETIME`     | ❌        | ✅            | `CURRENT_TIMESTAMP`                             | 账户创建时间                         |
+  | `updated_at`      | `DATETIME`     | ❌        | ✅            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 账户更新时间                         |
 
 ------
 
 ## **4. 索引设计**
 
-| **索引名称** | **索引字段**      | **索引类型** | **是否唯一** | **说明**             |
-| ------------ | ----------------- | ------------ | ------------ | -------------------- |
-| `pk_id`      | `id`              | `PRIMARY`    | ✅            | 主键索引             |
-| `idx_email`  | `order_no`        | `Regular`    | ❌            | 订单编号唯一索引     |
-| `idx_email`  | `user_id, status` | `UNIQUE`     | ✅            | 用户订单状态查询加速 |
+| **索引名称** | **索引字段**   | **索引类型** | **是否唯一** | **说明**         |
+| ------------ | -------------- | ------------ | ------------ | ---------------- |
+| `pk_id`      | `id`           | `PRIMARY`    | ✅            | 主键索引         |
+| `idx_email`  | `email`        | `UNIQUE`     | ❌            | 邮箱唯一索引     |
+| `idx_phone`  | `phone_number` | `Regular`    | ✅            | 电话号码查询加速 |
 
 ```sql
 CREATE INDEX idx_email ON users(email);
