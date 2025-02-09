@@ -14,7 +14,7 @@ func TestVerifyTokenByRPC_Run(t *testing.T) {
 	req := &auth.VerifyTokenReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
-	t.Logf("resp: %v", resp)
+	t.Logf("resp: %v", resp.Res)
 
 	// todo: edit your unit test
 
