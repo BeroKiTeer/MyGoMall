@@ -2,6 +2,10 @@ package service
 
 import (
 	"context"
+	"errors"
+	"golang.org/x/crypto/bcrypt"
+	"user/biz/dal/mysql"
+	"user/biz/model"
 	user "user/kitex_gen/user"
 )
 
@@ -15,6 +19,25 @@ func NewRegisterService(ctx context.Context) *RegisterService {
 // Run create note info
 func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, err error) {
 	// Finish your business logic.
+	if req.Password != req.ConfirmPassword {
+		return nil, errors.New("Passwords do not match!")
+	}
+	passwordHashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), 12)
 
-	return
+	if err != nil {
+		return nil, err
+	}
+
+	newUser := &model.User{
+		Email:          req.Email,
+		PasswordHashed: string(passwordHashed),
+	}
+
+	err = model.CreateUser(mysql.DB, newUser)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user.RegisterResp{UserId: int32(newUser.ID)}, err
 }
