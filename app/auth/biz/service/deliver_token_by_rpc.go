@@ -3,7 +3,10 @@ package service
 import (
 	auth "auth/kitex_gen/auth"
 	"context"
+	"crypto/rand"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/redis/go-redis/v9"
+	"strconv"
 	"time"
 )
 
@@ -14,9 +17,19 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 	return &DeliverTokenByRPCService{ctx: ctx}
 }
 
-var jwtSecret = []byte("SECRET_KEY")
+var ctx = context.Background()
+var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
 
 func GenerateJWT(userID int32) (string, error) {
+
+	key := make([]byte, 32)
+	_, err := rand.Read(key)
+	if err != nil {
+		return "", err
+	}
+
+	err = rdb.Set(ctx, strconv.Itoa(int(userID)), key, time.Hour).Err()
+
 	// 创建一个 token 对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,                           // 用户 ID
@@ -26,7 +39,7 @@ func GenerateJWT(userID int32) (string, error) {
 	})
 
 	// 使用密钥对 token 进行签名
-	return token.SignedString(jwtSecret)
+	return token.SignedString(key)
 }
 
 // Run create note info
