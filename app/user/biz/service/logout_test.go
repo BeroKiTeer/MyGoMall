@@ -1,17 +1,17 @@
 package service
 
 import (
-	auth "auth/kitex_gen/auth"
 	"context"
 	"testing"
+	user "user/kitex_gen/user"
 )
 
-func TestDeliverTokenByRPC_Run(t *testing.T) {
+func TestLogout_Run(t *testing.T) {
 	ctx := context.Background()
-	s := NewDeliverTokenByRPCService(ctx)
+	s := NewLogoutService(ctx)
 	// init req and assert value
 
-	req := &auth.DeliverTokenReq{UserId: 12345}
+	req := &user.LogoutReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

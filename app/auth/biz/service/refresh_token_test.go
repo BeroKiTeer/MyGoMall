@@ -6,12 +6,12 @@ import (
 	"testing"
 )
 
-func TestDeliverTokenByRPC_Run(t *testing.T) {
+func TestRefreshToken_Run(t *testing.T) {
 	ctx := context.Background()
-	s := NewDeliverTokenByRPCService(ctx)
+	s := NewRefreshTokenService(ctx)
 	// init req and assert value
 
-	req := &auth.DeliverTokenReq{UserId: 12345}
+	req := &auth.RefreshTokenReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

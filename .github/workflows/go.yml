@@ -1,28 +1,66 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+# This workflow will build and test a Golang project
+# More info: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
+name: Kitex CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "dev" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "dev" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.21', '1.22', '1.23' ]  # 多版本测试
+      fail-fast: false
+
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23'
 
-    - name: Build
-      run: go build -v ./...
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
-    - name: Test
-      run: go test -v ./...
+      - name: Install Kitex & Protobuf Dependencies
+        run: |
+          go install github.com/cloudwego/kitex/tool/cmd/kitex@latest
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
+
+      - name: Check IDL Files
+        run: ls -l idl/
+
+      - name: Tidy Go modules
+        run: go mod tidy
+
+      - name: Build Each Microservice
+        run: |
+          for service in app/*; do
+            if [ -f "$service/main.go" ]; then
+              echo "Building $service"
+              (cd "$service" && go mod tidy && go build -v)
+            fi
+          done
+
+      - name: Run Tests for Each Microservice
+        run: |
+          for service in app/*; do
+            if [ -d "$service/dal/service" ]; then
+              echo "Running tests in $service/dal/service"
+              (cd "$service/dal/service" && go test -v ./...)
+            fi
+          done

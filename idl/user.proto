@@ -10,6 +10,14 @@ service UserService {
   rpc Register(RegisterReq) returns (RegisterResp);
   // 用户登录
   rpc Login(LoginReq) returns (LoginResp);
+  // 用户登出
+  rpc Logout(LogoutReq) returns (LogoutResp);
+  // 删除用户
+  rpc DeleteUser(DeleteUserReq) returns (DeleteUserResp);
+  // 更新用户
+  rpc UpdateUser(UpdateUserReq) returns (UpdateUserResp);
+  // 获取用户身份信息
+  rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoResp);
 }
 
 // 注册用户的请求消息
@@ -33,4 +41,55 @@ message LoginReq {
 // 用户登录的响应消息。
 message LoginResp {
   int32 user_id = 1; // 用户 ID
+}
+// 用户登出的请求消息
+message LogoutReq {
+  int32 user_id = 1; // 需要登出的用户 ID
+}
+
+// 用户登出的响应消息
+message LogoutResp {
+  bool success = 1; // 登出是否成功
+}
+
+// 删除用户的请求消息
+message DeleteUserReq {
+  int32 user_id = 1; // 需要删除的用户 ID
+}
+
+// 删除用户的响应消息
+message DeleteUserResp {
+  bool success = 1; // 删除是否成功
+}
+
+// 更新用户的请求消息
+message UpdateUserReq {
+  int32 user_id = 1; // 需要更新的用户 ID
+  string email = 2;  // 新邮箱（可选）
+  string password = 3; // 新密码（可选）
+  string phone_number = 4; // 新手机号（可选）
+  string address = 5; // 新地址（可选）
+}
+
+// 更新用户的响应消息
+message UpdateUserResp {
+  bool success = 1; // 更新是否成功
+}
+
+// 获取用户身份信息的请求消息
+message GetUserInfoReq {
+  int32 user_id = 1; // 需要查询的用户 ID
+}
+
+// 获取用户身份信息的响应消息
+message GetUserInfoResp {
+  int32 user_id = 1;       // 用户 ID
+  string email = 2;        // 用户邮箱
+  string username = 3;     // 用户名
+  string phone_number = 4; // 手机号
+  string address = 5;      // 地址
+  string role = 6;         // 角色（如"admin", "user"）
+  string status = 7;       // 账户状态（如"active", "banned", "pending"）
+  string created_at = 8;   // 账户创建时间
+  string updated_at = 9;   // 账户最近更新时间
 }
