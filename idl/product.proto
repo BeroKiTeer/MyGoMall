@@ -8,10 +8,25 @@ option go_package = "/product";
 service ProductCatalogService {
   // 列出商品。
   rpc ListProducts(ListProductsReq) returns (ListProductsResp);
-  // 获取指定商品的详细信息。
-  rpc GetProduct(GetProductReq) returns (GetProductResp);
+
   // 搜索商品。
   rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp);
+
+  // 创建商品。
+  rpc CreateProduct(CreateProductReq) returns (CreateProductResp);
+
+  // 修改商品信息。
+  rpc UpdateProduct(UpdateProductReq) returns (UpdateProductResp);
+
+  // 删除商品。
+  rpc DeleteProduct(DeleteProductReq) returns (DeleteProductResp);
+
+  // 获取指定商品的详细信息。
+  rpc GetProduct(GetProductReq) returns (GetProductResp);
+
+  // 查询多个商品信息。
+  rpc GetProductsBatch(GetProductsBatchReq) returns (GetProductsBatchResp);
+
 }
 // 列出商品的请求消息
 message ListProductsReq {
@@ -35,16 +50,6 @@ message ListProductsResp {
   repeated Product products = 1;        // 商品列表
 }
 
-// 获取指定商品详细信息的请求消息
-message GetProductReq {
-  uint32 id = 1; // 商品 ID
-}
-
-// 获取指定商品详细信息的响应消息
-message GetProductResp {
-  Product product = 1;          // 商品详细信息。
-}
-
 // 搜索商品的请求消息。
 message SearchProductsReq {
   string query = 1;             // 搜索关键字。
@@ -53,4 +58,56 @@ message SearchProductsReq {
 // 搜索商品的响应消息。
 message SearchProductsResp {
   repeated Product results = 1;     // 搜索结果列表。
+}
+
+// 创建商品的请求消息。
+message CreateProductReq {
+  Product product = 1;          // 要创建的商品信息（ID字段应留空）
+}
+
+// 创建商品的响应消息。
+message CreateProductResp {
+  Product product = 1;          // 创建的商品信息（包含生成的ID）
+}
+
+// 修改商品信息的请求消息。
+message UpdateProductReq {
+  Product product = 1;          // 要修改的商品信息（必须包含ID以标识要修改的商品）
+}
+
+// 修改商品信息的响应消息。
+message UpdateProductResp {
+  bool success = 1;             // 是否修改成功
+  string message = 2;           // 操作结果消息
+}
+
+// 删除商品的请求消息。
+message DeleteProductReq {
+  uint32 id = 1;                // 要删除的商品ID
+}
+
+// 删除商品的响应消息。
+message DeleteProductResp {
+  bool success = 1;             // 是否删除成功
+  string message = 2;           // 操作结果消息
+}
+
+// 获取指定商品详细信息的请求消息。
+message GetProductReq {
+  uint32 id = 1; // 商品 ID
+}
+
+// 获取指定商品详细信息的响应消息。
+message GetProductResp {
+  Product product = 1;          // 商品详细信息。
+}
+
+// 查询多个商品信息的请求消息。
+message GetProductsBatchReq {
+  repeated uint32 ids = 1;      // 要查询的商品ID列表。
+}
+
+// 查询多个商品信息的响应消息。
+message GetProductsBatchResp {
+  repeated Product products = 1; // 查询到的商品信息列表（按请求中的ID顺序返回）。
 }

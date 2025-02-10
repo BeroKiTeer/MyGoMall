@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"errors"
+	"user/biz/dal/mysql"
+	"user/biz/model"
 	user "user/kitex_gen/user"
 )
 
@@ -15,6 +18,29 @@ func NewDeleteUserService(ctx context.Context) *DeleteUserService {
 // Run create note info
 func (s *DeleteUserService) Run(req *user.DeleteUserReq) (resp *user.DeleteUserResp, err error) {
 	// Finish your business logic.
+	//查询用户id是否有效
+	if req.UserId < 0 {
+		return nil, errors.New("无效的用户ID！")
+	}
 
-	return
+	//查询用户是否存在
+	exist, err := model.UserExistsByID(mysql.DB, req.UserId)
+	if exist == false {
+		return nil, errors.New("用户不存在！")
+	} else if err != nil {
+		return nil, err
+	}
+
+	//若存在，获取该用户对象
+	DeleteUser, err := model.GetUserById(mysql.DB, s.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	//删除用户
+	err = model.DeleteUser(mysql.DB, DeleteUser)
+
+	Success := err == nil
+
+	return &user.DeleteUserResp{Success: Success}, err
 }
