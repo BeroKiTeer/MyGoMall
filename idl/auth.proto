@@ -40,5 +40,4 @@ message RefreshTokenReq {
 
 message RefreshTokenResp {
   string new_token = 1;
-  int64 expiration = 2;
 }
