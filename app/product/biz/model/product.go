@@ -11,6 +11,11 @@ type Product struct {
 	Status        int     `gorm:"column:status"`
 }
 
-func (Product) TableName() string {
+func (p Product) TableName() string {
 	return "products"
+}
+
+// 添加商品
+func AddProduct(db *gorm.DB, product *Product) error {
+	return db.Create(product).Error
 }
