@@ -5,19 +5,18 @@ import (
 )
 
 type Product struct {
-	//gorm.Model
-	Id            int       `gorm:"primaryKey;type:bigint;"`
-	CategoryId    int       `gorm:"type:bigint;"`
-	Name          string    `gorm:"type:varchar(100);"`
-	Description   string    `gorm:"type:text;"`
-	Price         float32   `gorm:"type:decimal(10,2);"`
-	OriginalPrice float32   `gorm:"type:decimal(10,2);"`
-	Images        string    `gorm:"type:json;"`
-	SalesCount    int       `gorm:"type:int;"`
-	Status        int       `gorm:"type:tinyint;"`
-	CreatedAt     time.Time `gorm:"type:timestamp;"`
-	UpdatedAt     time.Time `gorm:"type:timestamp;"`
-	DeletedAt     time.Time `gorm:"type:timestamp;"`
+	Id            int       `gorm:"primary_key;column:id"`
+	CategoryId    int       `gorm:"column:category_id;"`
+	Name          string    `gorm:"column:name"`
+	Description   string    `gorm:"column:description"`
+	Price         float32   `gorm:"column:price"`
+	OriginalPrice float32   `gorm:"column:original_price"`
+	Images        string    `gorm:"column:images"`
+	SalesCount    int       `gorm:"column:sales_count"`
+	Status        int       `gorm:"column:status"`
+	CreatedAt     time.Time `gorm:"column:created_at"`
+	UpdatedAt     time.Time `gorm:"column:updated_at"`
+	DeletedAt     time.Time `gorm:"column:deleted_at"`
 }
 
 func (Product) TableName() string {
