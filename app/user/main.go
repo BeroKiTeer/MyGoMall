@@ -1,22 +1,23 @@
 package main
 
 import (
-	consul "github.com/kitex-contrib/registry-consul"
-	"log"
-	"net"
-	"time"
-
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
+	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"log"
+	"net"
+	"time"
+	"user/biz/dal"
 	"user/conf"
 	"user/kitex_gen/user/userservice"
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
