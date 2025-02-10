@@ -13,7 +13,7 @@ service ProductCatalogService {
   rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp);
 
   // 添加商品。
-  rpc AddProduct(AddProductReq) returns (AddProductResp);
+  rpc CreateProduct(CreateProductReq) returns (CreateProductResp);
 
   // 修改商品信息。
   rpc UpdateProduct(UpdateProductReq) returns (UpdateProductResp);
@@ -41,7 +41,7 @@ message Product {
   uint32 stock = 7;                        //商品库存
   string images = 8;                  //商品图片
   uint32 status = 9;                  //商品状态
-  repeated string categories = 10;         // 商品所属类别
+  int32 category_id = 10;         // 商品所属类别
 
 }
 // 列出商品的请求消息
@@ -76,13 +76,13 @@ message SearchProductsResp {
 }
 
 // 创建商品的请求消息。
-message AddProductReq {
+message CreateProductReq {
   Product product = 1;          // 要创建的商品信息（ID字段应留空）
 }
 
 // 创建商品的响应消息。
-message AddProductResp {
-  uint32 id= 1;          // 创建的商品信息（包含生成的ID）
+message CreateProductResp {
+  uint32 product_id= 1;          // 创建的商品信息（包含生成的ID）
 }
 
 // 修改商品信息的请求消息。
