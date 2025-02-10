@@ -24,8 +24,8 @@ var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
 
 func GenerateJWT(userID int32) (string, error) {
 
+	// 随机造一个密钥，这里的 32 可以改大改小，具体根据 安全性与速度的平衡 做决策
 	secretKey := make([]byte, 32)
-	// 随机造一个密钥
 	_, err := rand.Read(secretKey)
 	if err != nil {
 		return "", err
