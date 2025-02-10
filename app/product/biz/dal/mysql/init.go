@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"product/biz/model"
 	"product/conf"
 
 	"gorm.io/driver/mysql"
@@ -21,5 +22,9 @@ func Init() {
 	)
 	if err != nil {
 		panic(err)
+	}
+	err := DB.AutoMigrate(&model.Product{})
+	if err != nil {
+		return
 	}
 }
