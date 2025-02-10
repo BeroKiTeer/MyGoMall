@@ -1,17 +1,17 @@
 package service
 
 import (
-	auth "auth/kitex_gen/auth"
 	"context"
+	product "product/kitex_gen/product"
 	"testing"
 )
 
-func TestRefreshToken_Run(t *testing.T) {
+func TestGetProductsBatch_Run(t *testing.T) {
 	ctx := context.Background()
-	s := NewRefreshTokenService(ctx)
+	s := NewGetProductsBatchService(ctx)
 	// init req and assert value
 
-	req := &auth.RefreshTokenReq{Token: ""}
+	req := &product.GetProductsBatchReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

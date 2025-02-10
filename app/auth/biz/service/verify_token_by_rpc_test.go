@@ -11,7 +11,7 @@ func TestVerifyTokenByRPC_Run(t *testing.T) {
 	s := NewVerifyTokenByRPCService(ctx)
 	// init req and assert value
 
-	req := &auth.VerifyTokenReq{}
+	req := &auth.VerifyTokenReq{Token: ""}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
