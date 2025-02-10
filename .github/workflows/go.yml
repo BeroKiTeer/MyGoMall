@@ -44,9 +44,6 @@ jobs:
       - name: Check IDL Files
         run: ls -l idl/
 
-      - name: Tidy Go modules
-        run: go mod tidy
-
       - name: Build Each Microservice
         run: |
           for service in app/*; do
