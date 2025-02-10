@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 type Product struct {
 	Base
 	CategoryId    int     `gorm:"column:category_id;"`
