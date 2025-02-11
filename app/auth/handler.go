@@ -29,3 +29,10 @@ func (s *AuthServiceImpl) RefreshToken(ctx context.Context, req *auth.RefreshTok
 
 	return resp, err
 }
+
+// GetToken implements the AuthServiceImpl interface.
+func (s *AuthServiceImpl) GetToken(ctx context.Context, req *auth.GetTokenReq) (resp *auth.GetTokenResp, err error) {
+	resp, err = service.NewGetTokenService(ctx).Run(req)
+
+	return resp, err
+}

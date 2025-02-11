@@ -11,7 +11,9 @@ service AuthService {
   // 验证 Token 的有效性
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
   // 续期 Token
-  rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp);
+  rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp) {}
+  // UserID 转 Token
+  rpc GetToken(GetTokenReq) returns (GetTokenResp) {}
 }
 
 // 生成 Token 请求的消息格式
