@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"product/biz/dal"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 	"product/kitex_gen/product"
@@ -33,7 +32,6 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 	return resp, nil
 }
 func getProduct(id int) (model.Product, []string) {
-	dal.Init()
 	var row model.Product
 	db := mysql.DB
 	db.Model(&model.Product{}).Where("id=?", id).Find(&row)

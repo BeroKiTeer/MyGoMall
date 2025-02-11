@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"product/biz/dal"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -18,7 +19,7 @@ func main() {
 	opts := kitexInit()
 
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
-
+	dal.Init()
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
@@ -53,7 +54,10 @@ func kitexInit() (opts []server.Option) {
 	}
 	klog.SetOutput(asyncWriter)
 	server.RegisterShutdownHook(func() {
-		asyncWriter.Sync()
+		err := asyncWriter.Sync()
+		if err != nil {
+			return
+		}
 	})
 	return
 }
