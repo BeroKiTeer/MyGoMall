@@ -36,13 +36,6 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
-	"GetToken": kitex.NewMethodInfo(
-		getTokenHandler,
-		newGetTokenArgs,
-		newGetTokenResult,
-		false,
-		kitex.WithStreamingMode(kitex.StreamingUnary),
-	),
 }
 
 var (
@@ -568,159 +561,6 @@ func (p *RefreshTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
-func getTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	switch s := arg.(type) {
-	case *streaming.Args:
-		st := s.Stream
-		req := new(auth.GetTokenReq)
-		if err := st.RecvMsg(req); err != nil {
-			return err
-		}
-		resp, err := handler.(auth.AuthService).GetToken(ctx, req)
-		if err != nil {
-			return err
-		}
-		return st.SendMsg(resp)
-	case *GetTokenArgs:
-		success, err := handler.(auth.AuthService).GetToken(ctx, s.Req)
-		if err != nil {
-			return err
-		}
-		realResult := result.(*GetTokenResult)
-		realResult.Success = success
-		return nil
-	default:
-		return errInvalidMessageType
-	}
-}
-func newGetTokenArgs() interface{} {
-	return &GetTokenArgs{}
-}
-
-func newGetTokenResult() interface{} {
-	return &GetTokenResult{}
-}
-
-type GetTokenArgs struct {
-	Req *auth.GetTokenReq
-}
-
-func (p *GetTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetReq() {
-		p.Req = new(auth.GetTokenReq)
-	}
-	return p.Req.FastRead(buf, _type, number)
-}
-
-func (p *GetTokenArgs) FastWrite(buf []byte) (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.FastWrite(buf)
-}
-
-func (p *GetTokenArgs) Size() (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.Size()
-}
-
-func (p *GetTokenArgs) Marshal(out []byte) ([]byte, error) {
-	if !p.IsSetReq() {
-		return out, nil
-	}
-	return proto.Marshal(p.Req)
-}
-
-func (p *GetTokenArgs) Unmarshal(in []byte) error {
-	msg := new(auth.GetTokenReq)
-	if err := proto.Unmarshal(in, msg); err != nil {
-		return err
-	}
-	p.Req = msg
-	return nil
-}
-
-var GetTokenArgs_Req_DEFAULT *auth.GetTokenReq
-
-func (p *GetTokenArgs) GetReq() *auth.GetTokenReq {
-	if !p.IsSetReq() {
-		return GetTokenArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-
-func (p *GetTokenArgs) IsSetReq() bool {
-	return p.Req != nil
-}
-
-func (p *GetTokenArgs) GetFirstArgument() interface{} {
-	return p.Req
-}
-
-type GetTokenResult struct {
-	Success *auth.GetTokenResp
-}
-
-var GetTokenResult_Success_DEFAULT *auth.GetTokenResp
-
-func (p *GetTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetSuccess() {
-		p.Success = new(auth.GetTokenResp)
-	}
-	return p.Success.FastRead(buf, _type, number)
-}
-
-func (p *GetTokenResult) FastWrite(buf []byte) (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.FastWrite(buf)
-}
-
-func (p *GetTokenResult) Size() (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.Size()
-}
-
-func (p *GetTokenResult) Marshal(out []byte) ([]byte, error) {
-	if !p.IsSetSuccess() {
-		return out, nil
-	}
-	return proto.Marshal(p.Success)
-}
-
-func (p *GetTokenResult) Unmarshal(in []byte) error {
-	msg := new(auth.GetTokenResp)
-	if err := proto.Unmarshal(in, msg); err != nil {
-		return err
-	}
-	p.Success = msg
-	return nil
-}
-
-func (p *GetTokenResult) GetSuccess() *auth.GetTokenResp {
-	if !p.IsSetSuccess() {
-		return GetTokenResult_Success_DEFAULT
-	}
-	return p.Success
-}
-
-func (p *GetTokenResult) SetSuccess(x interface{}) {
-	p.Success = x.(*auth.GetTokenResp)
-}
-
-func (p *GetTokenResult) IsSetSuccess() bool {
-	return p.Success != nil
-}
-
-func (p *GetTokenResult) GetResult() interface{} {
-	return p.Success
-}
-
 type kClient struct {
 	c client.Client
 }
@@ -756,16 +596,6 @@ func (p *kClient) RefreshToken(ctx context.Context, Req *auth.RefreshTokenReq) (
 	_args.Req = Req
 	var _result RefreshTokenResult
 	if err = p.c.Call(ctx, "RefreshToken", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) GetToken(ctx context.Context, Req *auth.GetTokenReq) (r *auth.GetTokenResp, err error) {
-	var _args GetTokenArgs
-	_args.Req = Req
-	var _result GetTokenResult
-	if err = p.c.Call(ctx, "GetToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
