@@ -43,3 +43,13 @@ message RefreshTokenReq {
 message RefreshTokenResp {
   string new_token = 1;
 }
+
+// 获取 userID 对应的 token
+message GetTokenReq {
+  int32 userID = 1;
+}
+
+// 获取 userID 对应的 token 响应
+message GetTokenResp {
+  string token = 1;
+}
