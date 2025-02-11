@@ -12,15 +12,12 @@ service AuthService {
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
   // 续期 Token
   rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp) {}
-  // UserID 转 Token
-  rpc GetToken(GetTokenReq) returns (GetTokenResp) {}
 }
 
 // 生成 Token 请求的消息格式
 message DeliverTokenReq {
   int32 user_id = 1;    // 用户 ID
 }
-
 
 // 生成 Token 响应的消息格式
 message DeliveryResp {
@@ -40,19 +37,10 @@ message VerifyResp {
 // 续期 Token 请求
 message RefreshTokenReq {
   string token = 1;
+  int32 seconds = 2;
 }
 
 // 续期 Token 响应
 message RefreshTokenResp {
   string new_token = 1;
-}
-
-// 获取 userID 对应的 token
-message GetTokenReq {
-  int32 userID = 1;
-}
-
-// 获取 userID 对应的 token 响应
-message GetTokenResp {
-  string token = 1;
 }
