@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"product/biz/dal/mysql"
-	product "product/kitex_gen/product"
+	"product/kitex_gen/product"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ func TestCreateProduct_Run(t *testing.T) {
 	mysql.Init()
 	ctx := context.Background()
 	s := NewCreateProductService(ctx)
-	// init req and assert value
+	//init req and assert value
 	newProduct := &product.Product{
 		Categories:    []string{"1", "2"},
 		Name:          "1",

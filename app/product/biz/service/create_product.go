@@ -4,7 +4,7 @@ import (
 	"context"
 	"product/biz/dal/mysql"
 	"product/biz/model"
-	product "product/kitex_gen/product"
+	"product/kitex_gen/product"
 )
 
 type CreateProductService struct {
