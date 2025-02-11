@@ -9,6 +9,7 @@ type Product struct {
 	Price         float32 `gorm:"column:price"`
 	OriginalPrice float32 `gorm:"column:original_price"`
 	Images        string  `gorm:"column:images"`
+	stock         uint32  `gorm:"column:stock"'`
 	Status        int     `gorm:"column:status"`
 }
 
