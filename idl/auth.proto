@@ -21,7 +21,6 @@ message DeliverTokenReq {
   int32 user_id = 1;    // 用户 ID
 }
 
-
 // 生成 Token 响应的消息格式
 message DeliveryResp {
   string token = 1;     // 生成的 Token
@@ -40,6 +39,7 @@ message VerifyResp {
 // 续期 Token 请求
 message RefreshTokenReq {
   string token = 1;
+  int32 seconds = 2;
 }
 
 // 续期 Token 响应
