@@ -1,0 +1,16 @@
+go 1.23.5
+
+use (
+	apis
+	apis/gateway
+	apis/monitoring
+	apis/openapi
+	app/auth
+	app/cart
+	app/checkout
+	app/order
+	app/payment
+	app/product
+	app/user
+	common
+)
