@@ -41,7 +41,7 @@ message Product {
   uint32 stock = 7;                        //商品库存
   string images = 8;                  //商品图片
   uint32 status = 9;                  //商品状态
-  int32 category_id = 10;         // 商品所属类别
+  repeated string category = 10;         // 商品所属类别
 
 }
 // 列出商品的请求消息

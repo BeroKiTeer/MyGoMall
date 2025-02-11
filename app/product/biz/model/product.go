@@ -1,13 +1,15 @@
 package model
 
+import "gorm.io/gorm"
+
 type Product struct {
 	Base
-	CategoryId    int     `gorm:"column:category_id;"`
 	Name          string  `gorm:"column:name"`
 	Description   string  `gorm:"column:description"`
 	Price         float32 `gorm:"column:price"`
 	OriginalPrice float32 `gorm:"column:original_price"`
 	Images        string  `gorm:"column:images"`
+	stock         uint32  `gorm:"column:stock"'`
 	Status        int     `gorm:"column:status"`
 }
 

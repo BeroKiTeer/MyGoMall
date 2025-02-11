@@ -3,11 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
-	"product/biz/dal"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 	"product/kitex_gen/product"
-	"strconv"
 )
 
 type GetProductService struct {
@@ -20,7 +18,8 @@ func NewGetProductService(ctx context.Context) *GetProductService {
 // Run create note info
 func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetProductResp, err error) {
 	fmt.Printf("请求id：%+v\n", req.GetId())
-	p := getProduct(int(req.GetId()))
+	var categories []string
+	p, categories := getProduct(int(req.GetId()))
 	resp = &product.GetProductResp{}
 	resp.Product = &product.Product{
 		Id:          uint32(p.ID),
@@ -28,15 +27,24 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 		Description: p.Description,
 		Picture:     p.Images,
 		Price:       p.Price,
-		Categories:  []string{},
+		Categories:  categories,
 	}
 	return resp, nil
 }
-func getProduct(id int) model.Product {
-	dal.Init()
+func getProduct(id int) (model.Product, []string) {
 	var row model.Product
-	mysql.DB.Model(&model.Product{}).Where("id=" + strconv.Itoa(id)).Find(&row)
+	db := mysql.DB
+	db.Model(&model.Product{}).Where("id=?", id).Find(&row)
+	var categoriesProduct []int
+	db.Table("category_product").
+		Select("category_id").
+		Where("product_id= ?", id).Find(&categoriesProduct)
+	var categories []string
+	db.Table("categories").
+		Select("name").
+		Where("id in ?", categoriesProduct).
+		Find(&categories)
 	fmt.Printf("%+v\n", row)
 	fmt.Println("----")
-	return row
+	return row, categories
 }
