@@ -2,7 +2,7 @@ package model
 
 type Categories struct {
 	Base
-	name string `gorm:"column:name"`
+	Name string `gorm:"column:name"`
 }
 
 func (Categories) TableName() string {
