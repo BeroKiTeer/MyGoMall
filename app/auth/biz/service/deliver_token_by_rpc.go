@@ -24,25 +24,28 @@ var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
 
 func GenerateJWT(userID int32) (string, error) {
 
+	// 这个变量控制 token 生效时间
+	duration := time.Hour
+
+	// 随机造一个密钥，这里的 32 可以改大改小，具体根据 安全性与速度的平衡 做决策
 	secretKey := make([]byte, 32)
-	// 随机造一个密钥
 	_, err := rand.Read(secretKey)
 	if err != nil {
 		return "", err
 	}
 
 	// 把 userID 转为 string 类型 存到 key 里面，密钥是刚刚随机生成的
-	err = rdb.Set(ctx, strconv.Itoa(int(userID)), secretKey, time.Hour).Err()
+	err = rdb.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
 	if err != nil {
 		return "", err
 	}
 
 	// 创建一个 token 对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": userID,                           // 用户 ID
-		"exp":     time.Now().Add(time.Hour).Unix(), // 过期时间 1 小时
-		"iat":     time.Now().Unix(),                // 签发时间
-		"iss":     "MyGoMall-AuthService",           // 签发者
+		"user_id": userID,                          // 用户 ID
+		"exp":     time.Now().Add(duration).Unix(), // 过期时间 1 小时
+		"iat":     time.Now().Unix(),               // 签发时间
+		"iss":     "MyGoMall-AuthService",          // 签发者
 	})
 
 	// 使用密钥对 token 进行签名

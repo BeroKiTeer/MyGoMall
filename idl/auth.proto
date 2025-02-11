@@ -19,14 +19,14 @@ message DeliverTokenReq {
   int32 user_id = 1;    // 用户 ID
 }
 
-// 验证 Token 请求的消息格式
-message VerifyTokenReq {
-  string token = 1;     // 要验证的 Token
-}
-
 // 生成 Token 响应的消息格式
 message DeliveryResp {
   string token = 1;     // 生成的 Token
+}
+
+// 验证 Token 请求的消息格式
+message VerifyTokenReq {
+  string token = 1;     // 要验证的 Token
 }
 
 // 验证 Token 响应的消息格式
@@ -34,11 +34,12 @@ message VerifyResp {
   bool res = 1;         // 验证 token 是否有效
 }
 
+// 续期 Token 请求
 message RefreshTokenReq {
   string token = 1;
 }
 
+// 续期 Token 响应
 message RefreshTokenResp {
   string new_token = 1;
-  int64 expiration = 2;
 }

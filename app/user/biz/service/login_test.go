@@ -11,7 +11,10 @@ func TestLogin_Run(t *testing.T) {
 	s := NewLoginService(ctx)
 	// init req and assert value
 
-	req := &user.LoginReq{}
+	req := &user.LoginReq{
+		//Email:    "123@qq.com",
+		//Password: "123456",
+	}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
