@@ -1,12 +1,15 @@
 package service
 
 import (
+	"auth/kitex_gen/auth"
 	"context"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
 	user "user/kitex_gen/user"
+	"user/rpc"
 )
 
 type LoginService struct {
@@ -31,7 +34,14 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	if err != nil {
 		return nil, err
 	}
-	// TODO: add token
+	// 调用auth服务，生成 token
+	_, err = rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{
+		UserId: int32(row.ID),
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	resp = &user.LoginResp{
 		UserId: int32(row.ID),

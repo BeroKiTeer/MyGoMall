@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth/biz/dal"
 	consul "github.com/kitex-contrib/registry-consul"
 	"log"
 	"net"
@@ -17,6 +18,7 @@ import (
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
