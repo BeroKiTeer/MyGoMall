@@ -22,7 +22,7 @@ func (s *RefreshTokenService) Run(req *auth.RefreshTokenReq) (resp *auth.Refresh
 	}
 
 	// 续期，其实就是重新生成一个 token
-	newToken, err := GenerateJWT(userID)
+	newToken, err := GenerateJWT(userID, req.Seconds)
 	if err != nil {
 		return nil, err
 	}
