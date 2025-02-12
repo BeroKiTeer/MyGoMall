@@ -94,7 +94,9 @@ create index idx_updated_at
 
 ## **6. 数据示例**
 
-```sql
+```mysql
+INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (1, '苹果', '一种水果', 2.35, 2.04, 'https://loremflickr.com/400/400?lock=4735001455941464', 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 50);
+INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (2, '香蕉', '另一种水果', 4.3, 2.2, null, 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 30);
 
 ```
 
