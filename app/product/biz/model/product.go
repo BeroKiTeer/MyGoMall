@@ -88,3 +88,15 @@ func GetProductsByCategoryName(db *gorm.DB, page int, pageSize int, categoryName
 func DeleteProductById(db *gorm.DB, id int) error {
 	return db.Where("id=?", id).Delete(&Product{}).Error
 }
+
+// GetProductByName 根据名称模糊查询商品
+func GetProductByName(db *gorm.DB, name string) ([]Product, [][]string, error) {
+	var row []Product
+	var categories [][]string
+	db.Model(&Product{}).Where("name like ?", "%"+name+"%").Find(&row)
+	for _, item := range row {
+		_, category, _ := GetProductWithCategory(db, item.ID)
+		categories = append(categories, category)
+	}
+	return row, categories, nil
+}
