@@ -1,11 +1,11 @@
 package service
 
 import (
+	"auth/biz/dal/redis"
 	auth "auth/kitex_gen/auth"
 	"context"
 	"crypto/rand"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/redis/go-redis/v9"
 	"strconv"
 	"time"
 )
@@ -20,7 +20,7 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 var ctx = context.Background()
 
 // 这里默认 redis 地址是 localhost:6379。未来可能需要更改
-var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
+var rdb = redis.RedisClient
 
 func GenerateJWT(userID int32, seconds int32) (string, error) {
 
