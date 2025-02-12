@@ -88,7 +88,7 @@ create index idx_updated_at
 - `original_price` 不能为负数，防止数据错误。
 - `stock` 不能为负数，防止数据错误。
 - `status` 0为已下架，1为上架
-- `category_id` 需要关联 `categories` 表的 `id`，外键可选。
+
 
 ------
 
