@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cart/biz/dal"
 	consul "github.com/kitex-contrib/registry-consul"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
@@ -17,6 +18,7 @@ import (
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := cartservice.NewServer(new(CartServiceImpl), opts...)
