@@ -30,10 +30,12 @@
 ```sql
 CREATE TABLE carts
 (
-  id           BIGINT   AUTO_INCREMENT  PRIMARY KEY  COMMENT '主键，区分数据',
-  user_id      BIGINT   NOT NULL                     COMMENT '用户ID',
-  product_id   BIGINT   NOT NULL                     COMMENT '商品ID',
-  quantity     BIGINT   NOT NULL        DEFAULT 0    COMMENT '商品数量'
+  id           BIGINT   AUTO_INCREMENT  PRIMARY KEY          COMMENT '主键，区分数据',
+  user_id      BIGINT   NOT NULL                             COMMENT '用户ID',
+  product_id   BIGINT   NOT NULL                             COMMENT '商品ID',
+  quantity     BIGINT   NOT NULL   DEFAULT 0                 COMMENT '商品数量',
+  created_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP COMMENT '账户创建时间',
+  updated_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '账户更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储购物车中商品的基本信息';
 
 ```
