@@ -25,8 +25,17 @@ func CreateProduct(db *gorm.DB, product *Product) error {
 	return db.Create(product).Error
 }
 
-// GetProduct 按照id查询单个商品
-func GetProduct(db *gorm.DB, id int) (Product, []string, error) {
+func GetProduct(db *gorm.DB, id int) (Product, error) {
+	var row Product
+	err := db.Model(&Product{}).Where("id=?", id).Find(&row).Error
+	if err != nil {
+		return row, fmt.Errorf("failed to find product: %w", err)
+	}
+	return row, nil
+}
+
+// GetProductWithCategory 按照id查询单个商品
+func GetProductWithCategory(db *gorm.DB, id int) (Product, []string, error) {
 	var row Product
 	var categories []string
 
@@ -36,10 +45,7 @@ func GetProduct(db *gorm.DB, id int) (Product, []string, error) {
 	}
 
 	// 查询产品信息
-	err := db.Model(&Product{}).Where("id=?", id).Find(&row).Error
-	if err != nil {
-		return row, categories, fmt.Errorf("failed to find product: %w", err)
-	}
+	row, err := GetProduct(db, id)
 
 	// 查询产品类别ID
 	categoryId, err := SelectCategoryId(db, int64(id))
@@ -70,10 +76,15 @@ func GetProductsByCategoryName(db *gorm.DB, page int, pageSize int, categoryName
 	}
 	fmt.Printf("%+v\n", productsId)
 	for _, item := range productsId {
-		p, category, _ := GetProduct(db, int(item))
+		p, category, _ := GetProductWithCategory(db, int(item))
 		products = append(products, p)
 		categories = append(categories, category)
 	}
 	fmt.Printf("%+v\n", products)
 	return products, categories, nil
+}
+
+// DeleteProductById 根据id删除商品
+func DeleteProductById(db *gorm.DB, id int) error {
+	return db.Where("id=?", id).Delete(&Product{}).Error
 }

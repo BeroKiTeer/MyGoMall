@@ -20,7 +20,7 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 	fmt.Printf("请求id：%+v\n", req.GetId())
 	var categories []string
 
-	p, categories, err := model.GetProduct(mysql.DB, int(req.GetId()))
+	p, categories, err := model.GetProductWithCategory(mysql.DB, int(req.GetId()))
 	if err != nil {
 		return nil, err
 	}
