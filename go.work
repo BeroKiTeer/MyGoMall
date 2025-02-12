@@ -2,9 +2,6 @@ go 1.23.5
 
 use (
 	apis
-	apis/gateway
-	apis/monitoring
-	apis/openapi
 	app/auth
 	app/cart
 	app/checkout
