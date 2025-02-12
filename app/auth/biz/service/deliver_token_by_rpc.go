@@ -19,7 +19,6 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 
 var ctx = context.Background()
 
-// 这里默认 redis 地址是 localhost:6379。未来可能需要更改
 var rdb = redis.RedisClient
 
 func GenerateJWT(userID int32, seconds int32) (string, error) {
