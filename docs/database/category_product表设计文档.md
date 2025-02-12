@@ -45,16 +45,13 @@ create table category_product
 
 ## **4. 索引设计**
 
-| **索引名称**                          | **索引字段**        | **索引类型**  | **是否唯一**    | **说明**     |
-|-----------------------------------|-----------------|-----------|-------------|------------|
-| `pk_id`                           | `id`            | `PRIMARY` | ✅           | 主键索引       |
-| `idx_category_id`                 | `category_id`   | `Regular` | ❌           | 类别ID加速查询   |
-| `idx_products_deleted_at`         | `products_deleted_at`        | `Regular` | ❌           | 商品删除记录加速查询 |
-| `idx_status`                      | `status`    | `Regular` | ❌           | 商品状态加速查询   |
-| `idx_updated_at`                  | `updated_at`    | `Regular` | ❌           | 修改时间加速查询   |
+| **索引名称**                  | **索引字段**              | **索引类型**  | **是否唯一** | **说明**     |
+|---------------------------|-----------------------|-----------|----------|------------|
+| `pk_id`                   | `id`                  | `PRIMARY` | ✅        | 主键索引       |
+| `idx_products_deleted_at` | `products_deleted_at` | `Regular` | ❌        | 商品删除记录加速查询 |
+| `idx_status`              | `status`              | `Regular` | ❌        | 商品状态加速查询   |
+| `idx_updated_at`          | `updated_at`          | `Regular` | ❌        | 修改时间加速查询   |
 ```mysql
-create index idx_category_id
-  on products (category_id);
 
 create index idx_products_deleted_at
   on products (deleted_at);

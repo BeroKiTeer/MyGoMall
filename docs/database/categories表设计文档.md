@@ -18,14 +18,14 @@
 
 - **主键策略**：自增主键
 
-  | 字段名              | 数据类型          | 是否主键     | 是否允许为空   | 默认值              | 备注                  |
-    |------------------|---------------|----------|----------|------------------|---------------------|
-  | `id`             | `BIGINT`      | ✅        | ❌        | `AUTO_INCREMENT` | 主键，自增               |
-  | `name`           | `VARCHAT(50)` | ❌        | ❌        | `NULL`           | 商品类别名称              |
-  | `status`         | `TINYINT`     | ❌        | ❌        | `1`              | 商品类别状态，1表示启用，0表示未启用 |
-  | `created_at`     | `TIMESTAMP`   | ❌        | ✅        | `CURRENT_TIMESTAMP`           | 商品类别创建时间            |
-  | `updated_at`     | `TIMESTAMP` | ❌        | ✅        | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`           | 商品类别更新时间            |
-  | `deleted_at`     | `TIMESTAMP` | ❌        | ✅        | `NULL`           | 商品类别删除时间            |
+  | 字段名          | 数据类型          | 是否主键 | 是否允许为空 | 默认值                                             | 备注                  |
+    |--------------|---------------|------|--------|-------------------------------------------------|---------------------|
+  | `id`         | `BIGINT`      | ✅    | ❌      | `AUTO_INCREMENT`                                | 主键，自增               |
+  | `name`       | `VARCHAT(50)` | ❌    | ❌      | `NULL`                                          | 商品类别名称              |
+  | `status`     | `TINYINT`     | ❌    | ❌      | `1`                                             | 商品类别状态，1表示启用，0表示未启用 |
+  | `created_at` | `TIMESTAMP`   | ❌    | ✅      | `CURRENT_TIMESTAMP`                             | 商品类别创建时间            |
+  | `updated_at` | `TIMESTAMP`   | ❌    | ✅      | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 商品类别更新时间            |
+  | `deleted_at` | `TIMESTAMP`   | ❌    | ✅      | `NULL`                                          | 商品类别删除时间            |
 
 ### 3.2 建表语句
 
