@@ -42,7 +42,7 @@ message GetCartReq {
 
 // 获取购物车详情响应
 message GetCartResp {
-  Cart cart = 1;                // 购物车详情
+  Cart cart = 1;              // 购物车详情
 }
 
 // 清空购物车的请求消息

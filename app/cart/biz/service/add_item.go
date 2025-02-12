@@ -17,11 +17,11 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	// Finish your business logic.
 	// TODO: 1.参数验证
 
-	// TODO: 2.检查购物车是否已经存在
+	// TODO: 2.检查商品是否存在（RPC）
 
-	// TODO: 3.检查商品是否存在（RPC）
+	// TODO: 3.检查商品库存是否足够（可选）
 
-	// TODO: 4.检查商品库存是否足够（可选）
+	// TODO: 4.检查商品是否已存在在购物车
 
 	// TODO: 5.将商品添加到购物车
 

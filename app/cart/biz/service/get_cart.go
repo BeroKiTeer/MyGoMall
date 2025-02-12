@@ -1,8 +1,10 @@
 package service
 
 import (
+	"cart/biz/dal/mysql"
 	cart "cart/kitex_gen/cart"
 	"context"
+	"errors"
 )
 
 type GetCartService struct {
@@ -14,7 +16,16 @@ func NewGetCartService(ctx context.Context) *GetCartService {
 
 // Run create note info
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
-	// Finish your business logic.
 
-	return
+	// 参数检查
+	if req.UserId == 0 {
+		return nil, errors.New("user id is required")
+	}
+
+	// 查询 这个 user 的所有 商品
+	var userCart cart.Cart // user 购物车中的 item
+	db := mysql.DB
+	db.Table("carts").Select("product_id", "quantity").Find(&userCart.Items)
+
+	return &cart.GetCartResp{Cart: &userCart}, nil
 }
