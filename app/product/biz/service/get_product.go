@@ -26,12 +26,15 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 	}
 	resp = &product.GetProductResp{}
 	resp.Product = &product.Product{
-		Id:          uint32(p.ID),
-		Name:        p.Name,
-		Description: p.Description,
-		Images:      p.Images,
-		Price:       p.Price,
-		Categories:  categories,
+		Id:            uint32(p.ID),
+		Name:          p.Name,
+		Description:   p.Description,
+		Images:        p.Images,
+		Price:         p.Price,
+		Categories:    categories,
+		OriginalPrice: p.OriginalPrice,
+		Stock:         p.Stock,
+		Status:        uint32(p.Status),
 	}
 	return resp, nil
 }

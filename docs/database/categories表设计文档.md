@@ -38,7 +38,9 @@ create table categories
   status     tinyint   default 1                 null comment '1: active, 0: inactive',
   created_at timestamp default CURRENT_TIMESTAMP null,
   updated_at timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
-  deleted_at timestamp                           null
+  deleted_at timestamp                           null,
+  constraint categories_pk
+    unique (name)
 )
   collate = utf8mb4_unicode_ci
   row_format = DYNAMIC;

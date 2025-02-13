@@ -30,3 +30,15 @@ func GetCategoryNameById(db *gorm.DB, id []int64) (name []string, err error) {
 	}
 	return categories, nil
 }
+
+// AddCategories 添加标签
+func AddCategories(db *gorm.DB, cat []string) (err error) {
+	for _, cat := range cat {
+		err = db.Create(&Categories{Name: cat}).Error
+		if err != nil {
+			fmt.Println(cat, "标签添加失败，", err)
+		}
+	}
+	fmt.Println("标签添加成功")
+	return nil
+}

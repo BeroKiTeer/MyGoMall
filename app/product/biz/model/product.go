@@ -100,3 +100,25 @@ func GetProductByName(db *gorm.DB, name string) ([]Product, [][]string, error) {
 	}
 	return row, categories, nil
 }
+
+// UpdateProduct 更新商品
+func UpdateProduct(db *gorm.DB, product *Product) error {
+	fmt.Printf("%+v\n", product)
+	return db.Exec(`update products 
+					   set name=? ,
+					       description=?,
+					       price=?,
+					       original_price=?, 
+					       stock=?,
+					       images=?,
+					       status=? 
+					   where id=?`,
+		product.Name,
+		product.Description,
+		product.Price,
+		product.OriginalPrice,
+		product.Stock,
+		product.Images,
+		product.Status,
+		product.ID).Error
+}
