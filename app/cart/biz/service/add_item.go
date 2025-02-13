@@ -1,10 +1,12 @@
 package service
 
 import (
+	"cart/biz/model"
 	cart "cart/kitex_gen/cart"
 	"cart/rpc"
 	"context"
 	"errors"
+	"gorm.io/gorm"
 	"product/kitex_gen/product"
 )
 
@@ -30,13 +32,29 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		return nil, errors.New("the product does not exist")
 	}
 
-	// TODO: 3.检查商品库存是否足够（可选）
+	// 检查商品库存是否足够
+	if int32(productDetails.Product.Stock) < req.Item.Quantity {
+		return nil, errors.New("the stock is not enough")
+	}
 
-	// TODO: 4.检查商品是否已存在在购物车
+	// 检查商品是否已存在在购物车
+	var targetItemQuantity int32 = -1
+	db.Select("quantity").
+		Where("product_id = ?", req.Item.ProductId).
+		Where("user_id = ?", req.UserId).Scan(&targetItemQuantity)
 
-	// TODO: 5.将商品添加到购物车
-
-	// TODO: 6.持久化存储
+	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
+	if targetItemQuantity == -1 {
+		db.Create(&model.Cart{
+			UserID:    req.UserId,
+			ProductID: req.Item.ProductId,
+			Quantity:  req.Item.Quantity,
+		})
+	} else {
+		db.Where("product_id = ?", req.Item.ProductId).
+			Where("user_id = ?", req.UserId).Scan(&targetItemQuantity).
+			Update("quantity", gorm.Expr("quantity + ?", req.Item.Quantity))
+	}
 
 	return
 }
