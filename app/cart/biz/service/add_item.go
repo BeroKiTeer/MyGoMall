@@ -2,8 +2,10 @@ package service
 
 import (
 	cart "cart/kitex_gen/cart"
+	"cart/rpc"
 	"context"
 	"errors"
+	"product/kitex_gen/product"
 )
 
 type AddItemService struct {
@@ -20,7 +22,13 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	if req.UserId == 0 || req.Item == nil {
 		return nil, errors.New("need user_id and item")
 	}
-	// TODO: 2.检查商品是否存在（RPC）
+
+	// 检查商品是否存在（RPC）
+	ProductReq := product.GetProductReq{Id: req.Item.ProductId}
+	productDetails, err := rpc.ProductClient.GetProduct(s.ctx, &ProductReq)
+	if err != nil || productDetails == nil {
+		return nil, errors.New("the product does not exist")
+	}
 
 	// TODO: 3.检查商品库存是否足够（可选）
 
