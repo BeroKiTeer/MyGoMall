@@ -17,11 +17,9 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 	return &DeliverTokenByRPCService{ctx: ctx}
 }
 
-var ctx = context.Background()
-
 var rdb = redis.RedisClient
 
-func GenerateJWT(userID int32, seconds int32) (string, error) {
+func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, error) {
 
 	// 这个变量控制 token 生效时间
 	duration := time.Duration(seconds) * time.Second
@@ -59,7 +57,7 @@ func GenerateJWT(userID int32, seconds int32) (string, error) {
 // Run create note info
 func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.DeliveryResp, err error) {
 
-	token, err := GenerateJWT(req.UserId, 3600)
+	token, err := GenerateJWT(req.UserId, 3600, s.ctx)
 
 	if err != nil {
 		return nil, err

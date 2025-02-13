@@ -3,6 +3,7 @@ package service
 import (
 	cart "cart/kitex_gen/cart"
 	"context"
+	"errors"
 )
 
 type AddItemService struct {
@@ -14,9 +15,11 @@ func NewAddItemService(ctx context.Context) *AddItemService {
 
 // Run create note info
 func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err error) {
-	// Finish your business logic.
-	// TODO: 1.参数验证
 
+	// 参数验证
+	if req.UserId == 0 || req.Item == nil {
+		return nil, errors.New("need user_id and item")
+	}
 	// TODO: 2.检查商品是否存在（RPC）
 
 	// TODO: 3.检查商品库存是否足够（可选）
