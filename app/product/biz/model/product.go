@@ -122,3 +122,14 @@ func UpdateProduct(db *gorm.DB, product *Product) error {
 		product.Status,
 		product.ID).Error
 }
+
+func GetProductsByIds(db *gorm.DB, id []int) ([]Product, [][]string, error) {
+	var row []Product
+	var categories [][]string
+	db.Model(&Product{}).Where("id in (?)", id).Find(&row)
+	for _, item := range row {
+		_, category, _ := GetProductWithCategory(db, item.ID)
+		categories = append(categories, category)
+	}
+	return row, categories, nil
+}
