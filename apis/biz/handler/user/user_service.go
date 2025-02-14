@@ -3,6 +3,7 @@
 package user
 
 import (
+	"apis/biz/utils"
 	"context"
 
 	user "apis/hertz_gen/api/user"
@@ -17,13 +18,13 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 	var req user.UserGetReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserGetResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserDelete .
@@ -33,13 +34,13 @@ func UserDelete(ctx context.Context, c *app.RequestContext) {
 	var req user.UserDeleteReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserDeleteResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserUpdate .
@@ -49,13 +50,13 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 	var req user.UserUpdateReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserUpdateResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserLogin .
@@ -65,13 +66,13 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var req user.UserLoginReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserLoginResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserLogout .
@@ -81,13 +82,13 @@ func UserLogout(ctx context.Context, c *app.RequestContext) {
 	var req user.UserLogoutReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserLogoutResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserRegister .
@@ -97,13 +98,13 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req user.UserRegisterReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserRegisterResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UserChangePassword .
@@ -113,11 +114,11 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 	var req user.UserChangePasswordReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(user.UserChangePasswordResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
