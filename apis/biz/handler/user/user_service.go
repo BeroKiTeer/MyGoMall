@@ -5,10 +5,13 @@ package user
 import (
 	"apis/biz/utils"
 	"context"
+	"strconv"
 
-	user "apis/hertz_gen/api/user"
+	"apis/hertz_gen/api/user"
+	"apis/rpc"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	user_kitex "user/kitex_gen/user"
 )
 
 // UserGet .
@@ -21,7 +24,6 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
 	resp := new(user.UserGetResp)
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
@@ -37,8 +39,20 @@ func UserDelete(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
+	//获取id（为字符串类型）
+	rawId := c.Param("id")
+	//将字符串的id类型转换为整数
+	id, err := strconv.ParseInt(rawId, 10, 32)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err) //id类型必须为整数
+		return
+	}
 
-	resp := new(user.UserDeleteResp)
+	resp, err := rpc.UserClient.DeleteUser(ctx, &user_kitex.DeleteUserReq{UserId: int32(id)})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
