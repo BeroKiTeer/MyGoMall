@@ -3,10 +3,12 @@ package service
 import (
 	"context"
 	"testing"
+	"user/biz/dal/redis"
 	user "user/kitex_gen/user"
 )
 
 func TestDeleteUser_Run(t *testing.T) {
+	redis.Init()
 	ctx := context.Background()
 	s := NewDeleteUserService(ctx)
 	// init req and assert value
