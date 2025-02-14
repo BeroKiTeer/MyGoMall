@@ -1,11 +1,20 @@
 package service
 
 import (
+	auth "auth/kitex_gen/auth"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"strings"
 )
+
+type EncodeTokenService struct {
+	ctx context.Context
+} // NewEncodeTokenService new EncodeTokenService
+func NewEncodeTokenService(ctx context.Context) *EncodeTokenService {
+	return &EncodeTokenService{ctx: ctx}
+}
 
 func GetUserIDFromToken(token string) (int32, error) {
 
@@ -31,4 +40,12 @@ func GetUserIDFromToken(token string) (int32, error) {
 	}
 
 	return int32(userID), nil
+}
+
+// Run create note info
+func (s *EncodeTokenService) Run(req *auth.EncodeTokenReq) (resp *auth.EncodeTokenResp, err error) {
+
+	UserID, err := GetUserIDFromToken(req.Token)
+
+	return &auth.EncodeTokenResp{UserId: UserID}, err
 }

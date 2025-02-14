@@ -29,3 +29,10 @@ func (s *AuthServiceImpl) RefreshToken(ctx context.Context, req *auth.RefreshTok
 
 	return resp, err
 }
+
+// EncodeToken implements the AuthServiceImpl interface.
+func (s *AuthServiceImpl) EncodeToken(ctx context.Context, req *auth.EncodeTokenReq) (resp *auth.EncodeTokenResp, err error) {
+	resp, err = service.NewEncodeTokenService(ctx).Run(req)
+
+	return resp, err
+}

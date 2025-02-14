@@ -12,6 +12,8 @@ service AuthService {
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
   // 续期 Token
   rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp) {}
+  // 解码 Token
+  rpc EncodeToken(EncodeTokenReq) returns (EncodeTokenResp) {}
 }
 
 // 生成 Token 请求的消息格式
@@ -43,4 +45,12 @@ message RefreshTokenReq {
 // 续期 Token 响应
 message RefreshTokenResp {
   string new_token = 1;
+}
+
+message EncodeTokenReq {
+  string token = 1;
+}
+
+message EncodeTokenResp {
+  int32 user_id = 1;
 }

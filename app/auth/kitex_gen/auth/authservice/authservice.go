@@ -36,6 +36,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"EncodeToken": kitex.NewMethodInfo(
+		encodeTokenHandler,
+		newEncodeTokenArgs,
+		newEncodeTokenResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -561,6 +568,159 @@ func (p *RefreshTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
+func encodeTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.EncodeTokenReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).EncodeToken(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *EncodeTokenArgs:
+		success, err := handler.(auth.AuthService).EncodeToken(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*EncodeTokenResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newEncodeTokenArgs() interface{} {
+	return &EncodeTokenArgs{}
+}
+
+func newEncodeTokenResult() interface{} {
+	return &EncodeTokenResult{}
+}
+
+type EncodeTokenArgs struct {
+	Req *auth.EncodeTokenReq
+}
+
+func (p *EncodeTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.EncodeTokenReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *EncodeTokenArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *EncodeTokenArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *EncodeTokenArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *EncodeTokenArgs) Unmarshal(in []byte) error {
+	msg := new(auth.EncodeTokenReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var EncodeTokenArgs_Req_DEFAULT *auth.EncodeTokenReq
+
+func (p *EncodeTokenArgs) GetReq() *auth.EncodeTokenReq {
+	if !p.IsSetReq() {
+		return EncodeTokenArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *EncodeTokenArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *EncodeTokenArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type EncodeTokenResult struct {
+	Success *auth.EncodeTokenResp
+}
+
+var EncodeTokenResult_Success_DEFAULT *auth.EncodeTokenResp
+
+func (p *EncodeTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.EncodeTokenResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *EncodeTokenResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *EncodeTokenResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *EncodeTokenResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *EncodeTokenResult) Unmarshal(in []byte) error {
+	msg := new(auth.EncodeTokenResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *EncodeTokenResult) GetSuccess() *auth.EncodeTokenResp {
+	if !p.IsSetSuccess() {
+		return EncodeTokenResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *EncodeTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.EncodeTokenResp)
+}
+
+func (p *EncodeTokenResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *EncodeTokenResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -596,6 +756,16 @@ func (p *kClient) RefreshToken(ctx context.Context, Req *auth.RefreshTokenReq) (
 	_args.Req = Req
 	var _result RefreshTokenResult
 	if err = p.c.Call(ctx, "RefreshToken", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) EncodeToken(ctx context.Context, Req *auth.EncodeTokenReq) (r *auth.EncodeTokenResp, err error) {
+	var _args EncodeTokenArgs
+	_args.Req = Req
+	var _result EncodeTokenResult
+	if err = p.c.Call(ctx, "EncodeToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
