@@ -317,7 +317,7 @@ func (x *RefreshTokenResp) GetNewToken() string {
 	return ""
 }
 
-type EncodeTokenReq struct {
+type DecodeTokenReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -325,8 +325,8 @@ type EncodeTokenReq struct {
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 }
 
-func (x *EncodeTokenReq) Reset() {
-	*x = EncodeTokenReq{}
+func (x *DecodeTokenReq) Reset() {
+	*x = DecodeTokenReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_auth_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -334,13 +334,13 @@ func (x *EncodeTokenReq) Reset() {
 	}
 }
 
-func (x *EncodeTokenReq) String() string {
+func (x *DecodeTokenReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*EncodeTokenReq) ProtoMessage() {}
+func (*DecodeTokenReq) ProtoMessage() {}
 
-func (x *EncodeTokenReq) ProtoReflect() protoreflect.Message {
+func (x *DecodeTokenReq) ProtoReflect() protoreflect.Message {
 	mi := &file_auth_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -352,19 +352,19 @@ func (x *EncodeTokenReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use EncodeTokenReq.ProtoReflect.Descriptor instead.
-func (*EncodeTokenReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use DecodeTokenReq.ProtoReflect.Descriptor instead.
+func (*DecodeTokenReq) Descriptor() ([]byte, []int) {
 	return file_auth_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *EncodeTokenReq) GetToken() string {
+func (x *DecodeTokenReq) GetToken() string {
 	if x != nil {
 		return x.Token
 	}
 	return ""
 }
 
-type EncodeTokenResp struct {
+type DecodeTokenResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -372,8 +372,8 @@ type EncodeTokenResp struct {
 	UserId int32 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 }
 
-func (x *EncodeTokenResp) Reset() {
-	*x = EncodeTokenResp{}
+func (x *DecodeTokenResp) Reset() {
+	*x = DecodeTokenResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_auth_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -381,13 +381,13 @@ func (x *EncodeTokenResp) Reset() {
 	}
 }
 
-func (x *EncodeTokenResp) String() string {
+func (x *DecodeTokenResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*EncodeTokenResp) ProtoMessage() {}
+func (*DecodeTokenResp) ProtoMessage() {}
 
-func (x *EncodeTokenResp) ProtoReflect() protoreflect.Message {
+func (x *DecodeTokenResp) ProtoReflect() protoreflect.Message {
 	mi := &file_auth_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -399,12 +399,12 @@ func (x *EncodeTokenResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use EncodeTokenResp.ProtoReflect.Descriptor instead.
-func (*EncodeTokenResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use DecodeTokenResp.ProtoReflect.Descriptor instead.
+func (*DecodeTokenResp) Descriptor() ([]byte, []int) {
 	return file_auth_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *EncodeTokenResp) GetUserId() int32 {
+func (x *DecodeTokenResp) GetUserId() int32 {
 	if x != nil {
 		return x.UserId
 	}
@@ -432,9 +432,9 @@ var file_auth_proto_rawDesc = []byte{
 	0x2f, 0x0a, 0x10, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52,
 	0x65, 0x73, 0x70, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x65, 0x77, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6e, 0x65, 0x77, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
-	0x22, 0x26, 0x0a, 0x0e, 0x45, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52,
+	0x22, 0x26, 0x0a, 0x0e, 0x44, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52,
 	0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x2a, 0x0a, 0x0f, 0x45, 0x6e, 0x63, 0x6f,
+	0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x2a, 0x0a, 0x0f, 0x44, 0x65, 0x63, 0x6f,
 	0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x17, 0x0a, 0x07, 0x75,
 	0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x75, 0x73,
 	0x65, 0x72, 0x49, 0x64, 0x32, 0x8c, 0x02, 0x0a, 0x0b, 0x41, 0x75, 0x74, 0x68, 0x53, 0x65, 0x72,
@@ -450,10 +450,10 @@ var file_auth_proto_rawDesc = []byte{
 	0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x15, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x52, 0x65, 0x66, 0x72,
 	0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x61, 0x75,
 	0x74, 0x68, 0x2e, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52,
-	0x65, 0x73, 0x70, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0b, 0x45, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x54,
-	0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x14, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x45, 0x6e, 0x63, 0x6f,
+	0x65, 0x73, 0x70, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0b, 0x44, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x14, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x44, 0x65, 0x63, 0x6f,
 	0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x15, 0x2e, 0x61, 0x75, 0x74,
-	0x68, 0x2e, 0x45, 0x6e, 0x63, 0x6f, 0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x73,
+	0x68, 0x2e, 0x44, 0x65, 0x63, 0x6f, 0x64, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x73,
 	0x70, 0x22, 0x00, 0x42, 0x15, 0x5a, 0x13, 0x61, 0x75, 0x74, 0x68, 0x2f, 0x6b, 0x69, 0x74, 0x65,
 	0x78, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x33,
@@ -479,18 +479,18 @@ var file_auth_proto_goTypes = []interface{}{
 	(*VerifyResp)(nil),       // 3: auth.VerifyResp
 	(*RefreshTokenReq)(nil),  // 4: auth.RefreshTokenReq
 	(*RefreshTokenResp)(nil), // 5: auth.RefreshTokenResp
-	(*EncodeTokenReq)(nil),   // 6: auth.EncodeTokenReq
-	(*EncodeTokenResp)(nil),  // 7: auth.EncodeTokenResp
+	(*DecodeTokenReq)(nil),   // 6: auth.DecodeTokenReq
+	(*DecodeTokenResp)(nil),  // 7: auth.DecodeTokenResp
 }
 var file_auth_proto_depIdxs = []int32{
 	0, // 0: auth.AuthService.DeliverTokenByRPC:input_type -> auth.DeliverTokenReq
 	2, // 1: auth.AuthService.VerifyTokenByRPC:input_type -> auth.VerifyTokenReq
 	4, // 2: auth.AuthService.RefreshToken:input_type -> auth.RefreshTokenReq
-	6, // 3: auth.AuthService.EncodeToken:input_type -> auth.EncodeTokenReq
+	6, // 3: auth.AuthService.DecodeToken:input_type -> auth.DecodeTokenReq
 	1, // 4: auth.AuthService.DeliverTokenByRPC:output_type -> auth.DeliveryResp
 	3, // 5: auth.AuthService.VerifyTokenByRPC:output_type -> auth.VerifyResp
 	5, // 6: auth.AuthService.RefreshToken:output_type -> auth.RefreshTokenResp
-	7, // 7: auth.AuthService.EncodeToken:output_type -> auth.EncodeTokenResp
+	7, // 7: auth.AuthService.DecodeToken:output_type -> auth.DecodeTokenResp
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -577,7 +577,7 @@ func file_auth_proto_init() {
 			}
 		}
 		file_auth_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EncodeTokenReq); i {
+			switch v := v.(*DecodeTokenReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -589,7 +589,7 @@ func file_auth_proto_init() {
 			}
 		}
 		file_auth_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*EncodeTokenResp); i {
+			switch v := v.(*DecodeTokenResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -629,5 +629,5 @@ type AuthService interface {
 	DeliverTokenByRPC(ctx context.Context, req *DeliverTokenReq) (res *DeliveryResp, err error)
 	VerifyTokenByRPC(ctx context.Context, req *VerifyTokenReq) (res *VerifyResp, err error)
 	RefreshToken(ctx context.Context, req *RefreshTokenReq) (res *RefreshTokenResp, err error)
-	EncodeToken(ctx context.Context, req *EncodeTokenReq) (res *EncodeTokenResp, err error)
+	DecodeToken(ctx context.Context, req *DecodeTokenReq) (res *DecodeTokenResp, err error)
 }

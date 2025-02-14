@@ -14,7 +14,7 @@ type Client interface {
 	DeliverTokenByRPC(ctx context.Context, Req *auth.DeliverTokenReq, callOptions ...callopt.Option) (r *auth.DeliveryResp, err error)
 	VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq, callOptions ...callopt.Option) (r *auth.VerifyResp, err error)
 	RefreshToken(ctx context.Context, Req *auth.RefreshTokenReq, callOptions ...callopt.Option) (r *auth.RefreshTokenResp, err error)
-	EncodeToken(ctx context.Context, Req *auth.EncodeTokenReq, callOptions ...callopt.Option) (r *auth.EncodeTokenResp, err error)
+	DecodeToken(ctx context.Context, Req *auth.DecodeTokenReq, callOptions ...callopt.Option) (r *auth.DecodeTokenResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -61,7 +61,7 @@ func (p *kAuthServiceClient) RefreshToken(ctx context.Context, Req *auth.Refresh
 	return p.kClient.RefreshToken(ctx, Req)
 }
 
-func (p *kAuthServiceClient) EncodeToken(ctx context.Context, Req *auth.EncodeTokenReq, callOptions ...callopt.Option) (r *auth.EncodeTokenResp, err error) {
+func (p *kAuthServiceClient) DecodeToken(ctx context.Context, Req *auth.DecodeTokenReq, callOptions ...callopt.Option) (r *auth.DecodeTokenResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.EncodeToken(ctx, Req)
+	return p.kClient.DecodeToken(ctx, Req)
 }

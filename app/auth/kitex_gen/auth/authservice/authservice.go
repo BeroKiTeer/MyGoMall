@@ -36,10 +36,10 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
-	"EncodeToken": kitex.NewMethodInfo(
-		encodeTokenHandler,
-		newEncodeTokenArgs,
-		newEncodeTokenResult,
+	"DecodeToken": kitex.NewMethodInfo(
+		decodeTokenHandler,
+		newDecodeTokenArgs,
+		newDecodeTokenResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
@@ -568,73 +568,73 @@ func (p *RefreshTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
-func encodeTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func decodeTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(auth.EncodeTokenReq)
+		req := new(auth.DecodeTokenReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(auth.AuthService).EncodeToken(ctx, req)
+		resp, err := handler.(auth.AuthService).DecodeToken(ctx, req)
 		if err != nil {
 			return err
 		}
 		return st.SendMsg(resp)
-	case *EncodeTokenArgs:
-		success, err := handler.(auth.AuthService).EncodeToken(ctx, s.Req)
+	case *DecodeTokenArgs:
+		success, err := handler.(auth.AuthService).DecodeToken(ctx, s.Req)
 		if err != nil {
 			return err
 		}
-		realResult := result.(*EncodeTokenResult)
+		realResult := result.(*DecodeTokenResult)
 		realResult.Success = success
 		return nil
 	default:
 		return errInvalidMessageType
 	}
 }
-func newEncodeTokenArgs() interface{} {
-	return &EncodeTokenArgs{}
+func newDecodeTokenArgs() interface{} {
+	return &DecodeTokenArgs{}
 }
 
-func newEncodeTokenResult() interface{} {
-	return &EncodeTokenResult{}
+func newDecodeTokenResult() interface{} {
+	return &DecodeTokenResult{}
 }
 
-type EncodeTokenArgs struct {
-	Req *auth.EncodeTokenReq
+type DecodeTokenArgs struct {
+	Req *auth.DecodeTokenReq
 }
 
-func (p *EncodeTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *DecodeTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(auth.EncodeTokenReq)
+		p.Req = new(auth.DecodeTokenReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
 
-func (p *EncodeTokenArgs) FastWrite(buf []byte) (n int) {
+func (p *DecodeTokenArgs) FastWrite(buf []byte) (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.FastWrite(buf)
 }
 
-func (p *EncodeTokenArgs) Size() (n int) {
+func (p *DecodeTokenArgs) Size() (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.Size()
 }
 
-func (p *EncodeTokenArgs) Marshal(out []byte) ([]byte, error) {
+func (p *DecodeTokenArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
 		return out, nil
 	}
 	return proto.Marshal(p.Req)
 }
 
-func (p *EncodeTokenArgs) Unmarshal(in []byte) error {
-	msg := new(auth.EncodeTokenReq)
+func (p *DecodeTokenArgs) Unmarshal(in []byte) error {
+	msg := new(auth.DecodeTokenReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -642,59 +642,59 @@ func (p *EncodeTokenArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var EncodeTokenArgs_Req_DEFAULT *auth.EncodeTokenReq
+var DecodeTokenArgs_Req_DEFAULT *auth.DecodeTokenReq
 
-func (p *EncodeTokenArgs) GetReq() *auth.EncodeTokenReq {
+func (p *DecodeTokenArgs) GetReq() *auth.DecodeTokenReq {
 	if !p.IsSetReq() {
-		return EncodeTokenArgs_Req_DEFAULT
+		return DecodeTokenArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-func (p *EncodeTokenArgs) IsSetReq() bool {
+func (p *DecodeTokenArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *EncodeTokenArgs) GetFirstArgument() interface{} {
+func (p *DecodeTokenArgs) GetFirstArgument() interface{} {
 	return p.Req
 }
 
-type EncodeTokenResult struct {
-	Success *auth.EncodeTokenResp
+type DecodeTokenResult struct {
+	Success *auth.DecodeTokenResp
 }
 
-var EncodeTokenResult_Success_DEFAULT *auth.EncodeTokenResp
+var DecodeTokenResult_Success_DEFAULT *auth.DecodeTokenResp
 
-func (p *EncodeTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *DecodeTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(auth.EncodeTokenResp)
+		p.Success = new(auth.DecodeTokenResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
 
-func (p *EncodeTokenResult) FastWrite(buf []byte) (n int) {
+func (p *DecodeTokenResult) FastWrite(buf []byte) (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.FastWrite(buf)
 }
 
-func (p *EncodeTokenResult) Size() (n int) {
+func (p *DecodeTokenResult) Size() (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.Size()
 }
 
-func (p *EncodeTokenResult) Marshal(out []byte) ([]byte, error) {
+func (p *DecodeTokenResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {
 		return out, nil
 	}
 	return proto.Marshal(p.Success)
 }
 
-func (p *EncodeTokenResult) Unmarshal(in []byte) error {
-	msg := new(auth.EncodeTokenResp)
+func (p *DecodeTokenResult) Unmarshal(in []byte) error {
+	msg := new(auth.DecodeTokenResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -702,22 +702,22 @@ func (p *EncodeTokenResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *EncodeTokenResult) GetSuccess() *auth.EncodeTokenResp {
+func (p *DecodeTokenResult) GetSuccess() *auth.DecodeTokenResp {
 	if !p.IsSetSuccess() {
-		return EncodeTokenResult_Success_DEFAULT
+		return DecodeTokenResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-func (p *EncodeTokenResult) SetSuccess(x interface{}) {
-	p.Success = x.(*auth.EncodeTokenResp)
+func (p *DecodeTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.DecodeTokenResp)
 }
 
-func (p *EncodeTokenResult) IsSetSuccess() bool {
+func (p *DecodeTokenResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *EncodeTokenResult) GetResult() interface{} {
+func (p *DecodeTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
@@ -761,11 +761,11 @@ func (p *kClient) RefreshToken(ctx context.Context, Req *auth.RefreshTokenReq) (
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) EncodeToken(ctx context.Context, Req *auth.EncodeTokenReq) (r *auth.EncodeTokenResp, err error) {
-	var _args EncodeTokenArgs
+func (p *kClient) DecodeToken(ctx context.Context, Req *auth.DecodeTokenReq) (r *auth.DecodeTokenResp, err error) {
+	var _args DecodeTokenArgs
 	_args.Req = Req
-	var _result EncodeTokenResult
-	if err = p.c.Call(ctx, "EncodeToken", &_args, &_result); err != nil {
+	var _result DecodeTokenResult
+	if err = p.c.Call(ctx, "DecodeToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

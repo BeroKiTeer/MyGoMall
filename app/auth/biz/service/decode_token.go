@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-type EncodeTokenService struct {
+type DecodeTokenService struct {
 	ctx context.Context
-} // NewEncodeTokenService new EncodeTokenService
-func NewEncodeTokenService(ctx context.Context) *EncodeTokenService {
-	return &EncodeTokenService{ctx: ctx}
+} // NewDecodeTokenService new EncodeTokenService
+func NewDecodeTokenService(ctx context.Context) *DecodeTokenService {
+	return &DecodeTokenService{ctx: ctx}
 }
 
 func GetUserIDFromToken(token string) (int32, error) {
@@ -43,9 +43,9 @@ func GetUserIDFromToken(token string) (int32, error) {
 }
 
 // Run create note info
-func (s *EncodeTokenService) Run(req *auth.EncodeTokenReq) (resp *auth.EncodeTokenResp, err error) {
+func (s *DecodeTokenService) Run(req *auth.DecodeTokenReq) (resp *auth.DecodeTokenResp, err error) {
 
 	UserID, err := GetUserIDFromToken(req.Token)
 
-	return &auth.EncodeTokenResp{UserId: UserID}, err
+	return &auth.DecodeTokenResp{UserId: UserID}, err
 }

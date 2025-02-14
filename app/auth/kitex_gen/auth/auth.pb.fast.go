@@ -172,7 +172,7 @@ func (x *RefreshTokenResp) fastReadField1(buf []byte, _type int8) (offset int, e
 	return offset, err
 }
 
-func (x *EncodeTokenReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *DecodeTokenReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -189,15 +189,15 @@ func (x *EncodeTokenReq) FastRead(buf []byte, _type int8, number int32) (offset 
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_EncodeTokenReq[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_DecodeTokenReq[number], err)
 }
 
-func (x *EncodeTokenReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *DecodeTokenReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
-func (x *EncodeTokenResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *DecodeTokenResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -214,10 +214,10 @@ func (x *EncodeTokenResp) FastRead(buf []byte, _type int8, number int32) (offset
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_EncodeTokenResp[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_DecodeTokenResp[number], err)
 }
 
-func (x *EncodeTokenResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *DecodeTokenResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	x.UserId, offset, err = fastpb.ReadInt32(buf, _type)
 	return offset, err
 }
@@ -327,7 +327,7 @@ func (x *RefreshTokenResp) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *EncodeTokenReq) FastWrite(buf []byte) (offset int) {
+func (x *DecodeTokenReq) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -335,7 +335,7 @@ func (x *EncodeTokenReq) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *EncodeTokenReq) fastWriteField1(buf []byte) (offset int) {
+func (x *DecodeTokenReq) fastWriteField1(buf []byte) (offset int) {
 	if x.Token == "" {
 		return offset
 	}
@@ -343,7 +343,7 @@ func (x *EncodeTokenReq) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *EncodeTokenResp) FastWrite(buf []byte) (offset int) {
+func (x *DecodeTokenResp) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -351,7 +351,7 @@ func (x *EncodeTokenResp) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *EncodeTokenResp) fastWriteField1(buf []byte) (offset int) {
+func (x *DecodeTokenResp) fastWriteField1(buf []byte) (offset int) {
 	if x.UserId == 0 {
 		return offset
 	}
@@ -464,7 +464,7 @@ func (x *RefreshTokenResp) sizeField1() (n int) {
 	return n
 }
 
-func (x *EncodeTokenReq) Size() (n int) {
+func (x *DecodeTokenReq) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -472,7 +472,7 @@ func (x *EncodeTokenReq) Size() (n int) {
 	return n
 }
 
-func (x *EncodeTokenReq) sizeField1() (n int) {
+func (x *DecodeTokenReq) sizeField1() (n int) {
 	if x.Token == "" {
 		return n
 	}
@@ -480,7 +480,7 @@ func (x *EncodeTokenReq) sizeField1() (n int) {
 	return n
 }
 
-func (x *EncodeTokenResp) Size() (n int) {
+func (x *DecodeTokenResp) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -488,7 +488,7 @@ func (x *EncodeTokenResp) Size() (n int) {
 	return n
 }
 
-func (x *EncodeTokenResp) sizeField1() (n int) {
+func (x *DecodeTokenResp) sizeField1() (n int) {
 	if x.UserId == 0 {
 		return n
 	}
@@ -521,10 +521,10 @@ var fieldIDToName_RefreshTokenResp = map[int32]string{
 	1: "NewToken",
 }
 
-var fieldIDToName_EncodeTokenReq = map[int32]string{
+var fieldIDToName_DecodeTokenReq = map[int32]string{
 	1: "Token",
 }
 
-var fieldIDToName_EncodeTokenResp = map[int32]string{
+var fieldIDToName_DecodeTokenResp = map[int32]string{
 	1: "UserId",
 }

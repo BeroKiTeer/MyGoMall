@@ -13,7 +13,7 @@ service AuthService {
   // 续期 Token
   rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp) {}
   // 解码 Token
-  rpc EncodeToken(EncodeTokenReq) returns (EncodeTokenResp) {}
+  rpc DecodeToken(DecodeTokenReq) returns (DecodeTokenResp) {}
 }
 
 // 生成 Token 请求的消息格式
@@ -47,10 +47,10 @@ message RefreshTokenResp {
   string new_token = 1;
 }
 
-message EncodeTokenReq {
+message DecodeTokenReq {
   string token = 1;
 }
 
-message EncodeTokenResp {
+message DecodeTokenResp {
   int32 user_id = 1;
 }
