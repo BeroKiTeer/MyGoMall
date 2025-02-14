@@ -2,23 +2,23 @@ package rpc
 
 import (
 	"apis/conf"
-	"auth/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
+	"user/kitex_gen/user/userservice"
 )
 
 var (
-	AuthClient authservice.Client
+	UserClient userservice.Client
 )
 
-func initAuthClient() {
+func initUserClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	AuthClient, err = authservice.NewClient("auth", opts...)
+	UserClient, err = userservice.NewClient("auth", opts...)
 	if err != nil {
 		panic(err)
 	}
