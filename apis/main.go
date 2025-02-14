@@ -3,6 +3,7 @@
 package main
 
 import (
+	"apis/rpc"
 	"context"
 	"time"
 
@@ -26,6 +27,7 @@ import (
 func main() {
 	// init dal
 	// dal.Init()
+	rpc.InitClient() //初始化客户端
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"cart/biz/dal"
+	"cart/rpc"
 	consul "github.com/kitex-contrib/registry-consul"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
@@ -17,6 +19,8 @@ import (
 )
 
 func main() {
+	dal.Init()
+	rpc.InitClient() // 初始化客户端
 	opts := kitexInit()
 
 	svr := cartservice.NewServer(new(CartServiceImpl), opts...)

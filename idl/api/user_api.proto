@@ -1,0 +1,99 @@
+syntax="proto3";
+
+package api.user;
+
+option go_package="/api/user";
+
+import "api.proto";
+
+
+message UserGetReq{
+    string token=1 ;
+}
+
+message UserGetResp{
+      string email=1 [json_name="email"];
+      string username=2[json_name="username"];
+      string address=3[json_name="address"];
+      string phone_number=4[json_name="phone_number"];
+}
+
+message UserDeleteReq{
+    int32 user_id=1;
+}
+
+message UserDeleteResp{
+    string success=1[json_name="data"];
+}
+
+message UserUpdateReq{
+  int32 user_id = 1[json_name="id"]; // 需要更新的用户 ID
+  string email = 2[json_name="email"];  // 新邮箱（可选）
+  string password = 3[json_name="password"]; // 新密码（可选）
+  string phone_number = 4[json_name="phone_num"]; // 新手机号（可选）
+  string address = 5[json_name="address"]; // 新地址（可选）
+}
+
+message UserUpdateResp{
+  string success=1[json_name="data"];
+}
+
+message UserLoginReq{
+    string email=1[json_name="email"];
+    string password=2[json_name="password"];
+}
+
+message UserLoginResp{
+    string success=1[json_name="data"];
+}
+
+message UserLogoutReq{
+    string token=1;
+}
+
+message UserLogoutResp{
+    string success=1[json_name="data"];
+}
+
+message UserRegisterReq{
+    string email=1[json_name="email"];
+    string password=2[json_name="password"];
+    string confirm_password=3[json_name="confirm_password"];
+}
+
+message UserRegisterResp{
+    string success=1[json_name="data"];
+}
+
+message UserChangePasswordReq{
+    string token=1;
+    string new_password=2[json_name="new_password"];
+    string new_password_confirmed=3[json_name="confirmed_password"];
+}
+
+message UserChangePasswordResp{
+    string success=1[json_name="data"];
+}
+service UserService{
+    rpc UserGet(UserGetReq) returns (UserGetResp){
+      option(api.get)="/api/user/{id}";
+    }
+    rpc UserDelete(UserDeleteReq) returns(UserDeleteResp){
+      option(api.delete)="/api/user/{id}";
+    }
+    rpc UserUpdate(UserUpdateReq) returns(UserUpdateResp){
+      option(api.put)="/api/user";
+    }
+    rpc UserLogin(UserLoginReq) returns(UserLoginResp){
+      option(api.post)="/api/user/login";
+    }
+    rpc UserLogout(UserLogoutReq) returns(UserLogoutResp){
+      option(api.post)="/api/user/logout";
+    }
+    rpc UserRegister(UserRegisterReq) returns(UserRegisterResp){
+      option(api.post)="/api/user/register";
+    }
+    rpc UserChangePassword(UserChangePasswordReq) returns(UserChangePasswordResp){
+      option(api.put)="/api/user/changePassword";
+    }
+}

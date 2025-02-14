@@ -36,6 +36,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"DecodeToken": kitex.NewMethodInfo(
+		decodeTokenHandler,
+		newDecodeTokenArgs,
+		newDecodeTokenResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -561,6 +568,159 @@ func (p *RefreshTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
+func decodeTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.DecodeTokenReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).DecodeToken(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *DecodeTokenArgs:
+		success, err := handler.(auth.AuthService).DecodeToken(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*DecodeTokenResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newDecodeTokenArgs() interface{} {
+	return &DecodeTokenArgs{}
+}
+
+func newDecodeTokenResult() interface{} {
+	return &DecodeTokenResult{}
+}
+
+type DecodeTokenArgs struct {
+	Req *auth.DecodeTokenReq
+}
+
+func (p *DecodeTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.DecodeTokenReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *DecodeTokenArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *DecodeTokenArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *DecodeTokenArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *DecodeTokenArgs) Unmarshal(in []byte) error {
+	msg := new(auth.DecodeTokenReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var DecodeTokenArgs_Req_DEFAULT *auth.DecodeTokenReq
+
+func (p *DecodeTokenArgs) GetReq() *auth.DecodeTokenReq {
+	if !p.IsSetReq() {
+		return DecodeTokenArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *DecodeTokenArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *DecodeTokenArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type DecodeTokenResult struct {
+	Success *auth.DecodeTokenResp
+}
+
+var DecodeTokenResult_Success_DEFAULT *auth.DecodeTokenResp
+
+func (p *DecodeTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.DecodeTokenResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *DecodeTokenResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *DecodeTokenResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *DecodeTokenResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *DecodeTokenResult) Unmarshal(in []byte) error {
+	msg := new(auth.DecodeTokenResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *DecodeTokenResult) GetSuccess() *auth.DecodeTokenResp {
+	if !p.IsSetSuccess() {
+		return DecodeTokenResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *DecodeTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.DecodeTokenResp)
+}
+
+func (p *DecodeTokenResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *DecodeTokenResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -596,6 +756,16 @@ func (p *kClient) RefreshToken(ctx context.Context, Req *auth.RefreshTokenReq) (
 	_args.Req = Req
 	var _result RefreshTokenResult
 	if err = p.c.Call(ctx, "RefreshToken", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DecodeToken(ctx context.Context, Req *auth.DecodeTokenReq) (r *auth.DecodeTokenResp, err error) {
+	var _args DecodeTokenArgs
+	_args.Req = Req
+	var _result DecodeTokenResult
+	if err = p.c.Call(ctx, "DecodeToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

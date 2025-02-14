@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
-	product "product/kitex_gen/product"
+	"fmt"
+	"product/biz/dal/mysql"
+	"product/biz/model"
+	"product/kitex_gen/product"
 )
 
 type ListProductsService struct {
@@ -14,7 +17,22 @@ func NewListProductsService(ctx context.Context) *ListProductsService {
 
 // Run create note info
 func (s *ListProductsService) Run(req *product.ListProductsReq) (resp *product.ListProductsResp, err error) {
+	resp = &product.ListProductsResp{}
 	// Finish your business logic.
-
-	return
+	fmt.Printf("请求页数:%#v\n", req.Page)
+	fmt.Printf("商品数量:%#v\n", req.PageSize)
+	fmt.Printf("搜索商品标签:%#v\n", req.CategoryName)
+	products, categories, err := model.GetProductsByCategoryName(mysql.DB, int(req.Page), int(req.PageSize), req.CategoryName)
+	for i, item := range products {
+		pro := &product.Product{
+			Id:          uint32(item.ID),
+			Name:        item.Name,
+			Description: item.Description,
+			Images:      item.Images,
+			Price:       item.Price,
+			Categories:  categories[i],
+		}
+		resp.Products = append(resp.Products, pro)
+	}
+	return resp, nil
 }

@@ -11,7 +11,11 @@ func TestListProducts_Run(t *testing.T) {
 	s := NewListProductsService(ctx)
 	// init req and assert value
 
-	req := &product.ListProductsReq{}
+	req := &product.ListProductsReq{
+		Page:         2,
+		PageSize:     10,
+		CategoryName: "测试",
+	}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

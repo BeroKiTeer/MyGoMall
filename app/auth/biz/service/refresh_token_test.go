@@ -11,7 +11,7 @@ func TestRefreshToken_Run(t *testing.T) {
 	s := NewRefreshTokenService(ctx)
 	// init req and assert value
 
-	req := &auth.RefreshTokenReq{Token: ""}
+	req := &auth.RefreshTokenReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

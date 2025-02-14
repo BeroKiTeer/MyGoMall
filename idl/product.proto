@@ -35,13 +35,12 @@ message Product {
   uint32 id = 1;                          // 商品 ID
   string name = 2;                        // 商品名称
   string description = 3;                 // 商品描述
-  string picture = 4;                     // 商品图片 URL
-  float price = 5;                        // 商品价格
-  float original_price = 6;                  //商品原始价格
-  uint32 stock = 7;                        //商品库存
-  string images = 8;                  //商品图片
-  uint32 status = 9;                  //商品状态
-  repeated string category = 10;         // 商品所属类别
+  float price = 4;                        // 商品价格
+  float original_price = 5;                  //商品原始价格
+  uint32 stock = 6;                        //商品库存
+  string images = 7;                  //商品图片
+  uint32 status = 8;                  //商品状态
+  repeated string Categories = 9;         // 商品所属类别
 
 }
 // 列出商品的请求消息

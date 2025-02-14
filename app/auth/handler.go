@@ -29,3 +29,10 @@ func (s *AuthServiceImpl) RefreshToken(ctx context.Context, req *auth.RefreshTok
 
 	return resp, err
 }
+
+// DecodeToken implements the AuthServiceImpl interface.
+func (s *AuthServiceImpl) DecodeToken(ctx context.Context, req *auth.DecodeTokenReq) (resp *auth.DecodeTokenResp, err error) {
+	resp, err = service.NewDecodeTokenService(ctx).Run(req)
+
+	return resp, err
+}

@@ -14,10 +14,12 @@ import (
 	"user/biz/dal"
 	"user/conf"
 	"user/kitex_gen/user/userservice"
+	"user/rpc"
 )
 
 func main() {
 	dal.Init()
+	rpc.InitClient() //初始化客户端
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)

@@ -11,7 +11,9 @@ service AuthService {
   // 验证 Token 的有效性
   rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
   // 续期 Token
-  rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp);
+  rpc RefreshToken(RefreshTokenReq) returns (RefreshTokenResp) {}
+  // 解码 Token
+  rpc DecodeToken(DecodeTokenReq) returns (DecodeTokenResp) {}
 }
 
 // 生成 Token 请求的消息格式
@@ -37,9 +39,18 @@ message VerifyResp {
 // 续期 Token 请求
 message RefreshTokenReq {
   string token = 1;
+  int32 seconds = 2;
 }
 
 // 续期 Token 响应
 message RefreshTokenResp {
   string new_token = 1;
+}
+
+message DecodeTokenReq {
+  string token = 1;
+}
+
+message DecodeTokenResp {
+  int32 user_id = 1;
 }
