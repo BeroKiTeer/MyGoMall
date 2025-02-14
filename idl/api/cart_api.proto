@@ -14,9 +14,9 @@ message AddCartReq {
 
 service CartService {
   rpc AddCartItem(AddCartReq) returns (common.Empty) {
-    option (api.post) = "/cart";
+    option (api.post) = "/api/cart";
   }
   rpc GetCart(common.Empty) returns (common.Empty) {
-    option (api.get) = "/cart";
+    option (api.get) = "/api/cart";
   }
 }

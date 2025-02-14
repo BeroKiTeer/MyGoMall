@@ -20,6 +20,12 @@ message CartItem {
   int32  quantity = 2;        // 商品数量
 }
 
+// 用户的购物车
+message Cart {
+  uint32 user_id = 1;             // 用户ID
+  repeated CartItem items = 2;    // 购物车中的商品列表
+}
+
 // 向购物车添加商品请求
 message AddItemReq {
   uint32 user_id = 1;         // 用户ID
@@ -29,11 +35,6 @@ message AddItemReq {
 // 向购物车添加商品响应
 message AddItemResp {}
 
-// 清空购物车的请求消息
-message EmptyCartReq {
-  uint32 user_id = 1;         // 用户ID
-}
-
 // 获取购物车详情请求
 message GetCartReq {
   uint32 user_id = 1;         // 用户ID
@@ -41,13 +42,12 @@ message GetCartReq {
 
 // 获取购物车详情响应
 message GetCartResp {
-  Cart cart = 1;                // 购物车详情
+  Cart cart = 1;              // 购物车详情
 }
 
-// 用户的购物车
-message Cart {
-  uint32 user_id = 1;             // 用户ID
-  repeated CartItem items = 2;    // 购物车中的商品列表
+// 清空购物车的请求消息
+message EmptyCartReq {
+  uint32 user_id = 1;         // 用户ID
 }
 
 // 清空购物车响应

@@ -1,11 +1,11 @@
 package service
 
 import (
+	"auth/biz/dal/redis"
 	auth "auth/kitex_gen/auth"
 	"context"
 	"crypto/rand"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/redis/go-redis/v9"
 	"strconv"
 	"time"
 )
@@ -17,12 +17,9 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 	return &DeliverTokenByRPCService{ctx: ctx}
 }
 
-var ctx = context.Background()
+var rdb = redis.RedisClient
 
-// 这里默认 redis 地址是 localhost:6379。未来可能需要更改
-var rdb = redis.NewClient(&redis.Options{Addr: "localhost:6379"})
-
-func GenerateJWT(userID int32, seconds int32) (string, error) {
+func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, error) {
 
 	// 这个变量控制 token 生效时间
 	duration := time.Duration(seconds) * time.Second
@@ -60,7 +57,7 @@ func GenerateJWT(userID int32, seconds int32) (string, error) {
 // Run create note info
 func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.DeliveryResp, err error) {
 
-	token, err := GenerateJWT(req.UserId, 3600)
+	token, err := GenerateJWT(req.UserId, 3600, s.ctx)
 
 	if err != nil {
 		return nil, err
