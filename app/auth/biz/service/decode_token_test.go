@@ -11,7 +11,7 @@ func TestEncodeToken_Run(t *testing.T) {
 	s := NewDecodeTokenService(ctx)
 	// init req and assert value
 
-	req := &auth.DecodeTokenReq{Token: ""}
+	req := &auth.DecodeTokenReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
