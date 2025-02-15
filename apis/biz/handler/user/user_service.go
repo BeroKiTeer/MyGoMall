@@ -4,6 +4,7 @@ package user
 
 import (
 	"apis/biz/utils"
+	"auth/kitex_gen/auth"
 	"context"
 	"strconv"
 
@@ -24,8 +25,20 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-	resp := new(user.UserGetResp)
-
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	//根据userid调用查询用户的函数
+	resp, err := rpc.UserClient.GetUserInfo(ctx, &user_kitex.GetUserInfoReq{UserId: rawID.UserId})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
