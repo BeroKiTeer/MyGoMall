@@ -193,8 +193,26 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
-	resp := new(user.UserChangePasswordResp)
-
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	if err := c.Bind(&req); err != nil {
+		c.JSON(400, map[string]string{"error": "Invalid request body"})
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	resp, err := rpc.UserClient.UpdateUser(ctx, &user_kitex.UpdateUserReq{
+		UserId:   rawID.UserId,
+		Password: req.NewPassword},
+	)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
