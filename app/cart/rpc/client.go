@@ -15,11 +15,11 @@ var (
 
 func InitClient() {
 	once.Do(func() {
-		initAuthClient()
+		initProductClient()
 	})
 }
 
-func initAuthClient() {
+func initProductClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {

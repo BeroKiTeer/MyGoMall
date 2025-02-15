@@ -2,6 +2,7 @@ package service
 
 import (
 	cart "cart/kitex_gen/cart"
+	"cart/rpc"
 	"context"
 	"testing"
 )
@@ -11,7 +12,8 @@ func TestAddItem_Run(t *testing.T) {
 	s := NewAddItemService(ctx)
 	// init req and assert value
 
-	req := &cart.AddItemReq{UserId: 123, Item: &cart.CartItem{ProductId: 456, Quantity: 7}}
+	rpc.InitClient()
+	req := &cart.AddItemReq{UserId: 121, Item: &cart.CartItem{ProductId: 1, Quantity: 1}}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
