@@ -165,9 +165,21 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
-	resp := new(user.UserRegisterResp)
-
+	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
+	if err := c.Bind(&req); err != nil {
+		c.JSON(400, map[string]string{"error": "Invalid request body"})
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	resp, err := rpc.UserClient.Register(ctx, &user_kitex.RegisterReq{
+		Email:           req.Email,
+		Password:        req.Password,
+		ConfirmPassword: req.ConfirmPassword,
+	})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
