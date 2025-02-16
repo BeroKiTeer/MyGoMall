@@ -1,6 +1,6 @@
 kitex:
   service: "user"
-  address: ":8888"
+  address: "127.0.0.1:8888"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -12,6 +12,14 @@ registry:
     - 127.0.0.1:8500
   username: ""
   password: ""
+  health_check:
+    check:
+      http: "http://localhost:8888/health"  # 健康检查端点URL
+      interval: "15s"                        # 检查间隔时间
+      timeout: "5s"                          # 单次检查超时时间
+      deregister_critical_service_after: "2m"  # 服务标记为不健康后的注销延迟时间
+
+
 
 mysql:
   dsn: "root:root@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
