@@ -162,13 +162,13 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req user.UserRegisterReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 	resp, err := rpc.UserClient.Register(ctx, &user_kitex.RegisterReq{
@@ -177,7 +177,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		ConfirmPassword: req.ConfirmPassword,
 	})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
