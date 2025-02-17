@@ -1,8 +1,10 @@
 package service
 
 import (
+	"cart/biz/dal/mysql"
 	cart "cart/kitex_gen/cart"
 	"context"
+	"errors"
 )
 
 type EmptyCartService struct {
@@ -14,12 +16,25 @@ func NewEmptyCartService(ctx context.Context) *EmptyCartService {
 
 // Run create note info
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
-	// Finish your business logic.
-	// TODO: 1. 参数检查
 
-	// TODO: 2. 删除
+	// 参数检查
+	if req.UserId == 0 {
+		return nil, errors.New("empty user id")
+	}
 
-	// TODO: 3. 返回。
+	// 检查商品是否已存在在购物车
+	var targetItemQuantity int32 = -1
+	mysql.DB.Table("carts").
+		Select("SUM(quantity)").
+		Where("user_id = ?", req.UserId).
+		Group("user_id").Scan(&targetItemQuantity)
+
+	// 删除
+	if targetItemQuantity != -1 {
+		mysql.DB.Table("carts").
+			Where("user_id = ?", req.UserId).
+			Delete(&req.UserId)
+	}
 
 	return
 }
