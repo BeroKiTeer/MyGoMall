@@ -18,7 +18,7 @@ func initUserClient() {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	UserClient, err = userservice.NewClient("auth", opts...)
+	UserClient, err = userservice.NewClient("user", opts...)
 	if err != nil {
 		panic(err)
 	}
