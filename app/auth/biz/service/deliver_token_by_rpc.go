@@ -32,12 +32,12 @@ func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, erro
 	}
 
 	if seconds == 0 {
-		rdb.Expire(ctx, strconv.Itoa(int(userID)), 0)
+		redis.RedisClient.Expire(ctx, strconv.Itoa(int(userID)), 0)
 		return "", nil
 	}
 
 	// 把 userID 转为 string 类型 存到 key 里面，密钥是刚刚随机生成的
-	err = rdb.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
+	err = redis.RedisClient.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
 	if err != nil {
 		return "", err
 	}
