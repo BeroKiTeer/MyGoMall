@@ -6,6 +6,7 @@ import (
 	"apis/biz/utils"
 	"auth/kitex_gen/auth"
 	"context"
+	"log"
 	"strconv"
 
 	"apis/hertz_gen/api/user"
@@ -22,7 +23,7 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 	var req user.UserGetReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//获取请求头的token
@@ -30,13 +31,13 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 	//根据userid调用查询用户的函数
 	resp, err := rpc.UserClient.GetUserInfo(ctx, &user_kitex.GetUserInfoReq{UserId: rawID.UserId})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
@@ -49,7 +50,7 @@ func UserDelete(ctx context.Context, c *app.RequestContext) {
 	var req user.UserDeleteReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//获取id（为字符串类型）
@@ -57,13 +58,13 @@ func UserDelete(ctx context.Context, c *app.RequestContext) {
 	//将字符串的id类型转换为整数
 	id, err := strconv.ParseInt(rawId, 10, 32)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err) //id类型必须为整数
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err) //id类型必须为整数
 		return
 	}
 
 	resp, err := rpc.UserClient.DeleteUser(ctx, &user_kitex.DeleteUserReq{UserId: int32(id)})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 
@@ -77,13 +78,13 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 	var req user.UserUpdateReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	resp, err := rpc.UserClient.UpdateUser(ctx, &user_kitex.UpdateUserReq{
@@ -94,7 +95,7 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 		Address:     req.Address,
 	})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
@@ -107,13 +108,13 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var req user.UserLoginReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	resp, err := rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
@@ -121,7 +122,8 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		Password: req.Password,
 	})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		log.Printf("RPC Register error: %v", err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
@@ -134,7 +136,7 @@ func UserLogout(ctx context.Context, c *app.RequestContext) {
 	var req user.UserLogoutReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//获取请求头的token
@@ -142,13 +144,13 @@ func UserLogout(ctx context.Context, c *app.RequestContext) {
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 	//获取token
 	resp, err := rpc.UserClient.Logout(ctx, &user_kitex.LogoutReq{UserId: rawID.UserId})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 
@@ -162,16 +164,17 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req user.UserRegisterReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	resp, err := rpc.UserClient.Register(ctx, &user_kitex.RegisterReq{
+	log.Printf("Received register request: %+v", req)
+	_, err = rpc.UserClient.Register(ctx, &user_kitex.RegisterReq{
 		Email:           req.Email,
 		Password:        req.Password,
 		ConfirmPassword: req.ConfirmPassword,
@@ -180,7 +183,8 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, string("注册成功！"))
 }
 
 // UserChangePassword .
@@ -190,7 +194,7 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 	var req user.UserChangePasswordReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	//获取请求头的token
@@ -198,12 +202,12 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 	err = utils.BindJson(c, &req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	resp, err := rpc.UserClient.UpdateUser(ctx, &user_kitex.UpdateUserReq{
@@ -211,7 +215,7 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 		Password: req.NewPassword},
 	)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
