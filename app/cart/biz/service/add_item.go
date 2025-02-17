@@ -6,6 +6,7 @@ import (
 	"cart/rpc"
 	"context"
 	"errors"
+	"gorm.io/gorm"
 	"product/kitex_gen/product"
 )
 
@@ -38,13 +39,21 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
-	model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
+	db.Select("quantity").
+		Where("product_id = ?", req.Item.ProductId).
+		Where("user_id = ?", req.UserId).Scan(&targetItemQuantity)
 
 	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
 	if targetItemQuantity == -1 {
-		model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
+		db.Create(&model.Cart{
+			UserID:    req.UserId,
+			ProductID: req.Item.ProductId,
+			Quantity:  req.Item.Quantity,
+		})
 	} else {
-		model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
+		db.Where("product_id = ?", req.Item.ProductId).
+			Where("user_id = ?", req.UserId).Scan(&targetItemQuantity).
+			Update("quantity", gorm.Expr("quantity + ?", req.Item.Quantity))
 	}
 
 	return

@@ -1,9 +1,7 @@
 package service
 
 import (
-	"cart/biz/dal/mysql"
 	cart "cart/kitex_gen/cart"
-	"cart/rpc"
 	"context"
 	"testing"
 )
@@ -13,9 +11,7 @@ func TestAddItem_Run(t *testing.T) {
 	s := NewAddItemService(ctx)
 	// init req and assert value
 
-	rpc.InitClient()
-	mysql.Init()
-	req := &cart.AddItemReq{UserId: 123, Item: &cart.CartItem{ProductId: 1, Quantity: 1}}
+	req := &cart.AddItemReq{UserId: 123, Item: &cart.CartItem{ProductId: 456, Quantity: 7}}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
