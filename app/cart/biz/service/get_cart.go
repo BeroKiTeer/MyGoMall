@@ -1,7 +1,7 @@
 package service
 
 import (
-	"cart/biz/dal/mysql"
+	"cart/biz/model"
 	cart "cart/kitex_gen/cart"
 	"context"
 	"errors"
@@ -24,7 +24,7 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 
 	// 查询 这个 user 的所有 商品
 	var userCart cart.Cart // user 购物车中的 item
-	mysql.DB.Select("product_id", "quantity").Find(&userCart.Items)
+	model.QueryItemsByUser(&userCart)
 
 	return &cart.GetCartResp{Cart: &userCart}, nil
 }

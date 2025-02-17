@@ -1,7 +1,7 @@
 package service
 
 import (
-	"cart/biz/dal/mysql"
+	"cart/biz/model"
 	cart "cart/kitex_gen/cart"
 	"context"
 	"errors"
@@ -24,16 +24,11 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
-	mysql.DB.Table("carts").
-		Select("SUM(quantity)").
-		Where("user_id = ?", req.UserId).
-		Group("user_id").Scan(&targetItemQuantity)
+	model.CheckItemsByUser(req.UserId, &targetItemQuantity)
 
 	// 删除
 	if targetItemQuantity != -1 {
-		mysql.DB.Table("carts").
-			Where("user_id = ?", req.UserId).
-			Delete(&req.UserId)
+		model.EmptyCart(req.UserId)
 	}
 
 	return

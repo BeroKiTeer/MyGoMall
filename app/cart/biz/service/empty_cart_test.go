@@ -13,7 +13,7 @@ func TestEmptyCart_Run(t *testing.T) {
 	s := NewEmptyCartService(ctx)
 	// init req and assert value
 
-	req := &cart.EmptyCartReq{UserId: 121}
+	req := &cart.EmptyCartReq{UserId: 123}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
