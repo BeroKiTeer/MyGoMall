@@ -117,7 +117,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	resp, err := rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
+	_, err = rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -126,7 +126,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, string("登录成功！"))
 }
 
 // UserLogout .
