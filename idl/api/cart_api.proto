@@ -7,16 +7,25 @@ option go_package = "/api/cart";
 import "api/common.proto";
 import "api.proto";
 
-message AddCartReq {
-  uint32 product_id = 1 [(api.form) = "productId"];
-  int32 product_num = 2 [(api.form) = "productNum"];
+message AddItemReq {
+  uint32 product_id = 1 [(api.form) = "product_id"];
+  int32 quantity = 2 [(api.form) = "quantity"];
+}
+
+message GetCartResp{
+  uint32 product_id = 1 [(api.form) = "product_id"];
+  int32  quantity = 2 [(api.form) = "quantity"];
 }
 
 service CartService {
-  rpc AddCartItem(AddCartReq) returns (common.Empty) {
-    option (api.post) = "/api/cart";
+  rpc AddItem(AddItemReq) returns (common.Empty) {
+    option (api.post) = "/api/cart/add";
   }
-  rpc GetCart(common.Empty) returns (common.Empty) {
+
+  rpc GetCart(common.Empty) returns (GetCartResp) {
     option (api.get) = "/api/cart";
+  }
+  rpc EmptyCart(common.Empty) returns (common.Empty){
+    option (api.delete) = "/api/cart/del";
   }
 }
