@@ -1,7 +1,6 @@
 package service
 
 import (
-	"cart/biz/dal/mysql"
 	cart "cart/kitex_gen/cart"
 	"context"
 	"testing"
@@ -12,7 +11,6 @@ func TestGetCart_Run(t *testing.T) {
 	s := NewGetCartService(ctx)
 	// init req and assert value
 
-	mysql.Init()
 	req := &cart.GetCartReq{UserId: 123}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
