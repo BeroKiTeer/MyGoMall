@@ -66,7 +66,7 @@ message ListProductsReq {
 
 // 列出商品的响应消息。
 message ListProductsResp {
-  repeated Product products = 1[json_name="data"];        // 商品列表
+  repeated Product products = 3[json_name="data"];        // 商品列表
 }
 
 // 获取指定商品详细信息的请求消息
@@ -107,7 +107,6 @@ message UpdateProductReq {
 // 修改商品信息的响应消息。
 message UpdateProductResp {
   bool success = 1[json_name="success"];             // 是否修改成功
-  string message = 2[json_name="message"];           // 操作结果消息
 }
 
 // 删除商品的请求消息。
@@ -118,7 +117,6 @@ message DeleteProductReq {
 // 删除商品的响应消息。
 message DeleteProductResp {
   bool success = 1[json_name="success"];             // 是否删除成功
-  string message = 2[json_name="message"];           // 操作结果消息
 }
 
 // 查询多个商品信息的请求消息。
