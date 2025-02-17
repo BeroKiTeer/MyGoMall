@@ -16,13 +16,14 @@ service OrderService {
   rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp);
 }
 
-// 用户的地址信息。
+// 地址信息。
 message Address {
   string street_address = 1;       // 街道地址。
   string city = 2;                 // 城市。
   string state = 3;                // 州或省。
   string country = 4;              // 国家。
-  string zip_code = 5;             // 邮政编码。
+  string telephone_number = 5;     // 收件人电话。
+  string name =6;        //收件人姓名。
 }
 
 // 创建订单的请求消息。
@@ -64,6 +65,7 @@ message Order {
   Address address = 5;                    // 地址信息
   string email = 6;                       // 邮箱
   int32 created_at = 7;                   // 订单创建时间
+  int32 last_update_at = 9;               // 订单最后更新时间
 }
 
 // 获取订单列表的响应消息。
@@ -81,3 +83,30 @@ message MarkOrderPaidReq {
 message MarkOrderPaidResp {
   string status = 1;                // 状态，"success" 或 "error"。
 }
+
+// 修改订单信息的请求消息
+message UpdateOrderReq {
+  string order_id = 1;                    // 订单 ID
+  Address address = 2;                    // 新的地址信息
+  string email = 3;                       // 新的邮箱
+}
+
+// 修改订单信息的响应消息
+message UpdateOrderResp {
+  bool success = 1;             // 是否删除成功
+  string message = 2;           // 操作结果消息
+}
+
+// 取消订单的请求消息（如果一段时间没有支付自动取消订单）
+message CancelOrderReq {
+  string order_id = 1;                    // 订单 ID
+}
+
+// 取消订单的响应消息
+message CancelOrderResp {
+  bool success = 1;             // 是否删除成功
+  string message = 2;           // 操作结果消息
+}
+
+
+
