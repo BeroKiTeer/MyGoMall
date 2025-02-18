@@ -4,6 +4,7 @@ package order;
 
 import "cart.proto";
 
+
 option go_package = "/order";
 
 // 定义了订单相关的服务接口。
@@ -14,6 +15,10 @@ service OrderService {
   rpc ListOrder(ListOrderReq) returns (ListOrderResp);
   // 标记订单为已支付。
   rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp);
+  // 修改订单信息
+  rpc UpdateOrder(UpdateOrderReq) returns (UpdateOrderResp);
+  // 取消订单
+  rpc CancelOrder(CancelOrderReq) returns (CancelOrderResp);
 }
 
 // 地址信息。
