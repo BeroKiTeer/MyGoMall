@@ -1,7 +1,6 @@
 package service
 
 import (
-	"auth/biz/dal/redis"
 	auth "auth/kitex_gen/auth"
 	"context"
 	"fmt"
@@ -25,7 +24,7 @@ func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.Veri
 	}
 
 	// 查询 userID 在 redis 里面是否存在，如果存在，获取密钥并验证
-	secretKey, err := redis.RedisClient.Get(s.ctx, strconv.Itoa(int(userID))).Result()
+	secretKey, err := rdb.Get(s.ctx, strconv.Itoa(int(userID))).Result()
 
 	if err != nil {
 		return &auth.VerifyResp{Res: false}, err
