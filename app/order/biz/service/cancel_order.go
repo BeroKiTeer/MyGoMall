@@ -15,6 +15,11 @@ func NewCancelOrderService(ctx context.Context) *CancelOrderService {
 // Run create note info
 func (s *CancelOrderService) Run(req *order.CancelOrderReq) (resp *order.CancelOrderResp, err error) {
 	// Finish your business logic.
+	// TODO: 1. 验证用户有效性
+
+	// TODO: 2. 库存解锁
+
+	// TODO: 3. 订单状态改为已取消
 
 	return
 }
