@@ -3,6 +3,7 @@
 package product
 
 import (
+	"apis/biz/utils"
 	"context"
 
 	product "apis/hertz_gen/api/product"
@@ -17,13 +18,13 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 	var req product.ListProductsReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.ListProductsResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // SearchProducts .
@@ -33,13 +34,13 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	var req product.SearchProductsReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.SearchProductsResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // CreateProduct .
@@ -49,13 +50,13 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.CreateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.CreateProductResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // UpdateProduct .
@@ -65,13 +66,13 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.UpdateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.UpdateProductResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // DeleteProduct .
@@ -81,13 +82,13 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.DeleteProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.DeleteProductResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // GetProduct .
@@ -97,13 +98,13 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.GetProductResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // GetProductsBatch .
@@ -113,11 +114,11 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductsBatchReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
 	resp := new(product.GetProductsBatchResp)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
