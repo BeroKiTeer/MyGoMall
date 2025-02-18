@@ -16,7 +16,11 @@ func NewCreateProductService(ctx context.Context) *CreateProductService {
 
 // Run create note info
 func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product.CreateProductResp, err error) {
-	// Finish your business logic.
+	// 开始事务
+	tx := mysql.DB.Begin()
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
 
 	newProduct := &model.Product{
 		Name:          req.Product.Name,
@@ -27,28 +31,40 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 		Images:        req.Product.Images,
 		Status:        int(req.Product.Status),
 	}
-	//TODO:需要添加事务处理
-	//插入product表and 关联表
-	err = model.CreateProduct(mysql.DB, newProduct)
-	if err != nil {
-		return nil, err
+
+	// 插入 product 表
+	result := tx.Create(newProduct)
+	if result.Error != nil {
+		// 发生错误时回滚事务
+		tx.Rollback()
+		return nil, result.Error
 	}
-	//处理分类id
-	for _, category := range req.Product.Categories {
-		//判断分类id是否存在
-		category, err := model.GetByCategoryName(mysql.DB, s.ctx, category)
-		if err != nil {
-			return nil, err
+
+	// 处理分类 id
+	for _, categoryName := range req.Product.Categories {
+		// 判断分类 id 是否存在
+		var category model.Categories
+		result = tx.Where("name = ?", categoryName).First(&category)
+		if result.Error != nil {
+			// 发生错误时回滚事务
+			tx.Rollback()
+			return nil, result.Error
 		}
-		//插入关联表
+		// 插入关联表
 		newCategoryProduct := &model.CategoryProduct{
 			ProductId:  int64(newProduct.ID),
 			CategoryId: int64(category.ID),
 		}
-		err = model.CreateCPRelation(mysql.DB, newCategoryProduct)
-		if err != nil {
-			return nil, err
+		result = tx.Create(newCategoryProduct)
+		if result.Error != nil {
+			// 发生错误时回滚事务
+			tx.Rollback()
+			return nil, result.Error
 		}
 	}
-	return &product.CreateProductResp{ProductId: uint32(newProduct.ID)}, err
+	// 提交事务
+	if err = tx.Commit().Error; err != nil {
+		return nil, err
+	}
+	return &product.CreateProductResp{ProductId: uint32(newProduct.ID)}, nil
 }
