@@ -17,8 +17,10 @@ func (s *UpdateOrderService) Run(req *order.UpdateOrderReq) (resp *order.UpdateO
 	// Finish your business logic.
 	// TODO: 1. 验证用户有效性
 
-	// TODO: 2. 修改订单信息
+	// TODO: 2. 验证订单是否存在
 
-	// TODO: 3. 修改订单状态（订单有效期）
+	// TODO: 3. 修改订单信息
+
+	// TODO: 4. 修改订单状态（订单有效期）
 	return
 }
