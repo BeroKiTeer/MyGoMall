@@ -28,6 +28,10 @@ func UserGet(ctx context.Context, c *app.RequestContext) {
 	}
 	//获取请求头的token
 	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+		return
+	}
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
@@ -88,7 +92,7 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp, err := rpc.UserClient.UpdateUser(ctx, &user_kitex.UpdateUserReq{
-		UserId:      req.UserId,
+		Token:       req.Token,
 		Email:       req.Email,
 		Password:    req.Password,
 		PhoneNumber: req.PhoneNumber,
@@ -106,6 +110,7 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UserLoginReq
+	var resp *user_kitex.LoginResp
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
@@ -117,7 +122,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	_, err = rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
+	resp, err = rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -126,7 +131,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, string("登录成功！"))
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp.Token)
 }
 
 // UserLogout .
@@ -199,19 +204,14 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 	}
 	//获取请求头的token
 	token := c.Request.Header.Get("Authorization")
-	//获取用户id
-	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
-	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
-		return
-	}
+
 	err = utils.BindJson(c, &req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	resp, err := rpc.UserClient.UpdateUser(ctx, &user_kitex.UpdateUserReq{
-		UserId:   rawID.UserId,
+		Token:    token,
 		Password: req.NewPassword},
 	)
 	if err != nil {
