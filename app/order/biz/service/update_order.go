@@ -16,5 +16,10 @@ func NewUpdateOrderService(ctx context.Context) *UpdateOrderService {
 func (s *UpdateOrderService) Run(req *order.UpdateOrderReq) (resp *order.UpdateOrderResp, err error) {
 	// Finish your business logic.
 
+	//TODO： 1. 验证token
+
+	//TODO： 2. 查询订单
+
+	//TODO： 3. 修改信息
 	return
 }
