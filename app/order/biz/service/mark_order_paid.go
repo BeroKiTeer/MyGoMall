@@ -15,6 +15,10 @@ func NewMarkOrderPaidService(ctx context.Context) *MarkOrderPaidService {
 // Run create note info
 func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.MarkOrderPaidResp, err error) {
 	// Finish your business logic.
+	//TODO: 1. 验证用户有效性
 
+	//TODO: 2. 库存减少或锁定
+
+	//TODO: 3. 订单状态改为已支付
 	return
 }
