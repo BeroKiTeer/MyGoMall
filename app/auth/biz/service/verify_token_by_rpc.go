@@ -1,6 +1,7 @@
 package service
 
 import (
+	"auth/biz/dal/redis"
 	auth "auth/kitex_gen/auth"
 	"context"
 	"fmt"
