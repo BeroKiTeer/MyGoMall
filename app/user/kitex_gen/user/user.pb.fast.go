@@ -138,7 +138,7 @@ ReadFieldError:
 }
 
 func (x *LoginResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.UserId, offset, err = fastpb.ReadInt32(buf, _type)
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -546,10 +546,10 @@ func (x *LoginResp) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *LoginResp) fastWriteField1(buf []byte) (offset int) {
-	if x.UserId == 0 {
+	if x.Token == "" {
 		return offset
 	}
-	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetUserId())
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetToken())
 	return offset
 }
 
@@ -873,10 +873,10 @@ func (x *LoginResp) Size() (n int) {
 }
 
 func (x *LoginResp) sizeField1() (n int) {
-	if x.UserId == 0 {
+	if x.Token == "" {
 		return n
 	}
-	n += fastpb.SizeInt32(1, x.GetUserId())
+	n += fastpb.SizeString(1, x.GetToken())
 	return n
 }
 
@@ -1132,7 +1132,7 @@ var fieldIDToName_LoginReq = map[int32]string{
 }
 
 var fieldIDToName_LoginResp = map[int32]string{
-	1: "UserId",
+	1: "Token",
 }
 
 var fieldIDToName_LogoutReq = map[int32]string{

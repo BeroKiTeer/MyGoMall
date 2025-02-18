@@ -40,7 +40,7 @@ message LoginReq {
 
 // 用户登录的响应消息。
 message LoginResp {
-  int32 user_id = 1; // 用户 ID
+  string token = 1; // 登录成功后返回的 token
 }
 // 用户登出的请求消息
 message LogoutReq {
