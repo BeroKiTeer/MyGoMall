@@ -43,7 +43,7 @@ func AddCartItem(ctx context.Context, c *app.RequestContext) {
 			Quantity:  req.Quantity,
 		},
 	})
-
+  
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
