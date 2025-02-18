@@ -17,8 +17,6 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 	return &DeliverTokenByRPCService{ctx: ctx}
 }
 
-var rdb = redis.RedisClient
-
 func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, error) {
 
 	// 这个变量控制 token 生效时间
