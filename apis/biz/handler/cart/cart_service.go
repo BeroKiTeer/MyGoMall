@@ -4,6 +4,9 @@ import (
 	"apis/biz/utils"
 	cart "apis/hertz_gen/api/cart"
 	common "apis/hertz_gen/api/common"
+	"apis/rpc"
+	"auth/kitex_gen/auth"
+	cart_kitex "cart/kitex_gen/cart"
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -16,11 +19,30 @@ func AddCartItem(ctx context.Context, c *app.RequestContext) {
 	var req cart.AddItemReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 
-	resp := &common.Empty{}
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+		return
+	}
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
+	//获取商品信息
+	resp, err := rpc.CartClient.AddItem(ctx, &cart_kitex.AddItemReq{
+		UserId: uint32(rawID.UserId),
+		Item: &cart_kitex.CartItem{
+			ProductId: req.ProductId,
+			Quantity:  req.Quantity,
+		},
+	})
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -32,29 +54,26 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 	var req common.Empty
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
 
-	resp := &common.Empty{}
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+		return
+	}
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
+
+	resp, err := rpc.CartClient.GetCart(ctx, &cart_kitex.GetCartReq{UserId: uint32(rawID.UserId)})
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
-}
-
-// AddItem .
-// @router /api/cart/add [POST]
-func AddItem(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req cart.AddItemReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(common.Empty)
-
-	c.JSON(consts.StatusOK, resp)
 }
 
 // EmptyCart .
@@ -68,7 +87,20 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(common.Empty)
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+		return
+	}
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
+
+	resp, err := rpc.CartClient.EmptyCart(ctx, &cart_kitex.EmptyCartReq{UserId: uint32(rawID.UserId)})
 
 	c.JSON(consts.StatusOK, resp)
 }
