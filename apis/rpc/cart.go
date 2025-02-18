@@ -1,24 +1,24 @@
 package rpc
 
 import (
-	"apis/conf"
+	"cart/conf"
+	"cart/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"user/kitex_gen/user/userservice"
 )
 
 var (
-	UserClient userservice.Client
+	CartClient cartservice.Client
 )
 
-func initUserClient() {
+func initCartClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	UserClient, err = userservice.NewClient("user", opts...)
+	CartClient, err = cartservice.NewClient("cart", opts...)
 	if err != nil {
 		panic(err)
 	}
