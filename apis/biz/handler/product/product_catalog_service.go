@@ -4,11 +4,13 @@ package product
 
 import (
 	"apis/biz/utils"
+	"apis/rpc"
 	"context"
 
 	product "apis/hertz_gen/api/product"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	product_kitex "product/kitex_gen/product"
 )
 
 // ListProducts .
@@ -21,9 +23,25 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	r, err := rpc.ProductClient.ListProducts(ctx, &product_kitex.ListProductsReq{
+		Page:         req.Page,
+		PageSize:     req.PageSize,
+		CategoryName: req.CategoryName,
+	})
 	resp := new(product.ListProductsResp)
-
+	for _, an := range r.Products {
+		resp.Products = append(resp.Products, &product.Product{
+			Id:            an.Id,
+			Name:          an.Name,
+			Description:   an.Description,
+			Price:         an.Price,
+			OriginalPrice: an.OriginalPrice,
+			Stock:         an.Stock,
+			Images:        an.Images,
+			Status:        an.Status,
+			Categories:    an.Categories,
+		})
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
@@ -37,9 +55,25 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
+	r, err := rpc.ProductClient.SearchProducts(ctx, &product_kitex.SearchProductsReq{
+		Name: req.Name,
+	})
 
+	ans := r.Results
 	resp := new(product.SearchProductsResp)
-
+	for _, an := range ans {
+		resp.Results = append(resp.Results, &product.Product{
+			Id:            an.Id,
+			Name:          an.Name,
+			Description:   an.Description,
+			Price:         an.Price,
+			OriginalPrice: an.OriginalPrice,
+			Stock:         an.Stock,
+			Images:        an.Images,
+			Status:        an.Status,
+			Categories:    an.Categories,
+		})
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
@@ -53,8 +87,9 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{})
 	resp := new(product.CreateProductResp)
+	resp.ProductId = r.ProductId
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -69,8 +104,20 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	arg := &product_kitex.UpdateProductReq{}
+	ans := req.Product
+	arg.Product.Id = ans.Id
+	arg.Product.Name = ans.Name
+	arg.Product.Description = ans.Description
+	arg.Product.Price = ans.Price
+	arg.Product.Stock = ans.Stock
+	arg.Product.Images = ans.Images
+	arg.Product.Status = ans.Status
+	arg.Product.Categories = ans.Categories
+	arg.Product.OriginalPrice = ans.OriginalPrice
+	r, err := rpc.ProductClient.UpdateProduct(ctx, arg)
 	resp := new(product.UpdateProductResp)
+	resp.Success = r.Success
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -85,8 +132,11 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	r, err := rpc.ProductClient.DeleteProduct(ctx, &product_kitex.DeleteProductReq{
+		Id: req.GetId(),
+	})
 	resp := new(product.DeleteProductResp)
+	resp.Success = r.Success
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -101,8 +151,22 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	r, err := rpc.ProductClient.GetProduct(ctx, &product_kitex.GetProductReq{
+		Id: req.GetId(),
+	})
+	ans := r.Product
 	resp := new(product.GetProductResp)
+	resp.Product = &product.Product{
+		Id:            ans.Id,
+		Name:          ans.Name,
+		Description:   ans.Description,
+		Price:         ans.Price,
+		OriginalPrice: ans.OriginalPrice,
+		Stock:         ans.Stock,
+		Images:        ans.Images,
+		Status:        ans.Status,
+		Categories:    ans.Categories,
+	}
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -117,8 +181,23 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-
+	r, err := rpc.ProductClient.GetProductsBatch(ctx, &product_kitex.GetProductsBatchReq{
+		Ids: req.GetIds(),
+	})
+	ans := r.Products
 	resp := new(product.GetProductsBatchResp)
-
+	for _, an := range ans {
+		resp.Products = append(resp.Products, &product.Product{
+			Id:            an.Id,
+			Name:          an.Name,
+			Description:   an.Description,
+			Price:         an.Price,
+			OriginalPrice: an.OriginalPrice,
+			Stock:         an.Stock,
+			Images:        an.Images,
+			Status:        an.Status,
+			Categories:    an.Categories,
+		})
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
