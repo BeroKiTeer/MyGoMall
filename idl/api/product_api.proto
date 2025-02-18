@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package api.product;
+
+option go_package = "/api/product";
+
+import "api.proto";
+
+// 定义商品目录相关的服务接口。
+service ProductCatalogService {
+  // 列出商品。
+  rpc ListProducts(ListProductsReq) returns (ListProductsResp) {
+    option(api.get)="/api/products";
+  }
+
+  // 搜索商品。
+  rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp) {
+    option(api.get)="/api/products/search";
+  }
+
+  // 添加商品。
+  rpc CreateProduct(CreateProductReq) returns (CreateProductResp) {
+    option(api.post)="/api/products";
+  }
+
+  // 修改商品信息。
+  rpc UpdateProduct(UpdateProductReq) returns (UpdateProductResp) {
+    option(api.put)="/api/products/{id}";
+  }
+
+  // 删除商品。
+  rpc DeleteProduct(DeleteProductReq) returns (DeleteProductResp) {
+    option(api.delete)="/api/products/{id}";
+  }
+
+  // 获取指定商品的详细信息。
+  rpc GetProduct(GetProductReq) returns (GetProductResp) {
+    option(api.get)="/api/products/{id}";
+  }
+
+  // 查询多个商品信息。
+  rpc GetProductsBatch(GetProductsBatchReq) returns (GetProductsBatchResp) {
+    option(api.get)="/api/products/batch";
+  }
+}
+
+// 表示一个商品的信息。
+message Product {
+  uint32 id = 1[json_name="id"];                          // 商品 ID
+  string name = 2[json_name="name"];                        // 商品名称
+  string description = 3[json_name="description"];                 // 商品描述
+  float price = 4[json_name="price"];                        // 商品价格
+  float original_price = 5[json_name="original_price"];               // 商品原始价格
+  uint32 stock = 6[json_name="stock"];                       // 商品库存
+  string images = 7[json_name="images"];                      // 商品图片
+  uint32 status = 8[json_name="status"];                      // 商品状态
+  repeated string categories = 9[json_name="categories"];         // 商品所属类别
+}
+
+// 列出商品的请求消息
+message ListProductsReq {
+  int32 page = 1[json_name="page"];             // 当前页码
+  int64 page_size = 2[json_name="page_size"];        // 每页商品数量
+  string category_name = 3[json_name="category_name"];   // 商品类别名称
+}
+
+// 列出商品的响应消息。
+message ListProductsResp {
+  repeated Product products = 3[json_name="data"];        // 商品列表
+}
+
+// 获取指定商品详细信息的请求消息
+message GetProductReq {
+  uint32 id = 1[json_name="id"]; // 商品 ID
+}
+
+// 获取指定商品详细信息的响应消息
+message GetProductResp {
+  Product product = 1[json_name="data"];          // 商品详细信息。
+}
+
+// 根据商品名搜索商品的请求消息。
+message SearchProductsReq {
+  string name = 1[json_name="name"];             // 搜索关键字。
+}
+
+// 搜索商品的响应消息。
+message SearchProductsResp {
+  repeated Product results = 1[json_name="data"];     // 搜索结果列表。
+}
+
+// 创建商品的请求消息。
+message CreateProductReq {
+  Product product = 1[json_name="data"];          // 要创建的商品信息（ID字段应留空）
+}
+
+// 创建商品的响应消息。
+message CreateProductResp {
+  uint32 product_id= 1[json_name="id"];          // 创建的商品信息（包含生成的ID）
+}
+
+// 修改商品信息的请求消息。
+message UpdateProductReq {
+  Product product = 1[json_name="data"];          // 要修改的商品信息（必须包含ID以标识要修改的商品）
+}
+
+// 修改商品信息的响应消息。
+message UpdateProductResp {
+  bool success = 1[json_name="success"];             // 是否修改成功
+}
+
+// 删除商品的请求消息。
+message DeleteProductReq {
+  uint32 id = 1[json_name="id"];                // 要删除的商品ID
+}
+
+// 删除商品的响应消息。
+message DeleteProductResp {
+  bool success = 1[json_name="success"];             // 是否删除成功
+}
+
+// 查询多个商品信息的请求消息。
+message GetProductsBatchReq {
+  repeated uint32 ids = 1[json_name="ids"];      // 要查询的商品ID列表。
+}
+
+// 查询多个商品信息的响应消息。
+message GetProductsBatchResp {
+  repeated Product products = 1[json_name="products"]; // 查询到的商品信息列表（按请求中的ID顺序返回）。
+}
+
+
+

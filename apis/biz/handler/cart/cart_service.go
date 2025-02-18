@@ -3,7 +3,6 @@ package cart
 import (
 	"context"
 
-	"apis/biz/service"
 	"apis/biz/utils"
 	cart "apis/hertz_gen/api/cart"
 	common "apis/hertz_gen/api/common"
@@ -23,11 +22,6 @@ func AddCartItem(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := &common.Empty{}
-	resp, err = service.NewAddCartItemService(ctx, c).Run(&req)
-	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
-		return
-	}
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
@@ -44,11 +38,6 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := &common.Empty{}
-	resp, err = service.NewGetCartService(ctx, c).Run(&req)
-	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
-		return
-	}
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
