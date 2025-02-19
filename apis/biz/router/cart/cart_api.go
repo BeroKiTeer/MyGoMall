@@ -17,6 +17,14 @@ import (
 func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
-	root.POST("/cart", append(_addcartitemMw(), cart.AddCartItem)...)
-	root.GET("/cart", append(_getcartMw(), cart.GetCart)...)
+	{
+		_api := root.Group("/api", _apiMw()...)
+		_api.GET("/cart", append(_getcartMw(), cart.GetCart)...)
+		_cart := _api.Group("/cart", _cartMw()...)
+		_cart.DELETE("/del", append(_emptycartMw(), cart.EmptyCart)...)
+		{
+			_cart0 := _api.Group("/cart", _cart0Mw()...)
+			_cart0.POST("/add", append(_additemMw(), cart.AddItem)...)
+		}
+	}
 }

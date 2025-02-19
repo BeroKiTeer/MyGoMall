@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"payment/biz/dal"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -15,6 +16,7 @@ import (
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)

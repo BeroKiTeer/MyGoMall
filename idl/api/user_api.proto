@@ -27,7 +27,7 @@ message UserDeleteResp{
 }
 
 message UserUpdateReq{
-  int32 user_id = 1[json_name="id"]; // 需要更新的用户 ID
+  string token = 1[json_name="token"]; // 需要更新的用户 ID
   string email = 2[json_name="email"];  // 新邮箱（可选）
   string password = 3[json_name="password"]; // 新密码（可选）
   string phone_number = 4[json_name="phone_num"]; // 新手机号（可选）
@@ -76,7 +76,7 @@ message UserChangePasswordResp{
 }
 service UserService{
     rpc UserGet(UserGetReq) returns (UserGetResp){
-      option(api.get)="/api/user/{id}";
+      option(api.get)="/api/user";
     }
     rpc UserDelete(UserDeleteReq) returns(UserDeleteResp){
       option(api.delete)="/api/user/{id}";

@@ -20,3 +20,28 @@ func _getcartMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _apiMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _cartMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _emptycartMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _cart0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _additemMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -11,5 +11,7 @@ func InitClient() {
 		initAuthClient()
 		initUserClient()
 		initProductClient()
+		initCartClient()
+
 	})
 }
