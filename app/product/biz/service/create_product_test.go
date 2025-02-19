@@ -13,7 +13,7 @@ func TestCreateProduct_Run(t *testing.T) {
 	s := NewCreateProductService(ctx)
 	//init req and assert value
 	newProduct := &product.Product{
-		Categories:    []string{"1", "2"},
+		Categories:    []string{"1", "2", "3"},
 		Name:          "1",
 		Description:   "1",
 		Price:         float32(2),
