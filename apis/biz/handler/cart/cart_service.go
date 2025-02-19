@@ -104,19 +104,3 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
-
-// AddItem .
-// @router /api/cart/add [POST]
-func AddItem(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req cart.AddItemReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(common.Empty)
-
-	c.JSON(consts.StatusOK, resp)
-}
