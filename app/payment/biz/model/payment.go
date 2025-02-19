@@ -10,7 +10,7 @@ type Payment struct {
 	UserID        uint32    `json:"user_id"`
 	OrderID       string    `json:"order_id"`
 	TransactionID string    `json:"transaction_id"`
-	Amount        float64   `json:"amount"`
+	Amount        int64     `json:"amount"`
 	PayAt         time.Time `json:"pay_at"`
 }
 

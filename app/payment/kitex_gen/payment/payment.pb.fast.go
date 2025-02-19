@@ -103,7 +103,7 @@ ReadFieldError:
 }
 
 func (x *ChargeReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Amount, offset, err = fastpb.ReadDouble(buf, _type)
+	x.Amount, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -210,7 +210,7 @@ func (x *ChargeReq) fastWriteField1(buf []byte) (offset int) {
 	if x.Amount == 0 {
 		return offset
 	}
-	offset += fastpb.WriteDouble(buf[offset:], 1, x.GetAmount())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetAmount())
 	return offset
 }
 
@@ -312,7 +312,7 @@ func (x *ChargeReq) sizeField1() (n int) {
 	if x.Amount == 0 {
 		return n
 	}
-	n += fastpb.SizeDouble(1, x.GetAmount())
+	n += fastpb.SizeInt64(1, x.GetAmount())
 	return n
 }
 
