@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cart/rpc"
 	consul "github.com/kitex-contrib/registry-consul"
 	"log"
 	"net"
@@ -19,7 +20,7 @@ import (
 
 func main() {
 	opts := kitexInit()
-
+	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
 	dal.Init()
 	err := svr.Run()
