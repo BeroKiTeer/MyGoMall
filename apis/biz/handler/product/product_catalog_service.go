@@ -20,7 +20,7 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 	var req product.ListProductsReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.ListProducts(ctx, &product_kitex.ListProductsReq{
@@ -28,6 +28,10 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 		PageSize:     req.PageSize,
 		CategoryName: req.CategoryName,
 	})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	resp := new(product.ListProductsResp)
 	for _, an := range r.Products {
 		resp.Products = append(resp.Products, &product.Product{
@@ -52,13 +56,16 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	var req product.SearchProductsReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.SearchProducts(ctx, &product_kitex.SearchProductsReq{
 		Name: req.Name,
 	})
-
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	ans := r.Results
 	resp := new(product.SearchProductsResp)
 	for _, an := range ans {
@@ -84,10 +91,14 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.CreateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	resp := new(product.CreateProductResp)
 	resp.ProductId = r.ProductId
 
@@ -101,7 +112,7 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.UpdateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	arg := &product_kitex.UpdateProductReq{}
@@ -116,6 +127,10 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	arg.Product.Categories = ans.Categories
 	arg.Product.OriginalPrice = ans.OriginalPrice
 	r, err := rpc.ProductClient.UpdateProduct(ctx, arg)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	resp := new(product.UpdateProductResp)
 	resp.Success = r.Success
 
@@ -129,12 +144,16 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.DeleteProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.DeleteProduct(ctx, &product_kitex.DeleteProductReq{
 		Id: req.GetId(),
 	})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	resp := new(product.DeleteProductResp)
 	resp.Success = r.Success
 
@@ -148,12 +167,16 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.GetProduct(ctx, &product_kitex.GetProductReq{
 		Id: req.GetId(),
 	})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	ans := r.Product
 	resp := new(product.GetProductResp)
 	resp.Product = &product.Product{
@@ -178,12 +201,16 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductsBatchReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.GetProductsBatch(ctx, &product_kitex.GetProductsBatchReq{
 		Ids: req.GetIds(),
 	})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		return
+	}
 	ans := r.Products
 	resp := new(product.GetProductsBatchResp)
 	for _, an := range ans {
