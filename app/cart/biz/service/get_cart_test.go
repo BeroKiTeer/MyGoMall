@@ -13,7 +13,7 @@ func TestGetCart_Run(t *testing.T) {
 	// init req and assert value
 
 	mysql.Init()
-	req := &cart.GetCartReq{UserId: 123}
+	req := &cart.GetCartReq{UserId: 1}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

@@ -1,10 +1,8 @@
 package service
 
 import (
-	"cart/biz/model"
 	cart "cart/kitex_gen/cart"
 	"context"
-	"errors"
 )
 
 type EmptyCartService struct {
@@ -16,20 +14,12 @@ func NewEmptyCartService(ctx context.Context) *EmptyCartService {
 
 // Run create note info
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
+	// Finish your business logic.
+	// TODO: 1. 参数检查
 
-	// 参数检查
-	if req.UserId == 0 {
-		return nil, errors.New("empty user id")
-	}
+	// TODO: 2. 删除
 
-	// 检查商品是否已存在在购物车
-	var targetItemQuantity int32 = -1
-	model.CheckItemsByUser(req.UserId, &targetItemQuantity)
-
-	// 删除
-	if targetItemQuantity != -1 {
-		model.EmptyCart(req.UserId)
-	}
+	// TODO: 3. 返回。
 
 	return
 }
