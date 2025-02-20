@@ -43,7 +43,7 @@ message PlaceOrderReq {
 // 订单中的一项商品。
 message OrderItem {
   cart.CartItem item = 1; // 购物车中的商品信息。
-  float cost = 2;         // 商品的单价。
+  int64 cost = 2;         // 商品的单价。
 }
 
 // 订单的基本信息。
