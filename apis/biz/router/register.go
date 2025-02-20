@@ -4,6 +4,7 @@ package router
 
 import (
 	cart "apis/biz/router/cart"
+	payment "apis/biz/router/payment"
 	product "apis/biz/router/product"
 	"apis/biz/router/user"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -13,7 +14,7 @@ import (
 func GeneratedRegister(r *server.Hertz) {
 	//INSERT_POINT: DO NOT DELETE THIS LINE!
 	product.Register(r)
-
+	payment.Register(r)
 	user.Register(r)
 	cart.Register(r)
 }
