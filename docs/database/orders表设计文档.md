@@ -23,7 +23,7 @@
 | `payment_status`   | TINYINT      | 默认 0                | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
 | `payment_method`   | VARCHAR(20)  | 可为空                 | 支付方式（微信、支付宝、银行卡等）                        |
 | `shipping_address` | VARCHAR(255) | 非空                  | 收货地址                                     |
-| `recipient`        | VARCHAR(255) | 非空                  | 收件人                                      |
+| `recipient_name`   | VARCHAR(255) | 非空                  | 收件人姓名                                    |
 | `phone_number`     | VARCHAR(20)  | 非空                  | 收件人电话号码                                  |
 | `shipping_status`  | TINYINT      | 默认 0                | 物流状态（0-未发货, 1-已发货, 2-已签收）                |
 | `created_at`       | DATETIME     | 默认当前时间              | 订单创建时间                                   |
