@@ -12,24 +12,27 @@
 
 这是订单的主表，存储每个订单的基本信息。
 
-| 字段名             | 数据类型     | 约束         | 说明                                                         |
-| ------------------ | ------------ | ------------ | ------------------------------------------------------------ |
-| `id`               | BIGINT       | 主键、自增   | 订单ID                                                       |
-| `user_id`          | BIGINT       | 非空、索引   | 购买用户ID                                                   |
-| `total_price`      | VARCHAR(30)  | 非空         | 订单总金额                                                   |
-| `discount_price`   | VARCHAR(30)  | 默认 0.00    | 优惠金额                                                     |
-| `actual_price`     | VARCHAR(30)  | 非空         | 实际支付金额                                                 |
-| `order_status`     | TINYINT      | 默认 0       | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消） |
-| `payment_status`   | TINYINT      | 默认 0       | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
-| `payment_method`   | VARCHAR(20)  | 可为空       | 支付方式（微信、支付宝、银行卡等）                           |
-| `shipping_address` | VARCHAR(255) | 非空         | 收货地址                                                     |
-| `shipping_status`  | TINYINT      | 默认 0       | 物流状态（0-未发货, 1-已发货, 2-已签收）                     |
-| `created_at`       | DATETIME     | 默认当前时间 | 订单创建时间                                                 |
-| `paid_at`          | DATETIME     | 可为空       | 订单支付时间                                                 |
-| `shipped_at`       | DATETIME     | 可为空       | 发货时间                                                     |
-| `completed_at`     | DATETIME     | 可为空       | 订单完成时间                                                 |
-| `canceled_at`      | DATETIME     | 可为空       | 订单取消时间                                                 |
-| `remark`           | TEXT         | 可为空       | 订单备注                                                     |
+| 字段名                | 数据类型         | 约束                  | 说明                                       |
+|--------------------|--------------|---------------------|------------------------------------------|
+| `id`               | BIGINT       | 主键、自增               | 订单ID                                     |
+| `user_id`          | BIGINT       | 非空、索引               | 购买用户ID                                   |
+| `total_price`      | VARCHAR(30)  | 非空                  | 订单总金额                                    |
+| `discount_price`   | VARCHAR(30)  | 默认 0.00             | 优惠金额                                     |
+| `actual_price`     | VARCHAR(30)  | 非空                  | 实际支付金额                                   |
+| `order_status`     | TINYINT      | 默认 0                | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消）  |
+| `payment_status`   | TINYINT      | 默认 0                | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
+| `payment_method`   | VARCHAR(20)  | 可为空                 | 支付方式（微信、支付宝、银行卡等）                        |
+| `shipping_address` | VARCHAR(255) | 非空                  | 收货地址                                     |
+| `recipient`        | VARCHAR(255) | 非空                  | 收件人                                      |
+| `phone_number`     | VARCHAR(20)  | 非空                  | 收件人电话号码                                  |
+| `shipping_status`  | TINYINT      | 默认 0                | 物流状态（0-未发货, 1-已发货, 2-已签收）                |
+| `created_at`       | DATETIME     | 默认当前时间              | 订单创建时间                                   |
+| `paid_at`          | DATETIME     | 可为空                 | 订单支付时间                                   |
+| `shipped_at`       | DATETIME     | 可为空                 | 发货时间                                     |
+| `completed_at`     | DATETIME     | 可为空                 | 订单完成时间                                   |
+| `canceled_at`      | DATETIME     | 可为空                 | 订单取消时间                                   |
+| `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间 | 订单更新时间                                   |
+| `remark`           | TEXT         | 可为空                 | 订单备注                                     |
 
 ------
 
@@ -47,7 +50,7 @@
 | `quantity`       | INT           | 非空         | 购买数量                   |
 | `subtotal_price` | DECIMAL(10,2) | 计算字段     | `product_price * quantity` |
 | `created_at`     | DATETIME      | 默认当前时间 | 创建时间                   |
-
+| `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间       | 更新时间                                   |
 ------
 
 ### **3.3. 支付表 (`payments`)**
@@ -102,6 +105,7 @@
 | `key`        | `VARCHAR(50)` | 非空         | 扩展字段名 |
 | `value`      | `TEXT`        | 非空         | 扩展字段值 |
 | `created_at` | `DATETIME`    | 默认当前时间 | 创建时间   |
+| `updated_at` | DATETIME     | 默认当前时间，修改订单时为订单更新时间       | 更新时间                                   |
 
 ### 3.2 建表语句
 
@@ -129,7 +133,6 @@ CREATE INDEX idx_order   ON payments(order_id);
 ## **5. 业务约束**
 
 - `id` 仅用于区分每条不同的数据，按照先后顺序。
-- 不存在 `update_at` ，因为支付信息不可被修改。
 
 ------
 
