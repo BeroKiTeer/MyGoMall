@@ -50,5 +50,9 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 		UserId:  uint32(userID.UserId),
 	})
 
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+	}
+
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
