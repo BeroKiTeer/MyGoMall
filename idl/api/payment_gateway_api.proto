@@ -10,7 +10,7 @@ import "payment.proto";
 service PaymentGateway {
   // 信用卡支付入口
   rpc CardPay(CardPayReq) returns (CardPayResp){
-    option(api.post)="/api/card_pay";//路由到信用卡支付
+    option(api.post)="/api/pay/card_pay";//路由到信用卡支付
   }
 }
 
