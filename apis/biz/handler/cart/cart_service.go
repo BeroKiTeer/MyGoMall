@@ -102,7 +102,12 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 
 	resp, err := rpc.CartClient.EmptyCart(ctx, &cart_kitex.EmptyCartReq{UserId: uint32(rawID.UserId)})
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
+
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // AddItem .
@@ -136,6 +141,9 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 			Quantity:  req.Quantity,
 		},
 	})
-
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }

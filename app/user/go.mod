@@ -7,6 +7,7 @@ replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 replace github.com/BeroKiTeer/MyGoMall/common => ../../common
 
 require (
+	github.com/cloudwego/fastpb v0.0.5
 	github.com/cloudwego/kitex v0.12.1
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241120035129-55da83caab1b
 	github.com/kitex-contrib/registry-consul v0.1.0
@@ -14,6 +15,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.32.0
+	google.golang.org/protobuf v1.36.3
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/validator.v2 v2.0.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -30,7 +32,6 @@ require (
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/configmanager v0.2.2 // indirect
 	github.com/cloudwego/dynamicgo v0.4.7-0.20241220085612-55704ea4ca8f // indirect
-	github.com/cloudwego/fastpb v0.0.5 // indirect
 	github.com/cloudwego/frugal v0.2.3 // indirect
 	github.com/cloudwego/gopkg v0.1.3 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
@@ -89,6 +90,5 @@ require (
 	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/grpc v1.69.4 // indirect
-	google.golang.org/protobuf v1.36.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

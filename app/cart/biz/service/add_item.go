@@ -24,6 +24,14 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		return nil, errors.New("need user_id and item")
 	}
 
+	if req.Item.ProductId == 0 {
+		return nil, errors.New("product_id is 0")
+	}
+
+	if req.Item.Quantity == 0 {
+		return nil, errors.New("quantity is 0")
+	}
+
 	// 检查商品是否存在（RPC）
 	ProductReq := product.GetProductReq{Id: req.Item.ProductId}
 	productDetails, err := rpc.ProductClient.GetProduct(s.ctx, &ProductReq)

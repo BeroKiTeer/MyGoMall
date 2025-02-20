@@ -7,6 +7,8 @@ replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 require (
 	github.com/cloudwego/fastpb v0.0.5
 	github.com/cloudwego/kitex v0.12.1
+	github.com/durango/go-credit-card v0.0.0-20220404131259-a9e175ba4082
+	github.com/google/uuid v1.6.0
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241120035129-55da83caab1b
 	github.com/kr/pretty v0.3.1
 	github.com/redis/go-redis/v9 v9.7.0
@@ -36,7 +38,6 @@ require (
 	github.com/cloudwego/thriftgo v0.3.18 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/durango/go-credit-card v0.0.0-20220404131259-a9e175ba4082 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
