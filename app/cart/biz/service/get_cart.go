@@ -24,6 +24,7 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 
 	// 查询 这个 user 的所有 商品
 	var userCart cart.Cart // user 购物车中的 item
+	userCart.UserId = req.UserId
 	model.QueryItemsByUser(&userCart)
 
 	return &cart.GetCartResp{Cart: &userCart}, nil

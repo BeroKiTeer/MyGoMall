@@ -10,6 +10,8 @@ func InitClient() {
 	once.Do(func() {
 		initAuthClient()
 		initUserClient()
+		initProductClient()
 		initCartClient()
+
 	})
 }

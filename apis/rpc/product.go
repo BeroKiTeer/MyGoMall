@@ -3,23 +3,15 @@ package rpc
 import (
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
+	"product/conf"
 	"product/kitex_gen/product/productcatalogservice"
-	"sync"
-	"user/conf"
 )
 
 var (
 	ProductClient productcatalogservice.Client
-	once          sync.Once
 )
 
-func InitClient() {
-	once.Do(func() {
-		initAuthClient()
-	})
-}
-
-func initAuthClient() {
+func initProductClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
