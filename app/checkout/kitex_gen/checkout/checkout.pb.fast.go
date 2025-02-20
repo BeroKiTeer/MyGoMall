@@ -3,7 +3,7 @@
 package checkout
 
 import (
-	payment "checkout/kitex_gen/payment"
+	cart "checkout/kitex_gen/cart"
 	fmt "fmt"
 	fastpb "github.com/cloudwego/fastpb"
 )
@@ -154,12 +154,12 @@ func (x *CheckoutReq) fastReadField5(buf []byte, _type int8) (offset int, err er
 }
 
 func (x *CheckoutReq) fastReadField6(buf []byte, _type int8) (offset int, err error) {
-	var v payment.CreditCardInfo
+	var v cart.CartItem
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
 	}
-	x.CreditCard = &v
+	x.Items = append(x.Items, &v)
 	return offset, nil
 }
 
@@ -194,7 +194,7 @@ func (x *CheckoutResp) fastReadField1(buf []byte, _type int8) (offset int, err e
 }
 
 func (x *CheckoutResp) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.TransactionId, offset, err = fastpb.ReadString(buf, _type)
+	x.UrlCallback, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -304,10 +304,12 @@ func (x *CheckoutReq) fastWriteField5(buf []byte) (offset int) {
 }
 
 func (x *CheckoutReq) fastWriteField6(buf []byte) (offset int) {
-	if x.CreditCard == nil {
+	if x.Items == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 6, x.GetCreditCard())
+	for i := range x.GetItems() {
+		offset += fastpb.WriteMessage(buf[offset:], 6, x.GetItems()[i])
+	}
 	return offset
 }
 
@@ -329,10 +331,10 @@ func (x *CheckoutResp) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *CheckoutResp) fastWriteField2(buf []byte) (offset int) {
-	if x.TransactionId == "" {
+	if x.UrlCallback == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.GetTransactionId())
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetUrlCallback())
 	return offset
 }
 
@@ -442,10 +444,12 @@ func (x *CheckoutReq) sizeField5() (n int) {
 }
 
 func (x *CheckoutReq) sizeField6() (n int) {
-	if x.CreditCard == nil {
+	if x.Items == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(6, x.GetCreditCard())
+	for i := range x.GetItems() {
+		n += fastpb.SizeMessage(6, x.GetItems()[i])
+	}
 	return n
 }
 
@@ -467,10 +471,10 @@ func (x *CheckoutResp) sizeField1() (n int) {
 }
 
 func (x *CheckoutResp) sizeField2() (n int) {
-	if x.TransactionId == "" {
+	if x.UrlCallback == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, x.GetTransactionId())
+	n += fastpb.SizeString(2, x.GetUrlCallback())
 	return n
 }
 
@@ -488,12 +492,12 @@ var fieldIDToName_CheckoutReq = map[int32]string{
 	3: "Lastname",
 	4: "Email",
 	5: "Address",
-	6: "CreditCard",
+	6: "Items",
 }
 
 var fieldIDToName_CheckoutResp = map[int32]string{
 	1: "OrderId",
-	2: "TransactionId",
+	2: "UrlCallback",
 }
 
-var _ = payment.File_payment_proto
+var _ = cart.File_cart_proto
