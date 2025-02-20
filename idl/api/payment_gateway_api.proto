@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.payment;
+
+option go_package="/api/pay";
+
+import "api.proto";
+import "payment.proto";
+// payment_gateway.proto
+service PaymentGateway {
+  // 信用卡支付入口
+  rpc CardPay(CardPayReq) returns (CardPayResp){
+    option(api.post)="/api/card_pay";//路由到信用卡支付
+  }
+}
+
+message CardPayReq{
+    payment.CardPayReq cardPayReq=1;
+    string url_callback=2;//回调的url
+}
+
+message CardPayResp{
+  payment.CardPayResp cardPayResp=1;
+  string  success=2;//支付是否成功
+}
