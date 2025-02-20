@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package  checkout;
 
-import "payment.proto";
 
 option go_package = "/checkout";
 
@@ -11,6 +10,8 @@ service CheckoutService {
   // 用于完成用户的结账操作
   rpc Checkout(CheckoutReq) returns (CheckoutResp);
 }
+
+
 
 // Address 表示用户的地址信息
 message Address {
@@ -21,6 +22,13 @@ message Address {
   string zip_code = 5;        // 邮政编码
 }
 
+message CartItem {
+  string item_id = 1;
+  int32 quantity = 2;
+  string sku = 3; // 商品规格
+}
+
+
 // CheckoutReq 是结账操作的请求消息
 message CheckoutReq {
   uint32 user_id = 1;                        // 用户 ID
@@ -28,11 +36,11 @@ message CheckoutReq {
   string lastname = 3;                       // 用户的姓氏
   string email = 4;                          // 用户的邮箱
   Address address = 5;                       // 用户的地址信息
-  payment.CreditCardInfo credit_card = 6;    // 用户的信用卡信息
+  repeated CartItem items = 6;    //增加商品清单
 }
 
 // 结账操作的响应消息
 message CheckoutResp {
   string order_id = 1;                // 订单 ID
-  string transaction_id = 2;          // 交易 ID
+  string url_callback=2; //返回的用于重定向的url
 }
