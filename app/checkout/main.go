@@ -2,8 +2,8 @@ package main
 
 import (
 	"checkout/conf"
+	"checkout/kitex_gen/checkout/checkoutservice"
 	"checkout/rpc"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
