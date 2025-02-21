@@ -3,8 +3,8 @@
 package checkout
 
 import (
-	cart "checkout/kitex_gen/cart"
 	fmt "fmt"
+	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	fastpb "github.com/cloudwego/fastpb"
 )
 

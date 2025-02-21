@@ -1,23 +1,23 @@
 package main
 
 import (
-	consul "github.com/kitex-contrib/registry-consul"
-	"log"
-	"net"
-	"time"
-
 	"checkout/conf"
-	"checkout/kitex_gen/checkout/checkoutservice"
+	"checkout/rpc"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
+	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"log"
+	"net"
+	"time"
 )
 
 func main() {
-	//rpc.InitClient()
+	rpc.InitClient()
 	opts := kitexInit()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
