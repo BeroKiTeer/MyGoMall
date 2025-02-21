@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
-	"product/kitex_gen/product"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 )
 
 type AddItemService struct {

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	order "order/kitex_gen/order"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 )
 
 type ListOrderService struct {

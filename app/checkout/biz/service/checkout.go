@@ -1,8 +1,8 @@
 package service
 
 import (
-	checkout "checkout/kitex_gen/checkout"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout"
 )
 
 type CheckoutService struct {

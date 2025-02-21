@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"testing"
-	user "user/kitex_gen/user"
 )
 
 func TestUpdateUser_Run(t *testing.T) {

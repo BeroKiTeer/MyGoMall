@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"order/biz/service"
-	order "order/kitex_gen/order"
 )
 
 // OrderServiceImpl implements the last service interface defined in the IDL.

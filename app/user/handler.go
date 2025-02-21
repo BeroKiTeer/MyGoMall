@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"user/biz/service"
-	user "user/kitex_gen/user"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.

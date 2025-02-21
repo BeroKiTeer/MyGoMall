@@ -2,9 +2,9 @@ package rpc
 
 import (
 	"apis/conf"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"user/kitex_gen/user/userservice"
 )
 
 var (

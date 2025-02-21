@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"payment/biz/service"
-	payment "payment/kitex_gen/payment"
 )
 
 // PaymentServiceImpl implements the last service interface defined in the IDL.

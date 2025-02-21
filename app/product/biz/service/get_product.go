@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"product/biz/dal/mysql"
 	"product/biz/dal/redis"
 	"product/biz/model"
-	"product/kitex_gen/product"
 	"strconv"
 )
 

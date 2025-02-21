@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
 	"net"
 	"payment/biz/dal"
 	"time"
@@ -12,7 +13,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"payment/conf"
-	"payment/kitex_gen/payment/paymentservice"
 )
 
 func main() {

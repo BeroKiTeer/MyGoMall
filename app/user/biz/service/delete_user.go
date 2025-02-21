@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
 )
 
 type DeleteUserService struct {
