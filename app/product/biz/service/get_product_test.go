@@ -2,13 +2,12 @@ package service
 
 import (
 	"context"
-	"product/biz/dal/mysql"
 	product "product/kitex_gen/product"
 	"testing"
 )
 
 func TestGetProduct_Run(t *testing.T) {
-	mysql.Init()
+	//mysql.Init()
 	ctx := context.Background()
 	s := NewGetProductService(ctx)
 	// init req and assert value

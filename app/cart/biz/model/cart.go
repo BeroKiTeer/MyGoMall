@@ -8,7 +8,10 @@ import (
 
 // QueryItemsByUser 查询 这个 user 的所有 商品
 func QueryItemsByUser(userCart *cart.Cart) {
-	mysql.DB.Table("carts").Select("product_id", "quantity").Find(&userCart.Items)
+	mysql.DB.Table("carts").
+		Select("product_id", "quantity").
+		Where("user_id = ?", userCart.UserId).
+		Find(&userCart.Items)
 }
 
 // CheckItemsByUserAndProduct 检查商品是否已存在在购物车

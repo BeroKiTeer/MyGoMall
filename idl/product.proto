@@ -35,8 +35,8 @@ message Product {
   uint32 id = 1;                          // 商品 ID
   string name = 2;                        // 商品名称
   string description = 3;                 // 商品描述
-  float price = 4;                        // 商品价格
-  float original_price = 5;                  //商品原始价格
+  int64 price = 4;                        // 商品价格
+  int64 original_price = 5;                  //商品原始价格
   uint32 stock = 6;                        //商品库存
   string images = 7;                  //商品图片
   uint32 status = 8;                  //商品状态

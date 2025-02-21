@@ -25,8 +25,8 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	newProduct := &model.Product{
 		Name:          req.Product.Name,
 		Description:   req.Product.Description,
-		Price:         float32(req.Product.Price),
-		OriginalPrice: float32(req.Product.OriginalPrice),
+		Price:         req.Product.Price,
+		OriginalPrice: req.Product.OriginalPrice,
 		Stock:         req.Product.Stock,
 		Images:        req.Product.Images,
 		Status:        int(req.Product.Status),

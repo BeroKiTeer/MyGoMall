@@ -34,7 +34,7 @@
 ### 3.2 建表语句
 
 ```sql
-CREATE TABLE users (
+CREATE TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT COMMENT '主键，自增',
     email VARCHAR(255) NULL COMMENT '用户邮箱，唯一索引',
     username VARCHAR(100) NOT NULL COMMENT '用户名',
@@ -62,8 +62,8 @@ CREATE TABLE users (
 | `idx_phone`  | `phone_number` | `Regular`    | ✅            | 电话号码查询加速 |
 
 ```sql
-CREATE INDEX idx_email ON users(email);
-CREATE UNIQUE INDEX idx_phone_number ON users(phone_number);
+CREATE INDEX idx_email ON user(email);
+CREATE UNIQUE INDEX idx_phone_number ON user(phone_number);
 ```
 
 ------
