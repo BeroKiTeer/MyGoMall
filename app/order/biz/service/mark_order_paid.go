@@ -38,7 +38,7 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 		products = append(products, res)
 	}
 
-	//TODO: 1. 库存减少或锁定
+	//TODO: 1. 库存减少或锁定（checkout RPC调用）
 	for _, prd := range products {
 		if !reduceStock(s.ctx, int64(prd.Product.Id), int(prd.Product.Stock)) {
 			compensate(s.ctx, strconv.FormatInt(int64(prd.Product.Id), 10), int(prd.Product.Stock))
@@ -46,6 +46,8 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 	}
 
 	//TODO: 2. 订单状态改为已支付
+	model.UpdateOrderStatus(mysql.DB, req.OrderId, "paid")
+
 	return
 }
 
@@ -70,8 +72,8 @@ func reduceStock(ctx context.Context, productID int64, quantity int) bool {
 	return res.(int64) == 1
 }
 
-// compensate 补偿操作：恢复库存
+// compensate 补偿操作：恢复库存 也需要使用 Redis+lua
 func compensate(ctx context.Context, productID string, quantity int) {
-	// 恢复库存
+	// TODO: 恢复库存(Redis + lua)
 	redis.RedisClient.IncrBy(ctx, productID, int64(quantity))
 }

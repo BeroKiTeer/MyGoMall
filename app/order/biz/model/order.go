@@ -7,7 +7,7 @@ import (
 
 type Order struct {
 	Base
-	ID              int64      `gorm:"primaryKey;autoIncrement;column:id;comment:订单ID"`
+	ID              string     `gorm:"primaryKey;autoIncrement;column:id;comment:订单ID"`
 	UserID          int64      `gorm:"index;column:user_id;comment:购买用户ID"`
 	TotalPrice      int64      `gorm:"column:total_price;not null;comment:订单总金额"`
 	DiscountPrice   int64      `gorm:"column:discount_price;default:0;comment:优惠金额"`
@@ -32,4 +32,8 @@ func (u Order) TableName() string {
 
 func GetProductIdsFromOrder(db *gorm.DB, order string) []int64 {
 	return []int64{}
+}
+
+func UpdateOrderStatus(db *gorm.DB, orderID string, status string) {
+
 }
