@@ -2,13 +2,13 @@ package main
 
 import (
 	"auth/biz/dal"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	consul "github.com/kitex-contrib/registry-consul"
 	"log"
 	"net"
 	"time"
 
 	"auth/conf"
-	"auth/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"

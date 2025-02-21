@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -13,7 +14,6 @@ import (
 	"time"
 	"user/biz/dal"
 	"user/conf"
-	"user/kitex_gen/user/userservice"
 	"user/rpc"
 )
 

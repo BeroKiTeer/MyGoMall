@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"apis/conf"
-	"auth/kitex_gen/auth/authservice"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
 )
