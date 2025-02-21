@@ -17,6 +17,7 @@ import (
 )
 
 func main() {
+	//rpc.InitClient()
 	opts := kitexInit()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)

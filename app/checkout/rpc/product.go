@@ -1,9 +1,9 @@
 package rpc
 
 import (
+	"checkout/conf"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"product/conf"
 	"product/kitex_gen/product/productcatalogservice"
 )
 
