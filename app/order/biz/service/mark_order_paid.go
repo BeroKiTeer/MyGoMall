@@ -5,7 +5,6 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"log"
 	"order/biz/dal/redis"
 	"order/biz/model"
 	"order/rpc"
@@ -30,18 +29,19 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 	// 获取订单中的商品信息
 	productIds := model.GetProductIdsFromOrder(mysql.DB, req.OrderId)
 
+	products := make([]*product.GetProductResp, 1)
 	for _, productID := range productIds {
-		r, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: uint32(productID)})
+		res, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: uint32(productID)})
 		if err != nil {
 			klog.Error("get product error: ", err)
 		}
+		products = append(products, res)
 	}
 
 	//TODO: 1. 库存减少或锁定
-	for _, productID := range productIds {
-		if !reduceStock(s.ctx, productID, quantity) {
-			log.Println("库存不足，秒杀失败！")
-			return
+	for _, prd := range products {
+		if !reduceStock(s.ctx, int64(prd.Product.Id), int(prd.Product.Stock)) {
+			compensate(s.ctx, strconv.FormatInt(int64(prd.Product.Id), 10), int(prd.Product.Stock))
 		}
 	}
 
