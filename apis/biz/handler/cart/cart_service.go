@@ -6,8 +6,8 @@ import (
 	common "apis/hertz_gen/api/common"
 	"apis/rpc"
 	"auth/kitex_gen/auth"
-	cart_kitex "cart/kitex_gen/cart"
 	"context"
+	cart_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )

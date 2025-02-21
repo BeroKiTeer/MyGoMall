@@ -12,27 +12,27 @@
 
 这是订单的主表，存储每个订单的基本信息。
 
-| 字段名                | 数据类型         | 约束                  | 说明                                       |
-|--------------------|--------------|---------------------|------------------------------------------|
-| `id`               | BIGINT       | 主键、自增               | 订单ID                                     |
-| `user_id`          | BIGINT       | 非空、索引               | 购买用户ID                                   |
-| `total_price`      | VARCHAR(30)  | 非空                  | 订单总金额                                    |
-| `discount_price`   | VARCHAR(30)  | 默认 0.00             | 优惠金额                                     |
-| `actual_price`     | VARCHAR(30)  | 非空                  | 实际支付金额                                   |
-| `order_status`     | TINYINT      | 默认 0                | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消）  |
-| `payment_status`   | TINYINT      | 默认 0                | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
-| `payment_method`   | VARCHAR(20)  | 可为空                 | 支付方式（微信、支付宝、银行卡等）                        |
-| `shipping_address` | VARCHAR(255) | 非空                  | 收货地址                                     |
-| `recipient_name`   | VARCHAR(255) | 非空                  | 收件人姓名                                    |
-| `phone_number`     | VARCHAR(20)  | 非空                  | 收件人电话号码                                  |
-| `shipping_status`  | TINYINT      | 默认 0                | 物流状态（0-未发货, 1-已发货, 2-已签收）                |
-| `created_at`       | DATETIME     | 默认当前时间              | 订单创建时间                                   |
-| `paid_at`          | DATETIME     | 可为空                 | 订单支付时间                                   |
-| `shipped_at`       | DATETIME     | 可为空                 | 发货时间                                     |
-| `completed_at`     | DATETIME     | 可为空                 | 订单完成时间                                   |
-| `canceled_at`      | DATETIME     | 可为空                 | 订单取消时间                                   |
-| `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间 | 订单更新时间                                   |
-| `remark`           | TEXT         | 可为空                 | 订单备注                                     |
+| 字段名             | 数据类型     | 约束                                   | 说明                                                         |
+| ------------------ | ------------ | -------------------------------------- | ------------------------------------------------------------ |
+| `id`               | BIGINT       | 主键、自增                             | 订单ID                                                       |
+| `user_id`          | BIGINT       | 非空、索引                             | 购买用户ID                                                   |
+| `total_price`      | BIGINT       | 非空                                   | 订单总金额                                                   |
+| `discount_price`   | BIGINT       | 默认 0                                 | 优惠金额                                                     |
+| `actual_price`     | BIGINT       | 非空                                   | 实际支付金额                                                 |
+| `order_status`     | TINYINT      | 默认 0                                 | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消） |
+| `payment_status`   | TINYINT      | 默认 0                                 | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
+| `payment_method`   | VARCHAR(20)  | 可为空                                 | 支付方式（微信、支付宝、银行卡等）                           |
+| `shipping_address` | VARCHAR(255) | 非空                                   | 收货地址                                                     |
+| `recipient_name`   | VARCHAR(255) | 非空                                   | 收件人姓名                                                   |
+| `phone_number`     | VARCHAR(20)  | 非空                                   | 收件人电话号码                                               |
+| `shipping_status`  | TINYINT      | 默认 0                                 | 物流状态（0-未发货, 1-已发货, 2-已签收）                     |
+| `created_at`       | DATETIME     | 默认当前时间                           | 订单创建时间                                                 |
+| `paid_at`          | DATETIME     | 可为空                                 | 订单支付时间                                                 |
+| `shipped_at`       | DATETIME     | 可为空                                 | 发货时间                                                     |
+| `completed_at`     | DATETIME     | 可为空                                 | 订单完成时间                                                 |
+| `canceled_at`      | DATETIME     | 可为空                                 | 订单取消时间                                                 |
+| `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间 | 订单更新时间                                                 |
+| `remark`           | TEXT         | 可为空                                 | 订单备注                                                     |
 
 ------
 
@@ -46,9 +46,9 @@
 | `order_id`       | BIGINT        | 非空、索引   | 关联的订单ID               |
 | `product_id`     | BIGINT        | 非空、索引   | 商品ID                     |
 | `product_name`   | VARCHAR(255)  | 非空         | 商品名称（冗余存储）       |
-| `product_price`  | VARCHAR(30)   | 非空         | 商品单价                   |
+| `product_price`  | BIGINT | 非空         | 商品单价                   |
 | `quantity`       | INT           | 非空         | 购买数量                   |
-| `subtotal_price` | DECIMAL(10,2) | 计算字段     | `product_price * quantity` |
+| `subtotal_price` | BIGINT | 计算字段     | `product_price * quantity` |
 | `created_at`     | DATETIME      | 默认当前时间 | 创建时间                   |
 | `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间       | 更新时间                                   |
 ------
@@ -71,7 +71,7 @@
   | `user_id`        | `BIGINT`       | ❌        | ❌            | `NULL`                                          | 用户ID                 |
   | `order_id`       | `VARCHAR(255)` | ❌        | ❌            | `NULL`                                          | 订单ID                 |
   | `transaction_id` | `VARCHAR(36)`  | ❌        | ❌            | `NULL`                                          | 交易ID(uuid)           |
-  | `amount`         | `VARCHAR(36)`  | ❌        | ❌            | `NULL`                                          | 交易金额               |
+  | `amount`         | `BIGINT`       | ❌        | ❌            | `NULL`                                          | 交易金额               |
   | `pay_at`         | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP`                             | 交易时间               |
   | `created_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP`                             | 创建时间               |
   | `updated_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间               |
@@ -110,6 +110,80 @@
 ### 3.2 建表语句
 
 ```sql
+CREATE TABLE orders (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '订单ID',
+  user_id BIGINT NOT NULL COMMENT '购买用户ID',
+  total_price BIGINT NOT NULL COMMENT '订单总金额',
+  discount_price BIGINT DEFAULT 0 COMMENT '优惠金额',
+  actual_price BIGINT NOT NULL COMMENT '实际支付金额',
+  order_status TINYINT DEFAULT 0 COMMENT '订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消）',
+  payment_status TINYINT DEFAULT 0 COMMENT '支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款）',
+  payment_method VARCHAR(20) DEFAULT NULL COMMENT '支付方式（微信、支付宝、银行卡等）',
+  shipping_address VARCHAR(255) NOT NULL COMMENT '收货地址',
+  recipient_name VARCHAR(255) NOT NULL COMMENT '收件人姓名',
+  phone_number VARCHAR(20) NOT NULL COMMENT '收件人电话号码',
+  shipping_status TINYINT DEFAULT 0 COMMENT '物流状态（0-未发货, 1-已发货, 2-已签收）',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '订单创建时间',
+  paid_at DATETIME DEFAULT NULL COMMENT '订单支付时间',
+  shipped_at DATETIME DEFAULT NULL COMMENT '发货时间',
+  completed_at DATETIME DEFAULT NULL COMMENT '订单完成时间',
+  canceled_at DATETIME DEFAULT NULL COMMENT '订单取消时间',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '订单更新时间',
+  remark TEXT DEFAULT NULL COMMENT '订单备注',
+  INDEX idx_user (user_id)
+) COMMENT = '订单表，存储每个订单的基本信息';
+
+
+CREATE TABLE order_items (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '订单项ID',
+  order_id BIGINT NOT NULL COMMENT '关联的订单ID',
+  product_id BIGINT NOT NULL COMMENT '商品ID',
+  product_name VARCHAR(255) NOT NULL COMMENT '商品名称（冗余存储）',
+  product_price BIGINT NOT NULL COMMENT '商品单价',
+  quantity INT NOT NULL COMMENT '购买数量',
+  subtotal_price BIGINT GENERATED ALWAYS AS (product_price * quantity) STORED COMMENT '商品小计',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  INDEX idx_order (order_id),
+  INDEX idx_product (product_id)
+) COMMENT = '订单明细表，存储每个订单的商品明细信息';
+
+
+CREATE TABLE payments (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '支付记录ID',
+  user_id BIGINT NOT NULL COMMENT '用户ID',
+  order_id BIGINT NOT NULL COMMENT '订单ID',
+  transaction_id VARCHAR(36) NOT NULL COMMENT '交易ID(uuid)',
+  amount BIGINT NOT NULL COMMENT '交易金额',
+  pay_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '交易时间',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  deleted_at DATETIME DEFAULT NULL COMMENT '删除时间',
+  INDEX idx_user (user_id),
+  INDEX idx_order (order_id)
+) COMMENT = '支付表，存储支付（交易）的基本信息';
+
+
+CREATE TABLE order_logs (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '日志ID',
+  order_id BIGINT NOT NULL COMMENT '关联订单ID',
+  previous_status TINYINT NOT NULL COMMENT '变更前状态',
+  current_status TINYINT NOT NULL COMMENT '变更后状态',
+  changed_by BIGINT NOT NULL COMMENT '操作人（用户ID 或 系统）',
+  changed_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '状态变更时间',
+  INDEX idx_order (order_id)
+) COMMENT = '订单状态流转日志，记录订单状态的变更历史';
+
+
+CREATE TABLE order_metadata (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '记录ID',
+  order_id BIGINT NOT NULL COMMENT '订单ID',
+  key VARCHAR(50) NOT NULL COMMENT '扩展字段名',
+  value TEXT NOT NULL COMMENT '扩展字段值',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  INDEX idx_order (order_id)
+) COMMENT = '订单扩展表，存储订单的额外信息，如发票信息、优惠券信息等';
 
 ```
 

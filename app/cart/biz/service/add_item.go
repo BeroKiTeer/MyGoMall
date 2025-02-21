@@ -2,10 +2,10 @@ package service
 
 import (
 	"cart/biz/model"
-	cart "cart/kitex_gen/cart"
 	"cart/rpc"
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"product/kitex_gen/product"
 )
 

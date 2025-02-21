@@ -3,8 +3,8 @@
 package cartservice
 
 import (
-	cart "cart/kitex_gen/cart"
 	"context"
+	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )
