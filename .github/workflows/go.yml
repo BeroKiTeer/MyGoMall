@@ -23,6 +23,9 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
 
+      - name: Clean Go module cache
+        run: go clean -modcache
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
