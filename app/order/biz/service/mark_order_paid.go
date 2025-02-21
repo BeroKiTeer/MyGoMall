@@ -2,14 +2,15 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"log"
 	"order/biz/dal/redis"
 	"order/biz/model"
-	order "order/kitex_gen/order"
 	"order/rpc"
 	"product/biz/dal/mysql"
-	"product/kitex_gen/product"
+	"strconv"
 )
 
 type MarkOrderPaidService struct {
@@ -30,7 +31,7 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 	productIds := model.GetProductIdsFromOrder(mysql.DB, req.OrderId)
 
 	for _, productID := range productIds {
-		r, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: productID})
+		r, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: uint32(productID)})
 		if err != nil {
 			klog.Error("get product error: ", err)
 		}
@@ -61,7 +62,7 @@ func reduceStock(ctx context.Context, productID int64, quantity int) bool {
 			return 0
 		end
 	`
-	res, err := redis.RedisClient.Eval(ctx, luaScript, []string{productID}, quantity).Result()
+	res, err := redis.RedisClient.Eval(ctx, luaScript, []string{strconv.FormatInt(productID, 10)}, quantity).Result()
 	if err != nil {
 		klog.Warn("reduceStock error: ", err)
 		return false
