@@ -7,8 +7,9 @@
 package checkout
 
 import (
-	cart "checkout/kitex_gen/cart"
 	context "context"
+	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
+	p
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
