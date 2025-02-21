@@ -152,6 +152,56 @@ func (x *ChargeResp) fastReadField1(buf []byte, _type int8) (offset int, err err
 	return offset, err
 }
 
+func (x *CancelReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CancelReq[number], err)
+}
+
+func (x *CancelReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Id, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *CancelResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CancelResp[number], err)
+}
+
+func (x *CancelResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Status, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
 func (x *CreditCardInfo) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -251,6 +301,38 @@ func (x *ChargeResp) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 1, x.GetTransactionId())
+	return offset
+}
+
+func (x *CancelReq) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *CancelReq) fastWriteField1(buf []byte) (offset int) {
+	if x.Id == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetId())
+	return offset
+}
+
+func (x *CancelResp) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *CancelResp) fastWriteField1(buf []byte) (offset int) {
+	if x.Status == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetStatus())
 	return offset
 }
 
@@ -356,6 +438,38 @@ func (x *ChargeResp) sizeField1() (n int) {
 	return n
 }
 
+func (x *CancelReq) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *CancelReq) sizeField1() (n int) {
+	if x.Id == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(1, x.GetId())
+	return n
+}
+
+func (x *CancelResp) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *CancelResp) sizeField1() (n int) {
+	if x.Status == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.GetStatus())
+	return n
+}
+
 var fieldIDToName_CreditCardInfo = map[int32]string{
 	1: "CreditCardNumber",
 	2: "CreditCardCvv",
@@ -372,4 +486,12 @@ var fieldIDToName_ChargeReq = map[int32]string{
 
 var fieldIDToName_ChargeResp = map[int32]string{
 	1: "TransactionId",
+}
+
+var fieldIDToName_CancelReq = map[int32]string{
+	1: "Id",
+}
+
+var fieldIDToName_CancelResp = map[int32]string{
+	1: "Status",
 }
