@@ -1,11 +1,11 @@
 package service
 
 import (
-	auth "auth/kitex_gen/auth"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"strings"
 )
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"cart/rpc"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	consul "github.com/kitex-contrib/registry-consul"
 	"log"
 	"net"
@@ -15,7 +16,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"product/conf"
-	"product/kitex_gen/product/productcatalogservice"
 )
 
 func main() {

@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"product/biz/dal/mysql"
 	"product/biz/model"
-	"product/kitex_gen/product"
 )
 
 type CreateProductService struct {

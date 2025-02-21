@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	creditcard "github.com/durango/go-credit-card"
 	"github.com/google/uuid"
 	"payment/biz/dal/mysql"
 	"payment/biz/model"
-	payment "payment/kitex_gen/payment"
 	"strconv"
 	"time"
 )

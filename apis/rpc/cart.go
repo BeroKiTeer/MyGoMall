@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"cart/conf"
-	"cart/kitex_gen/cart/cartservice"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
 )

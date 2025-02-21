@@ -2,11 +2,11 @@ package service
 
 import (
 	"cart/biz/model"
-	cart "cart/kitex_gen/cart"
 	"cart/rpc"
 	"context"
 	"errors"
-	"product/kitex_gen/product"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 )
 
 type AddItemService struct {

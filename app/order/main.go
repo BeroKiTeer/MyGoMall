@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"net"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"order/conf"
-	"order/kitex_gen/order/orderservice"
 )
 
 func main() {
