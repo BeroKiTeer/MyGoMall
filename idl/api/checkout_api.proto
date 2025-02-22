@@ -25,7 +25,7 @@ message checkoutReq{
   string lastname = 3 [json_name="lastname"];                       // 用户的姓氏
   string email = 4 [json_name="email"];                          // 用户的邮箱
   order.Address address = 5 [json_name="address"];                       // 用户的地址信息
-  repeated cart.CartItem items = 6;    //增加商品清单
+  repeated cart.CartItem items = 6[json_name="cart_item"];    //增加商品清单
   string payment_method=7[json_name="payment_method"]; //支付方式
 }
 
