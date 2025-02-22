@@ -39,6 +39,5 @@ message CheckoutReq {
 // 结账操作的响应消息
 message CheckoutResp {
   string order_id = 1;                // 订单 ID
-  string url_callback=2; //返回的用于重定向的url
-  int64 amount=3; //价格
+  int64 amount=2; //价格
 }
