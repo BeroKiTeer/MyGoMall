@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package api.payment;
+package api.payment_gateway;
 
 option go_package="/api/pay";
 
@@ -15,11 +15,11 @@ service PaymentGateway {
 }
 
 message CardPayReq{
-    payment.CardPayReq cardPayReq=1;
+    payment.ChargeReq cardPayReq=1;
     string url_callback=2;//回调的url
 }
 
 message CardPayResp{
-  payment.CardPayResp cardPayResp=1;
+  payment.ChargeReq cardPayResp=1;
   string  success=2;//支付是否成功
 }
