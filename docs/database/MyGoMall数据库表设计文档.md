@@ -24,17 +24,17 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
 - **字符集**：`utf8mb4`
 
   | 字段名          | 数据类型       | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                 |
-  | --------------- | -------------- | -------- | ------------ | ------------------------------------------------------- | ------------------------------------ |
-  | `id`            | `BIGINT`       | ✅        | ❌            | `AUTO_INCREMENT`                                        | 主键，自增                           |
-  | `email`         | `VARCHAR(255)` | ❌        | ✅            | `NULL`                                                  | 用户邮箱（可选）                     |
-  | `username`      | `VARCHAR(100)` | ❌        | ❌            | `NULL`                                                  | 用户名                               |
-  | `password_hash` | `VARCHAR(255)` | ❌        | ❌            | `NULL`                                                  | 加密存储的用户密码                   |
-  | `phone_number`  | `VARCHAR(20)`  | ❌        | ❌            | `NULL`                                                  | 手机号码，唯一索引                   |
-  | `address_id`    | `BIGINT`       | ❌        | ✅            | `NULL`                                                  | 用户地址id（可选）                   |
-  | `role`          | `TINYINT`      | ❌        | ❌            | `0`                                                     | 用户角色（0-普通用户, 1-管理员）     |
-  | `status`        | `TINYINT`      | ❌        | ❌            | `0`                                                     | 账户状态（0-正常, 1-禁用, 2-待审核） |
-  | `created_at`    | `DATETIME`     | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP`                             | 账户创建时间                         |
-  | `updated_at`    | `DATETIME`     | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 账户更新时间                         |
+  | --------------- | -------------- | -------- | :----------: | ------------------------------------------------------- | ------------------------------------ |
+  | `id`            | `BIGINT`       | ✅        |      ❌       | `AUTO_INCREMENT`                                        | 主键，自增                           |
+  | `email`         | `VARCHAR(255)` | ❌        |      ✅       | `NULL`                                                  | 用户邮箱（可选）                     |
+  | `username`      | `VARCHAR(100)` | ❌        |      ❌       | `NULL`                                                  | 用户名                               |
+  | `password_hash` | `VARCHAR(255)` | ❌        |      ❌       | `NULL`                                                  | 加密存储的用户密码                   |
+  | `phone_number`  | `VARCHAR(20)`  | ❌        |      ❌       | `NULL`                                                  | 手机号码，唯一索引                   |
+  | `address_id`    | `BIGINT`       | ❌        |      ✅       | `NULL`                                                  | 用户地址id（可选）                   |
+  | `role`          | `TINYINT`      | ❌        |      ❌       | `0`                                                     | 用户角色（0-普通用户, 1-管理员）     |
+  | `status`        | `TINYINT`      | ❌        |      ❌       | `0`                                                     | 账户状态（0-正常, 1-禁用, 2-待审核） |
+  | `created_at`    | `DATETIME`     | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP`                             | 账户创建时间                         |
+  | `updated_at`    | `DATETIME`     | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 账户更新时间                         |
 
 + 索引策略
 
@@ -82,18 +82,18 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
 - **主键策略**：自增主键
 
 | 字段名           | 数据类型   | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                             |
-| ---------------- | ---------- | -------- | ------------ | ------------------------------------------------------- | -------------------------------- |
-| `id`             | `BIGINT`   | ✅        | ❌            | `AUTO_INCREMENT`                                        | 主键，自增                       |
-| `name`           | `LONGTEXT` | ❌        | ❌            | `NULL`                                                  | 商品名称                         |
-| `description`    | `LONGTEXT` | ❌        | ✅            | `NULL`                                                  | 商品描述                         |
-| `price`          | `BIGINT`   | ❌        | ❌            | `NULL`                                                  | 商品价格                         |
-| `original_price` | `BIGINT`   | ❌        | ✅            | `NULL`                                                  | 商品原价                         |
-| `images`         | `LONGTEXT` | ❌        | ✅            | `NULL`                                                  | 商品图片                         |
-| `status`         | `INT`      | ❌        | ❌            | `1`                                                     | 商品状态，1表示启用，0表示未启用 |
-| `created_at`     | `DATETIME` | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP`                             | 商品创建时间                     |
-| `updated_at`     | `DATETIME` | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 商品信息修改时间                 |
-| `deleted_at`     | `DATETIME` | ❌        | ✅            | `NULL`                                                  | 商品删除时间                     |
-| `stock`          | `INT`      | ❌        | ❌            | `0`                                                     | 商品库存数量                     |
+| ---------------- | ---------- | -------- | :----------: | ------------------------------------------------------- | -------------------------------- |
+| `id`             | `BIGINT`   | ✅        |      ❌       | `AUTO_INCREMENT`                                        | 主键，自增                       |
+| `name`           | `LONGTEXT` | ❌        |      ❌       | `NULL`                                                  | 商品名称                         |
+| `description`    | `LONGTEXT` | ❌        |      ✅       | `NULL`                                                  | 商品描述                         |
+| `price`          | `BIGINT`   | ❌        |      ❌       | `NULL`                                                  | 商品价格                         |
+| `original_price` | `BIGINT`   | ❌        |      ✅       | `NULL`                                                  | 商品原价                         |
+| `images`         | `LONGTEXT` | ❌        |      ✅       | `NULL`                                                  | 商品图片                         |
+| `status`         | `INT`      | ❌        |      ❌       | `1`                                                     | 商品状态，1表示启用，0表示未启用 |
+| `created_at`     | `DATETIME` | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP`                             | 商品创建时间                     |
+| `updated_at`     | `DATETIME` | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 商品信息修改时间                 |
+| `deleted_at`     | `DATETIME` | ❌        |      ✅       | `NULL`                                                  | 商品删除时间                     |
+| `stock`          | `INT`      | ❌        |      ❌       | `0`                                                     | 商品库存数量                     |
 
 + 索引策略
 
@@ -115,13 +115,13 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
 - **主键策略**：自增主键
 
   | 字段名       | 数据类型      | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                 |
-  | ------------ | ------------- | -------- | ------------ | ------------------------------------------------------- | ------------------------------------ |
-  | `id`         | `BIGINT`      | ✅        | ❌            | `AUTO_INCREMENT`                                        | 主键，自增                           |
-  | `name`       | `VARCHAT(50)` | ❌        | ❌            | `NULL`                                                  | 商品类别名称                         |
-  | `status`     | `TINYINT`     | ❌        | ❌            | `1`                                                     | 商品类别状态，1表示启用，0表示未启用 |
-  | `created_at` | `DATETIME`    | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP`                             | 商品类别创建时间                     |
-  | `updated_at` | `DATETIME`    | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 商品类别更新时间                     |
-  | `deleted_at` | `DATETIME`    | ❌        | ✅            | `NULL`                                                  | 商品类别删除时间                     |
+  | ------------ | ------------- | -------- | :----------: | ------------------------------------------------------- | ------------------------------------ |
+  | `id`         | `BIGINT`      | ✅        |      ❌       | `AUTO_INCREMENT`                                        | 主键，自增                           |
+  | `name`       | `VARCHAT(50)` | ❌        |      ❌       | `NULL`                                                  | 商品类别名称                         |
+  | `status`     | `TINYINT`     | ❌        |      ❌       | `1`                                                     | 商品类别状态，1表示启用，0表示未启用 |
+  | `created_at` | `DATETIME`    | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP`                             | 商品类别创建时间                     |
+  | `updated_at` | `DATETIME`    | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 商品类别更新时间                     |
+  | `deleted_at` | `DATETIME`    | ❌        |      ✅       | `NULL`                                                  | 商品类别删除时间                     |
 
 + 索引策略
 
@@ -155,7 +155,7 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
   | `idx_category` | `category_id` | `Regular` | ❌        | 类别ID索引，便于根据类别查询商品 |
   | `idx_product`  | `product_id`  | `Regular` | ❌        | 商品ID索引，便于根据商品查询类别 |
 
-### 3.6 `order`📝
+### 3.6 `order`🧾
 
 - **用途**：订单表
 - **引擎**：`InnoDB`
@@ -163,54 +163,82 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
 - **主键策略**：自增主键
 
 | 字段名            | 数据类型       | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                                         |
-| ----------------- | -------------- | -------- | ------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| `id`              | `CHAR(36)`     | ✅        | ❌            | `UUID()`                                                | 订单ID，UUID                                                 |
-| `user_id`         | `BIGINT`       | ❌        | ❌            | `NULL`                                                  | 外键，关联`users`表的`id`字段，表示购买用户ID                |
-| `total_price`     | `BIGINT`       | ❌        | ❌            | `NULL`                                                  | 订单总金额                                                   |
-| `discount_price`  | `BIGINT`       | ❌        | ✅            | `0`                                                     | 优惠金额                                                     |
-| `actual_price`    | `BIGINT`       | ❌        | ❌            | `NULL`                                                  | 实际支付金额                                                 |
-| `order_status`    | `TINYINT`      | ❌        | ✅            | `0`                                                     | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消） |
-| `payment_status`  | `TINYINT`      | ❌        | ✅            | `0`                                                     | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
-| `payment_method`  | `VARCHAR(20)`  | ❌        | ✅            | `NULL`                                                  | 支付方式（如微信、支付宝等）                                 |
-| `address_id`      | `BIGINT`       | ❌        | ❌            | `NULL`                                                  | 收货地址                                                     |
-| `recipient_name`  | `VARCHAR(255)` | ❌        | ❌            | `NULL`                                                  | 收件人姓名                                                   |
-| `phone_number`    | `VARCHAR(20)`  | ❌        | ❌            | `NULL`                                                  | 收件人电话号码                                               |
-| `shipping_status` | `TINYINT`      | ❌        | ✅            | `0`                                                     | 物流状态（0-未发货, 1-已发货, 2-已签收）                     |
-| `paid_at`         | `DATETIME`     | ❌        | ✅            | `NULL`                                                  | 订单支付时间                                                 |
-| `shipped_at`      | `DATETIME`     | ❌        | ✅            | `NULL`                                                  | 发货时间                                                     |
-| `completed_at`    | `DATETIME`     | ❌        | ✅            | `NULL`                                                  | 订单完成时间                                                 |
-| `canceled_at`     | `DATETIME`     | ❌        | ✅            | `NULL`                                                  | 订单取消时间                                                 |
-| `remark`          | `TEXT`         | ❌        | ✅            | `NULL`                                                  | 订单备注                                                     |
-| `created_at`      | `DATETIME`     | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP`                             | 订单创建时间                                                 |
-| `updated_at`      | `DATETIME`     | ❌        | ✅            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 订单更新时间                                                 |
+| ----------------- | -------------- | -------- | :----------: | ------------------------------------------------------- | ------------------------------------------------------------ |
+| `id`              | `CHAR(36)`     | ✅        |      ❌       | `UUID()`                                                | 订单ID，UUID                                                 |
+| `user_id`         | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 外键，关联`users`表的`id`字段，表示购买用户ID                |
+| `total_price`     | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 订单总金额                                                   |
+| `discount_price`  | `BIGINT`       | ❌        |      ✅       | `0`                                                     | 优惠金额                                                     |
+| `actual_price`    | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 实际支付金额                                                 |
+| `order_status`    | `TINYINT`      | ❌        |      ✅       | `0`                                                     | 订单状态（0-待支付, 1-已支付, 2-已发货, 3-已完成, 4-已取消） |
+| `payment_status`  | `TINYINT`      | ❌        |      ✅       | `0`                                                     | 支付状态（0-未支付, 1-已支付, 2-支付失败, 3-退款中, 4-已退款） |
+| `payment_method`  | `VARCHAR(20)`  | ❌        |      ✅       | `NULL`                                                  | 支付方式（如微信、支付宝等）                                 |
+| `address_id`      | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 收货地址                                                     |
+| `recipient_name`  | `VARCHAR(255)` | ❌        |      ❌       | `NULL`                                                  | 收件人姓名                                                   |
+| `phone_number`    | `VARCHAR(20)`  | ❌        |      ❌       | `NULL`                                                  | 收件人电话号码                                               |
+| `shipping_status` | `TINYINT`      | ❌        |      ✅       | `0`                                                     | 物流状态（0-未发货, 1-已发货, 2-已签收）                     |
+| `paid_at`         | `DATETIME`     | ❌        |      ✅       | `NULL`                                                  | 订单支付时间                                                 |
+| `shipped_at`      | `DATETIME`     | ❌        |      ✅       | `NULL`                                                  | 发货时间                                                     |
+| `completed_at`    | `DATETIME`     | ❌        |      ✅       | `NULL`                                                  | 订单完成时间                                                 |
+| `canceled_at`     | `DATETIME`     | ❌        |      ✅       | `NULL`                                                  | 订单取消时间                                                 |
+| `remark`          | `TEXT`         | ❌        |      ✅       | `NULL`                                                  | 订单备注                                                     |
+| `created_at`      | `DATETIME`     | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP`                             | 订单创建时间                                                 |
+| `updated_at`      | `DATETIME`     | ❌        |      ✅       | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 订单更新时间                                                 |
 
 + 索引策略
 
   | 索引名称       | 索引字段          | 索引类型  | 是否唯一 | 说明                                   |
-  | -------------- | ----------------- | --------- | -------- | -------------------------------------- |
-  | `pk_id`        | `id`              | `PRIMARY` | ✅        | 主键索引                               |
-  | `idx_user_id`  | `user_id`         | `Regular` | ❌        | 用户ID索引，便于查找某个用户的所有订单 |
-  | `idx_status`   | `order_status`    | `Regular` | ❌        | 订单状态索引，便于按状态查询订单       |
-  | `idx_shipping` | `shipping_status` | `Regular` | ❌        | 物流状态索引，便于按物流状态查询订单   |
-  | `idx_payment`  | `payment_status`  | `Regular` | ❌        | 支付状态索引，便于按支付状态查询订单   |
+  | -------------- | ----------------- | --------- | :------: | -------------------------------------- |
+  | `pk_id`        | `id`              | `PRIMARY` |    ✅     | 主键索引                               |
+  | `idx_user_id`  | `user_id`         | `Regular` |    ❌     | 用户ID索引，便于查找某个用户的所有订单 |
+  | `idx_status`   | `order_status`    | `Regular` |    ❌     | 订单状态索引，便于按状态查询订单       |
+  | `idx_shipping` | `shipping_status` | `Regular` |    ❌     | 物流状态索引，便于按物流状态查询订单   |
+  | `idx_payment`  | `payment_status`  | `Regular` |    ❌     | 支付状态索引，便于按支付状态查询订单   |
 
-### 3.7 `payment`💳
+### 3.7 `order_item`📝
+
++ **用途**：订单明细表，存储订单中每种商品
+
++ **引擎**：`InnoDB`
+
++ **字符集**：`utf8mb4`
+
++ **主键策略**：自增主键
+
+  | 字段名         | 数据类型       | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                 |
+  | -------------- | -------------- | -------- | :----------: | ------------------------------------------------------- | ------------------------------------ |
+  | `id`           | `BIGINT`       | ✅        |      ❌       | `AUTO_INCREMENT`                                        | 订单项ID，自增                       |
+  | `order_id`     | `CHAR(36)`     | ❌        |      ❌       | `NULL`                                                  | 关联的订单ID，表示该订单的具体商品项 |
+  | `product_id`   | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 商品ID，关联商品表                   |
+  | `product_name` | `VARCHAR(255)` | ❌        |      ❌       | `NULL`                                                  | 商品名称（冗余存储）                 |
+  | `price`        | `BIGINT`       | ❌        |      ❌       | `NULL`                                                  | 商品单价（冗余存储）                 |
+  | `quantity`     | `INT`          | ❌        |      ❌       | `0`                                                     | 购买数量                             |
+  | `created_at`   | `DATETIME`     | ❌        |      ❌       | `DEFAULT CURRENT_TIMESTAMP`                             | 创建时间                             |
+  | `updated_at`   | `DATETIME`     | ❌        |      ❌       | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间                             |
+
++ 索引策略
+
+  | 索引名称         | 索引字段     | 索引类型  | 是否唯一 | 说明                       |
+  | ---------------- | ------------ | --------- | :------: | -------------------------- |
+  | `idx_order_id`   | `order_id`   | `Regular` |    ❌     | 加速查询与订单相关的商品项 |
+  | `idx_product_id` | `product_id` | `Regular` |    ❌     | 加速查询与商品相关的订单项 |
+
+### 3.8 `payment`💳
 
 - **用途**：支付表
 - **引擎**：`InnoDB`
 - **字符集**：`utf8mb4`
 
-| 字段名           | 数据类型      | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                       |
-| ---------------- | ------------- | -------- | ------------ | ------------------------------------------------------- | ------------------------------------------ |
-| `id`             | `BIGINT`      | ✅        | ❌            | `AUTO_INCREMENT`                                        | 支付记录ID，自增主键                       |
-| `user_id`        | `BIGINT`      | ❌        | ❌            | `NULL`                                                  | 外键，关联`users`表的`id`字段，表示用户ID  |
-| `order_id`       | `CHAR(36)`    | ❌        | ❌            | `NULL`                                                  | 外键，关联`orders`表的`id`字段，表示订单ID |
-| `transaction_id` | `VARCHAR(36)` | ❌        | ❌            | `NULL`                                                  | 交易ID（UUID）                             |
-| `amount`         | `BIGINT`      | ❌        | ❌            | `NULL`                                                  | 交易金额                                   |
-| `pay_at`         | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP`                             | 交易时间                                   |
-| `created_at`     | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP`                             | 创建时间                                   |
-| `updated_at`     | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间                                   |
-| `deleted_at`     | `DATETIME`    | ❌        | ✅            | `NULL`                                                  | 删除时间                                   |
+| 字段名           | 数据类型      | 是否主键 | 是否允许为空 | 默认值                                                  | 备注                                 |
+| ---------------- | ------------- | -------- | ------------ | ------------------------------------------------------- | ------------------------------------ |
+| `id`             | `BIGINT`      | ✅        | ❌            | `AUTO_INCREMENT`                                        | 支付记录ID，自增主键                 |
+| `user_id`        | `BIGINT`      | ❌        | ❌            | `NULL`                                                  | 关联`users`表的`id`字段，表示用户ID  |
+| `order_id`       | `CHAR(36)`    | ❌        | ❌            | `NULL`                                                  | 关联`orders`表的`id`字段，表示订单ID |
+| `transaction_id` | `VARCHAR(36)` | ❌        | ❌            | `NULL`                                                  | 交易ID（UUID）                       |
+| `amount`         | `BIGINT`      | ❌        | ❌            | `NULL`                                                  | 交易金额                             |
+| `pay_at`         | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP`                             | 交易时间                             |
+| `created_at`     | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP`                             | 创建时间                             |
+| `updated_at`     | `DATETIME`    | ❌        | ❌            | `DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间                             |
+| `deleted_at`     | `DATETIME`    | ❌        | ✅            | `NULL`                                                  | 删除时间                             |
 
 + 索引策略
 
@@ -221,7 +249,7 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
   | `idx_order_id`       | `order_id`       | `Unique`  | ❌        | 订单ID索引，便于查询某个订单的支付记录 |
   | `idx_transaction_id` | `transaction_id` | `Unique`  | ✅        | 交易ID唯一索引，确保交易记录的唯一性   |
 
-### 3.8 `area`🌍
+### 3.9 `area`🌍
 
 + **用途**：地区表
 + **引擎**：`MyISAM `
@@ -247,7 +275,7 @@ MyGoMall 是一个电商平台系统，旨在提供完整的在线购物体验�
   | `area_name_index`    | `name`       | `Regular` | ❌        | 区域名称索引，便于根据名称查询区域                 |
   | `area_level_index`   | `level`      | `Regular` | ❌        | 区域级别索引，便于按级别查询区域（如省、市、区等） |
 
-### 3.9 `address`📍
+### 3.10 `address`📍
 
 - **用途**：地址表
 - **引擎**：`InnoDB`
@@ -388,7 +416,23 @@ CREATE INDEX `idx_status` ON `order`(`order_status`);
 CREATE INDEX `idx_shipping` ON `order`(`shipping_status`);
 CREATE INDEX `idx_payment` ON `order`(`payment_status`);
 
--- 7. 创建 payment 表
+-- 7 订单明细表 (order_item)
+CREATE TABLE `order_item` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '订单项ID，自增',
+  `order_id` CHAR(36) NOT NULL COMMENT '关联的订单ID，表示该订单的具体商品项',
+  `product_id` BIGINT NOT NULL COMMENT '商品ID，关联商品表',
+  `product_name` VARCHAR(255) NOT NULL COMMENT '商品名称（冗余存储）',
+  `price` BIGINT NOT NULL COMMENT '商品单价（冗余存储）',
+  `quantity` INT NOT NULL DEFAULT 0 COMMENT '购买数量',
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 索引策略
+CREATE INDEX `idx_order_id` ON `order_item`(`order_id`);
+CREATE INDEX `idx_product_id` ON `order_item`(`product_id`);
+
+-- 8. 创建 payment 表
 CREATE TABLE `payment` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '支付记录ID，自增主键',
   `user_id` BIGINT NOT NULL COMMENT '外键，关联users表的id字段，表示用户ID',
@@ -406,7 +450,7 @@ CREATE INDEX `idx_user_id` ON `payment`(`user_id`);
 CREATE INDEX `idx_order_id` ON `payment`(`order_id`);
 CREATE INDEX `idx_transaction_id` ON `payment`(`transaction_id`);
 
--- 8. 创建 area 表
+-- 9. 创建 area 表
 CREATE TABLE `area` (
   `id` INT(10) UNSIGNED NOT NULL PRIMARY KEY COMMENT '区域ID，自增主键',
   `pid` INT(10) UNSIGNED DEFAULT NULL COMMENT '父级区域ID，指向上级区域（用于树形结构）',
@@ -423,7 +467,7 @@ CREATE INDEX `area_pid_index` ON `area`(`pid`);
 CREATE INDEX `area_name_index` ON `area`(`name`);
 CREATE INDEX `area_level_index` ON `area`(`level`);
 
--- 9. 创建 address 表
+-- 10. 创建 address 表
 CREATE TABLE `address` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '地址ID，自增主键',
   `user_id` BIGINT NOT NULL COMMENT '关联users表的id字段，表示该地址所属用户ID',
