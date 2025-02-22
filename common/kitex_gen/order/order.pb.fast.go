@@ -4,7 +4,6 @@ package order
 
 import (
 	fmt "fmt"
-	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -175,6 +174,11 @@ func (x *OrderItem) FastRead(buf []byte, _type int8, number int32) (offset int, 
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -189,16 +193,16 @@ ReadFieldError:
 }
 
 func (x *OrderItem) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	var v cart.Cart
-	offset, err = fastpb.ReadMessage(buf, _type, &v)
-	if err != nil {
-		return offset, err
-	}
-	x.Item = &v
-	return offset, nil
+	x.ProductId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
 }
 
 func (x *OrderItem) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.Quantity, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *OrderItem) fastReadField3(buf []byte, _type int8) (offset int, err error) {
 	x.Cost, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
@@ -722,22 +726,31 @@ func (x *OrderItem) FastWrite(buf []byte) (offset int) {
 	}
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
 	return offset
 }
 
 func (x *OrderItem) fastWriteField1(buf []byte) (offset int) {
-	if x.Item == nil {
+	if x.ProductId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetItem())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetProductId())
 	return offset
 }
 
 func (x *OrderItem) fastWriteField2(buf []byte) (offset int) {
+	if x.Quantity == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 2, x.GetQuantity())
+	return offset
+}
+
+func (x *OrderItem) fastWriteField3(buf []byte) (offset int) {
 	if x.Cost == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetCost())
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetCost())
 	return offset
 }
 
@@ -1128,22 +1141,31 @@ func (x *OrderItem) Size() (n int) {
 	}
 	n += x.sizeField1()
 	n += x.sizeField2()
+	n += x.sizeField3()
 	return n
 }
 
 func (x *OrderItem) sizeField1() (n int) {
-	if x.Item == nil {
+	if x.ProductId == 0 {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.GetItem())
+	n += fastpb.SizeInt64(1, x.GetProductId())
 	return n
 }
 
 func (x *OrderItem) sizeField2() (n int) {
+	if x.Quantity == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(2, x.GetQuantity())
+	return n
+}
+
+func (x *OrderItem) sizeField3() (n int) {
 	if x.Cost == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.GetCost())
+	n += fastpb.SizeInt64(3, x.GetCost())
 	return n
 }
 
@@ -1433,8 +1455,9 @@ var fieldIDToName_PlaceOrderReq = map[int32]string{
 }
 
 var fieldIDToName_OrderItem = map[int32]string{
-	1: "Item",
-	2: "Cost",
+	1: "ProductId",
+	2: "Quantity",
+	3: "Cost",
 }
 
 var fieldIDToName_OrderResult = map[int32]string{
@@ -1490,5 +1513,3 @@ var fieldIDToName_CancelOrderReq = map[int32]string{
 var fieldIDToName_CancelOrderResp = map[int32]string{
 	1: "Success",
 }
-
-var _ = cart.File_cart_proto

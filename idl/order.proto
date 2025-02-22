@@ -2,9 +2,6 @@ syntax = "proto3";
 
 package order;
 
-import "cart.proto";
-
-
 option go_package = "/order";
 
 // 定义了订单相关的服务接口。
@@ -42,8 +39,9 @@ message PlaceOrderReq {
 
 // 订单中的一项商品。
 message OrderItem {
-  cart.Cart item = 1;       // 购物车中的商品信息。
-  int64 cost = 2;           // 商品的单价。
+  int64 product_id = 1;       // 商品ID
+  int32 quantity = 2;         // 商品数量
+  int64 cost = 3;             // 商品的单价。
 }
 
 // 订单的基本信息。
