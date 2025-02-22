@@ -29,7 +29,7 @@ message checkoutReq{
 message checkoutResp{
   string order_id = 1 [json_name="order_id"];                // 订单 ID
   string url_callback=2[json_name="url_callback"]; //用于重定向的url
-  int64 amount=3;//价格
+  int64 amount=3[json_name="url_callback"];//价格
 }
 
 service checkoutService{
