@@ -1,24 +1,24 @@
 package rpc
 
 import (
+	"checkout/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"order/conf"
 )
 
 var (
-	OrderClient cartservice.Client
+	CheckoutClient cartservice.Client
 )
 
-func initOrderClient() {
+func initCheckoutClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	CartClient, err = cartservice.NewClient("order", opts...)
+	CartClient, err = cartservice.NewClient("checkout", opts...)
 	if err != nil {
 		panic(err)
 	}
