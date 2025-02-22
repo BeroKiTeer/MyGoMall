@@ -408,14 +408,14 @@ CREATE INDEX `idx_transaction_id` ON `payment`(`transaction_id`);
 
 -- 8. 创建 area 表
 CREATE TABLE `area` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '区域ID，自增主键',
+  `id` INT(10) UNSIGNED NOT NULL PRIMARY KEY COMMENT '区域ID，自增主键',
   `pid` INT(10) UNSIGNED DEFAULT NULL COMMENT '父级区域ID，指向上级区域（用于树形结构）',
-  `node` VARCHAR(64) DEFAULT NULL COMMENT '区域节点（例如，表示区域的某个标识符）',
-  `name` VARCHAR(32) NOT NULL COMMENT '区域名称',
+  `node` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '区域节点（例如，表示区域的某个标识符）',
+  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区域名称',
   `level` TINYINT(4) NOT NULL COMMENT '区域级别（如省、市、区等）',
   `lat` DOUBLE(8,2) NOT NULL COMMENT '纬度值，存储区域的地理坐标',
   `lng` DOUBLE(8,2) NOT NULL COMMENT '经度值，存储区域的地理坐标'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 索引策略
 CREATE INDEX `area_lat_lng_index` ON `area`(`lat`, `lng`);
