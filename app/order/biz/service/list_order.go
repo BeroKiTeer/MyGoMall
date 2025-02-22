@@ -25,7 +25,14 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 		ord := &order.Order{
 			OrderId: strconv.Itoa(item.ID),
 			UserId:  uint32(item.UserID),
-			//这里还有问题，比如OrderStruct里面的OrderItems是*OrderItems类型，我看看怎么弄
+			Address: &order.Address{
+				TelephoneNumber: item.PhoneNumber,
+				StreetAddress:   item.ShippingAddress,
+				Name:            item.RecipientName,
+			},
+			OrderItems: &order.OrderItem{
+				//未完待续
+			},
 		}
 		resp.Orders = append(resp.Orders, ord)
 	}
