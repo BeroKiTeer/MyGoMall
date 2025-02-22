@@ -8,7 +8,7 @@ package pay
 
 import (
 	_ "apis/hertz_gen/api"
-	payment "apis/hertz_gen/payment"
+	payment "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
