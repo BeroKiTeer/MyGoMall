@@ -5,6 +5,7 @@ package  checkout;
 
 option go_package = "/checkout";
 import "cart.proto";
+import "order.proto";
 // 定义结账相关的服务接口
 service CheckoutService {
   // 用于完成用户的结账操作
@@ -13,14 +14,14 @@ service CheckoutService {
 
 
 
-// Address 表示用户的地址信息
-message Address {
-  string street_address = 1;  // 街道地址
-  string city = 2;            // 城市
-  string state = 3;           // 省
-  string country = 4;         // 国家
-  string zip_code = 5;        // 邮政编码
-}
+//// Address 表示用户的地址信息
+//message Address {
+//  string street_address = 1;  // 街道地址
+//  string city = 2;            // 城市
+//  string state = 3;           // 省
+//  string country = 4;         // 国家
+//  string zip_code = 5;        // 邮政编码
+//}
 
 
 
@@ -31,7 +32,7 @@ message CheckoutReq {
   string firstname = 2;                      // 用户的名字
   string lastname = 3;                       // 用户的姓氏
   string email = 4;                          // 用户的邮箱
-  Address address = 5;                       // 用户的地址信息
+  order.Address address = 5;                       // 用户的地址信息
   repeated cart.CartItem items = 6;    //增加商品清单
 }
 
