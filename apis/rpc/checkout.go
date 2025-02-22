@@ -2,13 +2,14 @@ package rpc
 
 import (
 	"checkout/conf"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart/cartservice"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
+
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
 )
 
 var (
-	CheckoutClient cartservice.Client
+	CheckoutClient checkoutservice.Client
 )
 
 func initCheckoutClient() {
@@ -18,7 +19,7 @@ func initCheckoutClient() {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	CartClient, err = cartservice.NewClient("checkout", opts...)
+	CheckoutClient, err = checkoutservice.NewClient("checkout", opts...)
 	if err != nil {
 		panic(err)
 	}
