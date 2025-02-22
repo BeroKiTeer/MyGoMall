@@ -1,14 +1,14 @@
 package service
 
 import (
-	"auth/kitex_gen/auth"
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
 	"user/rpc"
 )
 
@@ -35,7 +35,7 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 		return nil, err
 	}
 	// 调用auth服务，生成 token
-	_, err = rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{
+	token, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{
 		UserId: int32(row.ID),
 	})
 
@@ -44,7 +44,7 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	}
 
 	resp = &user.LoginResp{
-		UserId: int32(row.ID),
+		Token: token.Token,
 	}
 
 	return resp, nil

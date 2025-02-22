@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
 	"net"
+	"payment/biz/dal"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -11,10 +13,10 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"payment/conf"
-	"payment/kitex_gen/payment/paymentservice"
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)

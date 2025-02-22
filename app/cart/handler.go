@@ -2,8 +2,8 @@ package main
 
 import (
 	"cart/biz/service"
-	cart "cart/kitex_gen/cart"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 )
 
 // CartServiceImpl implements the last service interface defined in the IDL.

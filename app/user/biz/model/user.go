@@ -44,7 +44,7 @@ func GetUserById(db *gorm.DB, ctx context.Context, id int32) (user *User, err er
 // UserExistsByID 检查用户是否存在
 func UserExistsByID(db *gorm.DB, userID int32) (bool, error) {
 	var exists bool
-	err := db.Raw("SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)", userID).
+	err := db.Raw("SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)", userID).
 		Scan(&exists).
 		Error
 

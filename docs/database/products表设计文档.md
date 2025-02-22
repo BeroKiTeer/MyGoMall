@@ -18,19 +18,19 @@
 
 - **主键策略**：自增主键
 
-  | 字段名              | 数据类型          | 是否主键     | 是否允许为空   | 默认值              | 备注       |
-    |------------------|---------------|----------|----------|------------------|----------|
-  | `id`             | `BIGINT`      | ✅        | ❌        | `AUTO_INCREMENT` | 主键，自增    |
-  | `name`           | `LONGTEXT`    | ❌        | ❌        | `NULL`           | 商品名称     |
-  | `description`    | `LONGTEXT`    | ❌        | ✅        | `NULL`           | 商品描述     |
-  | `price`          | `FLOAT`       | ❌        | ❌        | `NULL`           | 商品价格     |
-  | `original_price` | `FLOAT`       | ❌        | ❌        | `NULL`           | 商品原价     |
-  | `images`         | `LONGTEXT`    | ❌        | ❌        | `NULL`           | 商品图片     |
-  | `status`         | `BIGINT`      | ❌        | ❌        | `NULL`           | 商品状态     |
+  | 字段名              | 数据类型         | 是否主键     | 是否允许为空   | 默认值              | 备注       |
+    |------------------|--------------|----------|----------|------------------|----------|
+  | `id`             | `BIGINT`     | ✅        | ❌        | `AUTO_INCREMENT` | 主键，自增    |
+  | `name`           | `LONGTEXT`   | ❌        | ❌        | `NULL`           | 商品名称     |
+  | `description`    | `LONGTEXT`   | ❌        | ✅        | `NULL`           | 商品描述     |
+  | `price`          | `BIGINT`      | ❌        | ❌        | `NULL`           | 商品价格     |
+  | `original_price` | `BIGINT`      | ❌        | ❌        | `NULL`           | 商品原价     |
+  | `images`         | `LONGTEXT`   | ❌        | ❌        | `NULL`           | 商品图片     |
+  | `status`         | `BIGINT`     | ❌        | ❌        | `NULL`           | 商品状态     |
   | `created_at`     | `DATATIME(3)` | ❌        | ✅        | `NULL`           | 商品创建时间   |
   | `updated_at`     | `DATETIME(3)` | ❌        | ✅        | `NULL`           | 商品信息修改时间 |
   | `deleted_at`     | `DATETIME(3)` | ❌        | ✅        | `NULL`           | 商品删除时间   |
-  | `stock`          | `INT`         | ❌        | ❌        | `NULL`           | 商品库存数量   |
+  | `stock`          | `INT`        | ❌        | ❌        | `NULL`           | 商品库存数量   |
 
 ### 3.2 建表语句
 
@@ -41,8 +41,8 @@ create table products
         primary key,
   name           longtext    null,
   description    longtext    null,
-  price          float       null,
-  original_price float       null,
+  price          bigint       null,
+  original_price bigint       null,
   images         longtext    null,
   status         bigint      null,
   created_at     datetime(3) null,
@@ -70,7 +70,7 @@ create table products
 
 ```mysql
 create index idx_products_deleted_at
-  on go_test.products (deleted_at);
+  on go_test.products(deleted_at);
 
 create index idx_status
   on go_test.products (status);
@@ -84,8 +84,8 @@ create index idx_updated_at
 ## **5. 业务约束**
 
 - `id` 字段必须唯一，确保每个商品被唯一标识。
-- `price` 不能为负数，防止数据错误。
-- `original_price` 不能为负数，防止数据错误。
+- `price` 单位：分，不能为负数，防止数据错误。
+- `original_price` 单位：分，不能为负数，防止数据错误。
 - `stock` 不能为负数，防止数据错误。
 - `status` 0为已下架，1为上架
 
@@ -95,8 +95,8 @@ create index idx_updated_at
 ## **6. 数据示例**
 
 ```mysql
-INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (1, '苹果', '一种水果', 2.35, 2.04, 'https://loremflickr.com/400/400?lock=4735001455941464', 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 50);
-INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (2, '香蕉', '另一种水果', 4.3, 2.2, null, 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 30);
+INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (1, '苹果', '一种水果', 235, 204, 'https://loremflickr.com/400/400?lock=4735001455941464', 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 50);
+INSERT INTO go_test.products (id, name, description, price, original_price, images, status, created_at, updated_at, deleted_at, stock) VALUES (2, '香蕉', '另一种水果', 430, 220, null, 1, '2025-02-10 16:50:57.000', '2025-02-10 16:51:06.000', null, 30);
 
 ```
 

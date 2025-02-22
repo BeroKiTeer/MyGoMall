@@ -1,8 +1,8 @@
 package service
 
 import (
-	cart "cart/kitex_gen/cart"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 )
 
 type EmptyCartService struct {

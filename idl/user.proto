@@ -40,7 +40,7 @@ message LoginReq {
 
 // 用户登录的响应消息。
 message LoginResp {
-  int32 user_id = 1; // 用户 ID
+  string token = 1; // 登录成功后返回的 token
 }
 // 用户登出的请求消息
 message LogoutReq {
@@ -64,7 +64,7 @@ message DeleteUserResp {
 
 // 更新用户的请求消息
 message UpdateUserReq {
-  int32 user_id = 1; // 需要更新的用户 ID
+  string token = 1; // 需要更新的用户 token
   string email = 2;  // 新邮箱（可选）
   string password = 3; // 新密码（可选）
   string phone_number = 4; // 新手机号（可选）

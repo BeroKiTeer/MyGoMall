@@ -2,9 +2,9 @@ package rpc
 
 import (
 	"apis/conf"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"user/kitex_gen/user/userservice"
 )
 
 var (
@@ -18,7 +18,7 @@ func initUserClient() {
 		panic(err)
 	}
 	opts = append(opts, client.WithResolver(r))
-	UserClient, err = userservice.NewClient("auth", opts...)
+	UserClient, err = userservice.NewClient("user", opts...)
 	if err != nil {
 		panic(err)
 	}

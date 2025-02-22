@@ -2,12 +2,11 @@ package service
 
 import (
 	"cart/biz/model"
-	cart "cart/kitex_gen/cart"
 	"cart/rpc"
 	"context"
 	"errors"
-	"gorm.io/gorm"
-	"product/kitex_gen/product"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 )
 
 type AddItemService struct {
@@ -25,6 +24,14 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		return nil, errors.New("need user_id and item")
 	}
 
+	if req.Item.ProductId == 0 {
+		return nil, errors.New("product_id is 0")
+	}
+
+	if req.Item.Quantity == 0 {
+		return nil, errors.New("quantity is 0")
+	}
+
 	// 检查商品是否存在（RPC）
 	ProductReq := product.GetProductReq{Id: req.Item.ProductId}
 	productDetails, err := rpc.ProductClient.GetProduct(s.ctx, &ProductReq)
@@ -39,21 +46,13 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
-	db.Select("quantity").
-		Where("product_id = ?", req.Item.ProductId).
-		Where("user_id = ?", req.UserId).Scan(&targetItemQuantity)
+	model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
 
 	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
 	if targetItemQuantity == -1 {
-		db.Create(&model.Cart{
-			UserID:    req.UserId,
-			ProductID: req.Item.ProductId,
-			Quantity:  req.Item.Quantity,
-		})
+		model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	} else {
-		db.Where("product_id = ?", req.Item.ProductId).
-			Where("user_id = ?", req.UserId).Scan(&targetItemQuantity).
-			Update("quantity", gorm.Expr("quantity + ?", req.Item.Quantity))
+		model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	}
 
 	return

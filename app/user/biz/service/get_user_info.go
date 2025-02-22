@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"time"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
 )
 
 type GetUserInfoService struct {

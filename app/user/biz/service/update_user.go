@@ -3,10 +3,13 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
+	"user/rpc"
 )
 
 type UpdateUserService struct {
@@ -16,19 +19,27 @@ func NewUpdateUserService(ctx context.Context) *UpdateUserService {
 	return &UpdateUserService{ctx: ctx}
 }
 
-// Run create note info
+// Run create note info ✅
 func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserResp, err error) {
 	// Finish your business logic.
 
 	resp = &user.UpdateUserResp{}
 
-	// 1️⃣ 检查 user_id 是否有效
-	if req.UserId <= 0 {
-		return nil, errors.New("无效的用户 ID")
+	// 1️⃣ 检查 token 是否有效
+	_, err = rpc.AuthClient.VerifyTokenByRPC(s.ctx, &auth.VerifyTokenReq{
+		Token: req.Token,
+	})
+
+	if err != nil {
+		log.Fatal("token无效，请重新登录，", err)
+		return nil, err
 	}
 
-	// 2️⃣ 查询用户是否存在
-	row, err := model.UserExistsByID(mysql.DB, req.UserId)
+	// 2️⃣ 获取用户 id
+	r, err := rpc.AuthClient.DecodeToken(s.ctx, &auth.DecodeTokenReq{
+		Token: req.Token,
+	})
+	row, err := model.UserExistsByID(mysql.DB, r.UserId)
 	if row == false || err != nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -54,8 +65,8 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 		return resp, nil
 	}
 
-	// TODO:4️⃣ 执行更新操作
-	if err := model.UpdateUser(mysql.DB, s.ctx, req.UserId, updates); err != nil {
+	// 4️⃣ 执行更新操作
+	if err := model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
 		return nil, err
 	}
 

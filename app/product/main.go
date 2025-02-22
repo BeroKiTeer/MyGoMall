@@ -1,6 +1,10 @@
 package main
 
 import (
+	"cart/rpc"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
+	consul "github.com/kitex-contrib/registry-consul"
+	"log"
 	"net"
 	"product/biz/dal"
 	"time"
@@ -12,12 +16,11 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"product/conf"
-	"product/kitex_gen/product/productcatalogservice"
 )
 
 func main() {
 	opts := kitexInit()
-
+	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
 	dal.Init()
 	err := svr.Run()
@@ -38,6 +41,12 @@ func kitexInit() (opts []server.Option) {
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
+
+	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
+	if err != nil {
+		log.Fatal(err)
+	}
+	opts = append(opts, server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()

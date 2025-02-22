@@ -2,9 +2,9 @@ package service
 
 import (
 	"auth/biz/dal/redis"
-	auth "auth/kitex_gen/auth"
 	"context"
 	"crypto/rand"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/golang-jwt/jwt/v4"
 	"strconv"
 	"time"
@@ -16,8 +16,6 @@ type DeliverTokenByRPCService struct {
 func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService {
 	return &DeliverTokenByRPCService{ctx: ctx}
 }
-
-var rdb = redis.RedisClient
 
 func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, error) {
 
@@ -32,12 +30,12 @@ func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, erro
 	}
 
 	if seconds == 0 {
-		rdb.Expire(ctx, strconv.Itoa(int(userID)), 0)
+		redis.RedisClient.Expire(ctx, strconv.Itoa(int(userID)), 0)
 		return "", nil
 	}
 
 	// 把 userID 转为 string 类型 存到 key 里面，密钥是刚刚随机生成的
-	err = rdb.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
+	err = redis.RedisClient.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
 	if err != nil {
 		return "", err
 	}
