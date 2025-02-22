@@ -8,7 +8,7 @@ package checkout
 
 import (
 	_ "apis/hertz_gen/api"
-	cart "apis/hertz_gen/cart"
+	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	order "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
