@@ -115,11 +115,11 @@ type PlaceOrderReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId       uint32     `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                  // 用户 ID
-	UserCurrency string     `protobuf:"bytes,2,opt,name=user_currency,json=userCurrency,proto3" json:"user_currency,omitempty"` // 用户的货币类型
-	Address      *Address   `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`                               // 用户的地址信息
-	Email        string     `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`                                   // 用户的邮箱
-	OrderItems   *OrderItem `protobuf:"bytes,5,opt,name=order_items,json=orderItems,proto3" json:"order_items,omitempty"`       // 订单中的商品列表
+	UserId       uint32       `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                  // 用户 ID
+	UserCurrency string       `protobuf:"bytes,2,opt,name=user_currency,json=userCurrency,proto3" json:"user_currency,omitempty"` // 用户的货币类型
+	Address      *Address     `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`                               // 用户的地址信息
+	Email        string       `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`                                   // 用户的邮箱
+	OrderItems   []*OrderItem `protobuf:"bytes,5,rep,name=order_items,json=orderItems,proto3" json:"order_items,omitempty"`       // 订单中的商品列表
 }
 
 func (x *PlaceOrderReq) Reset() {
@@ -182,7 +182,7 @@ func (x *PlaceOrderReq) GetEmail() string {
 	return ""
 }
 
-func (x *PlaceOrderReq) GetOrderItems() *OrderItem {
+func (x *PlaceOrderReq) GetOrderItems() []*OrderItem {
 	if x != nil {
 		return x.OrderItems
 	}
@@ -886,7 +886,7 @@ var file_order_proto_rawDesc = []byte{
 	0x64, 0x65, 0x72, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x07, 0x61, 0x64, 0x64,
 	0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x04, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x31, 0x0a, 0x0b, 0x6f, 0x72,
-	0x64, 0x65, 0x72, 0x5f, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x64, 0x65, 0x72, 0x5f, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x10, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65,
 	0x6d, 0x52, 0x0a, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x73, 0x22, 0x5a, 0x0a,
 	0x09, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x72,

@@ -34,7 +34,7 @@ message PlaceOrderReq {
   string user_currency = 2;           // 用户的货币类型
   Address address = 3;                // 用户的地址信息
   string email = 4;                   // 用户的邮箱
-  OrderItem order_items = 5;          // 订单中的商品列表
+  repeated OrderItem order_items = 5; // 订单中的商品列表
 }
 
 // 订单中的一项商品。

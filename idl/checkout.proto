@@ -4,7 +4,6 @@ package  checkout;
 
 
 option go_package = "/checkout";
-import "cart.proto";
 import "order.proto";
 // 定义结账相关的服务接口
 service CheckoutService {
@@ -33,7 +32,7 @@ message CheckoutReq {
   string lastname = 3;                       // 用户的姓氏
   string email = 4;                          // 用户的邮箱
   order.Address address = 5;                       // 用户的地址信息
-  repeated cart.CartItem items = 6;    //增加商品清单
+  repeated order.OrderItem items = 6;    //增加商品清单
 }
 
 // 结账操作的响应消息
