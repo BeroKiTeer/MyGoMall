@@ -36,7 +36,7 @@
 
 ------
 
-### **3.2. 订单明细表 (`order_items`)**
+### **3.2. 订单明细表 (`order_item`)**
 
 用于存储订单中的商品明细信息，每个订单可能包含多个商品。
 
@@ -46,9 +46,8 @@
 | `order_id`       | BIGINT        | 非空、索引   | 关联的订单ID               |
 | `product_id`     | BIGINT        | 非空、索引   | 商品ID                     |
 | `product_name`   | VARCHAR(255)  | 非空         | 商品名称（冗余存储）       |
-| `product_price`  | BIGINT | 非空         | 商品单价                   |
+| `price`  | BIGINT | 非空         | 商品单价（冗余存储）             |
 | `quantity`       | INT           | 非空         | 购买数量                   |
-| `subtotal_price` | BIGINT | 计算字段     | `product_price * quantity` |
 | `created_at`     | DATETIME      | 默认当前时间 | 创建时间                   |
 | `updated_at`       | DATETIME     | 默认当前时间，修改订单时为订单更新时间       | 更新时间                                   |
 ------
@@ -198,8 +197,8 @@ CREATE TABLE order_metadata (
 | `idx_order`  | `order_id`   | `Regular`    | ❌            | 订单索引 |
 
 ```sql
-CREATE INDEX idx_user    ON payments(user_id);
-CREATE INDEX idx_order   ON payments(order_id);
+CREATE INDEX idx_user    ON payment(user_id);
+CREATE INDEX idx_order   ON payment(order_id);
 ```
 
 ------
