@@ -38,7 +38,7 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 		products = append(products, res)
 	}
 
-	//TODO: 1. 库存减少或锁定（checkout RPC调用）
+	//TODO: 1. 库存减少或锁定（inventory RPC调用）
 	for _, prd := range products {
 		if !reduceStock(s.ctx, prd.Product.Id, int(prd.Product.Stock)) {
 			compensate(s.ctx, strconv.FormatInt(prd.Product.Id, 10), int(prd.Product.Stock))

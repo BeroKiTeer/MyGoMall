@@ -19,7 +19,7 @@ import (
 )
 
 type Base struct {
-	ID        int `gorm:"primarykey"`
+	ID        string `gorm:"primarykey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

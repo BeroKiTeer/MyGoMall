@@ -5,7 +5,6 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"order/biz/model"
 	"product/biz/dal/mysql"
-	"strconv"
 )
 
 type ListOrderService struct {
@@ -23,13 +22,14 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 	orders, err := model.GetOrdersByUserID(mysql.DB, int64(req.UserId))
 	for _, item := range orders {
 		ord := &order.Order{
-			OrderId: strconv.Itoa(item.ID),
+			OrderId: item.ID,
 			UserId:  uint32(item.UserID),
 			Address: &order.Address{
 				TelephoneNumber: item.PhoneNumber,
 				StreetAddress:   item.ShippingAddress,
 				Name:            item.RecipientName,
 			},
+			OrderItems: []*order.OrderItem{},
 		}
 		resp.Orders = append(resp.Orders, ord)
 	}
