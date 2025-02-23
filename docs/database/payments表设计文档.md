@@ -24,7 +24,7 @@
   | `user_id`        | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 用户ID  |
   | `order_id`       | `VARCHAR(255)` | ❌       | ❌            | `NULL`                                          | 订单ID  |
   | `transaction_id` | `VARCHAR(36)`  | ❌       | ❌            | `NULL`                                          | 交易ID(uuid) |
-  | `amount`         | `DOUBLE`       | ❌       | ❌            | `NULL`                                          | 交易金额  |
+  | `amount`         | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 交易金额  |
   | `pay_at`         | `DATETIME`     | ❌       | ❌            | `CURRENT_TIMESTAMP`                             | 交易时间  |
   | `created_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP`                             | 创建时间  |
   | `updated_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间  |
@@ -39,7 +39,7 @@ CREATE TABLE payments
   user_id         BIGINT        NOT NULL                  COMMENT '用户ID',
   order_id        VARCHAR(255)  NOT NULL                  COMMENT '订单ID',
   transaction_id  VARCHAR(36)   NOT NULL                  COMMENT '交易ID(uuid)',
-  amount          DOUBLE        NOT NULL                  COMMENT '交易金额',
+  amount          BIGINT        NOT NULL                  COMMENT '交易金额',
   pay_at   DATETIME NOT NULL    DEFAULT CURRENT_TIMESTAMP COMMENT '交易时间',
   created_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   updated_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

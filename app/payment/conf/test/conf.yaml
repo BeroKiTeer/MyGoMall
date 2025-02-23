@@ -9,15 +9,22 @@ kitex:
 
 registry:
   registry_address:
-    - 127.0.0.1:2379
+    - 127.0.0.1:8500
   username: ""
   password: ""
 
 mysql:
-  dsn: "root:123456@tcp(127.0.0.1:3306)/go_test?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:root@tcp(127.0.0.1:3306)/douyin_mall_go_template?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
   address: "127.0.0.1:6379"
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  rabbitmqURL: "amqp://guest:guest@192.168.101.65:5672/"
+  paymentExchange: "payment_exchange"
+  paymentQueue: "payment_queue"
+  paymentDLXExchange: "payment_dlx_exchange"
+  paymentDLXQueue: "payment_dlx_queue"
