@@ -23,6 +23,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 	_, err = rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{
 		Id: req.OrderItems.ProductId,
 	})
+	// TODO: 清空购物车
 
 	// TODO: 2. 计算订单价格 (checkout RPC)
 
