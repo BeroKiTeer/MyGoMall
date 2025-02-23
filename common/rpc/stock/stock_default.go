@@ -24,3 +24,12 @@ func CheckItem(ctx context.Context, req *stock.CheckItemReq, callOptions ...call
 	}
 	return resp, nil
 }
+
+func ReserveItem(ctx context.Context, req *stock.ReserveItemReq, callOptions ...callopt.Option) (resp *stock.ReserveItemResp, err error) {
+	resp, err = defaultClient.ReserveItem(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "ReserveItem call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

@@ -13,6 +13,7 @@ import (
 type Client interface {
 	ReduceItem(ctx context.Context, Req *stock.ReduceItemReq, callOptions ...callopt.Option) (r *stock.ReduceItemResp, err error)
 	CheckItem(ctx context.Context, Req *stock.CheckItemReq, callOptions ...callopt.Option) (r *stock.CheckItemResp, err error)
+	ReserveItem(ctx context.Context, Req *stock.ReserveItemReq, callOptions ...callopt.Option) (r *stock.ReserveItemResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kStockServiceClient) ReduceItem(ctx context.Context, Req *stock.ReduceI
 func (p *kStockServiceClient) CheckItem(ctx context.Context, Req *stock.CheckItemReq, callOptions ...callopt.Option) (r *stock.CheckItemResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CheckItem(ctx, Req)
+}
+
+func (p *kStockServiceClient) ReserveItem(ctx context.Context, Req *stock.ReserveItemReq, callOptions ...callopt.Option) (r *stock.ReserveItemResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ReserveItem(ctx, Req)
 }

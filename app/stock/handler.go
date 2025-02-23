@@ -22,3 +22,10 @@ func (s *StockServiceImpl) CheckItem(ctx context.Context, req *stock.CheckItemRe
 
 	return resp, err
 }
+
+// ReserveItem implements the StockServiceImpl interface.
+func (s *StockServiceImpl) ReserveItem(ctx context.Context, req *stock.ReserveItemReq) (resp *stock.ReserveItemResp, err error) {
+	resp, err = service.NewReserveItemService(ctx).Run(req)
+
+	return resp, err
+}

@@ -14,6 +14,7 @@ type RPCClient interface {
 	Service() string
 	ReduceItem(ctx context.Context, Req *stock.ReduceItemReq, callOptions ...callopt.Option) (r *stock.ReduceItemResp, err error)
 	CheckItem(ctx context.Context, Req *stock.CheckItemReq, callOptions ...callopt.Option) (r *stock.CheckItemResp, err error)
+	ReserveItem(ctx context.Context, Req *stock.ReserveItemReq, callOptions ...callopt.Option) (r *stock.ReserveItemResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -48,4 +49,8 @@ func (c *clientImpl) ReduceItem(ctx context.Context, Req *stock.ReduceItemReq, c
 
 func (c *clientImpl) CheckItem(ctx context.Context, Req *stock.CheckItemReq, callOptions ...callopt.Option) (r *stock.CheckItemResp, err error) {
 	return c.kitexClient.CheckItem(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) ReserveItem(ctx context.Context, Req *stock.ReserveItemReq, callOptions ...callopt.Option) (r *stock.ReserveItemResp, err error) {
+	return c.kitexClient.ReserveItem(ctx, Req, callOptions...)
 }

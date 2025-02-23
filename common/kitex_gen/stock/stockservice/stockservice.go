@@ -29,6 +29,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"ReserveItem": kitex.NewMethodInfo(
+		reserveItemHandler,
+		newReserveItemArgs,
+		newReserveItemResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -401,6 +408,159 @@ func (p *CheckItemResult) GetResult() interface{} {
 	return p.Success
 }
 
+func reserveItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(stock.ReserveItemReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(stock.StockService).ReserveItem(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *ReserveItemArgs:
+		success, err := handler.(stock.StockService).ReserveItem(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*ReserveItemResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newReserveItemArgs() interface{} {
+	return &ReserveItemArgs{}
+}
+
+func newReserveItemResult() interface{} {
+	return &ReserveItemResult{}
+}
+
+type ReserveItemArgs struct {
+	Req *stock.ReserveItemReq
+}
+
+func (p *ReserveItemArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(stock.ReserveItemReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *ReserveItemArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *ReserveItemArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *ReserveItemArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *ReserveItemArgs) Unmarshal(in []byte) error {
+	msg := new(stock.ReserveItemReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var ReserveItemArgs_Req_DEFAULT *stock.ReserveItemReq
+
+func (p *ReserveItemArgs) GetReq() *stock.ReserveItemReq {
+	if !p.IsSetReq() {
+		return ReserveItemArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *ReserveItemArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ReserveItemArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type ReserveItemResult struct {
+	Success *stock.ReserveItemResp
+}
+
+var ReserveItemResult_Success_DEFAULT *stock.ReserveItemResp
+
+func (p *ReserveItemResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(stock.ReserveItemResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *ReserveItemResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *ReserveItemResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *ReserveItemResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *ReserveItemResult) Unmarshal(in []byte) error {
+	msg := new(stock.ReserveItemResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *ReserveItemResult) GetSuccess() *stock.ReserveItemResp {
+	if !p.IsSetSuccess() {
+		return ReserveItemResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *ReserveItemResult) SetSuccess(x interface{}) {
+	p.Success = x.(*stock.ReserveItemResp)
+}
+
+func (p *ReserveItemResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ReserveItemResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -426,6 +586,16 @@ func (p *kClient) CheckItem(ctx context.Context, Req *stock.CheckItemReq) (r *st
 	_args.Req = Req
 	var _result CheckItemResult
 	if err = p.c.Call(ctx, "CheckItem", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ReserveItem(ctx context.Context, Req *stock.ReserveItemReq) (r *stock.ReserveItemResp, err error) {
+	var _args ReserveItemArgs
+	_args.Req = Req
+	var _result ReserveItemResult
+	if err = p.c.Call(ctx, "ReserveItem", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
