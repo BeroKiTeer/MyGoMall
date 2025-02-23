@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package stock;
+
+option go_package="/stock";
+
+service StockService {
+  rpc ReduceItem(ReduceItemReq) returns (ReduceItemResp);
+  rpc CheckItem(CheckItemReq) returns (CheckItemResp);
+}
+
+message ReduceItemReq {
+  int64 product_id = 1;
+  int64 quantity = 2;
+}
+
+message ReduceItemResp {
+  bool Success = 1;
+}
+
+message CheckItemReq {
+  int64 product_id = 1;
+}
+
+message CheckItemResp {
+  int64 quantity = 1;
+}
