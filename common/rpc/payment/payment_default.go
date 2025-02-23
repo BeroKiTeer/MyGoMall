@@ -15,3 +15,12 @@ func Charge(ctx context.Context, req *payment.ChargeReq, callOptions ...callopt.
 	}
 	return resp, nil
 }
+
+func CancelPayment(ctx context.Context, req *payment.CancelReq, callOptions ...callopt.Option) (resp *payment.CancelResp, err error) {
+	resp, err = defaultClient.CancelPayment(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "CancelPayment call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

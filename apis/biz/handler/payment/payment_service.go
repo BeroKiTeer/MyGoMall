@@ -6,11 +6,11 @@ import (
 	"apis/biz/utils"
 	payment "apis/hertz_gen/api/payment"
 	"apis/rpc"
-	"auth/kitex_gen/auth"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	payment_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	payment_kitex "payment/kitex_gen/payment"
 )
 
 // Charge .

@@ -13,6 +13,7 @@ type RPCClient interface {
 	KitexClient() paymentservice.Client
 	Service() string
 	Charge(ctx context.Context, Req *payment.ChargeReq, callOptions ...callopt.Option) (r *payment.ChargeResp, err error)
+	CancelPayment(ctx context.Context, Req *payment.CancelReq, callOptions ...callopt.Option) (r *payment.CancelResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -43,4 +44,8 @@ func (c *clientImpl) KitexClient() paymentservice.Client {
 
 func (c *clientImpl) Charge(ctx context.Context, Req *payment.ChargeReq, callOptions ...callopt.Option) (r *payment.ChargeResp, err error) {
 	return c.kitexClient.Charge(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) CancelPayment(ctx context.Context, Req *payment.CancelReq, callOptions ...callopt.Option) (r *payment.CancelResp, err error) {
+	return c.kitexClient.CancelPayment(ctx, Req, callOptions...)
 }
