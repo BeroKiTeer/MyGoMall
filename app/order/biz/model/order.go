@@ -1,13 +1,14 @@
 package model
 
 import (
+	"fmt"
 	"gorm.io/gorm"
+	"product/biz/dal/mysql"
 	"time"
 )
 
 type Order struct {
 	Base
-	ID              string     `gorm:"primaryKey;autoIncrement;column:id;comment:订单ID"`
 	UserID          int64      `gorm:"index;column:user_id;comment:购买用户ID"`
 	TotalPrice      int64      `gorm:"column:total_price;not null;comment:订单总金额"`
 	DiscountPrice   int64      `gorm:"column:discount_price;default:0;comment:优惠金额"`
@@ -36,4 +37,23 @@ func GetProductIdsFromOrder(db *gorm.DB, order string) []int64 {
 
 func UpdateOrderStatus(db *gorm.DB, orderID string, status string) {
 
+}
+
+func GetOrdersByUserID(db *gorm.DB, UserID int64) ([]Order, error) {
+	// 检查数据库连接是否有效
+	if db == nil {
+		return nil, fmt.Errorf("database connection is nil")
+	}
+
+	var orders []Order
+	// 查询与用户ID相关联的所有订单
+	err := db.Model(&Order{}).Where("user_id=?", UserID).Find(&orders).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to find orders for user: %w", err)
+	}
+	return orders, nil
+}
+
+func CreateOrder(db *gorm.DB, order *Order) {
+	mysql.DB.Table("orders").Create(order)
 }

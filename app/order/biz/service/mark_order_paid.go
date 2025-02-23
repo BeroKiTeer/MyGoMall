@@ -31,7 +31,7 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 
 	products := make([]*product.GetProductResp, 1)
 	for _, productID := range productIds {
-		res, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: uint32(productID)})
+		res, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: productID})
 		if err != nil {
 			klog.Error("get product error: ", err)
 		}
@@ -40,8 +40,8 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 
 	//TODO: 1. 库存减少或锁定（checkout RPC调用）
 	for _, prd := range products {
-		if !reduceStock(s.ctx, int64(prd.Product.Id), int(prd.Product.Stock)) {
-			compensate(s.ctx, strconv.FormatInt(int64(prd.Product.Id), 10), int(prd.Product.Stock))
+		if !reduceStock(s.ctx, prd.Product.Id, int(prd.Product.Stock)) {
+			compensate(s.ctx, strconv.FormatInt(prd.Product.Id, 10), int(prd.Product.Stock))
 		}
 	}
 

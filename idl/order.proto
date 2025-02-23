@@ -2,9 +2,6 @@ syntax = "proto3";
 
 package order;
 
-import "cart.proto";
-
-
 option go_package = "/order";
 
 // 定义了订单相关的服务接口。
@@ -23,12 +20,12 @@ service OrderService {
 
 // 地址信息。
 message Address {
-  string street_address = 1;       // 街道地址。
-  string city = 2;                 // 城市。
-  string state = 3;                // 州或省。
-  string country = 4;              // 国家。
-  string telephone_number = 5;     // 收件人电话。
-  string name =6;        //收件人姓名。
+  string street_address = 1;       // 街道地址
+  string city = 2;                 // 城市
+  string state = 3;                // 省
+  string country = 4;              // 国家
+  string telephone_number = 5;     // 收件人电话
+  string name = 6;                 // 收件人姓名
 }
 
 // 创建订单的请求消息。
@@ -37,13 +34,14 @@ message PlaceOrderReq {
   string user_currency = 2;           // 用户的货币类型
   Address address = 3;                // 用户的地址信息
   string email = 4;                   // 用户的邮箱
-  repeated OrderItem order_items = 5; // 订单中的商品列表
+  OrderItem order_items = 5;          // 订单中的商品列表
 }
 
 // 订单中的一项商品。
 message OrderItem {
-  cart.CartItem item = 1; // 购物车中的商品信息。
-  int64 cost = 2;         // 商品的单价。
+  int64 product_id = 1;       // 商品ID
+  int32 quantity = 2;         // 商品数量
+  int64 cost = 3;             // 商品的单价。
 }
 
 // 订单的基本信息。
@@ -63,14 +61,14 @@ message ListOrderReq {
 
 // Order 表示一个订单的详细信息
 message Order {
-  repeated OrderItem order_items = 1;     // 订单中的商品列表
+  OrderItem order_items = 1;              // 订单中的商品列表
   string order_id = 2;                    // 订单 ID
   uint32 user_id = 3;                     // 用户 ID
   string user_currency = 4;               // 货币类型
   Address address = 5;                    // 地址信息
   string email = 6;                       // 邮箱
-  string created_at = 7;                   // 订单创建时间
-  string update_at = 8;               // 订单最后更新时间
+  string created_at = 7;                  // 订单创建时间
+  string update_at = 8;                   // 订单最后更新时间
 }
 
 // 获取订单列表的响应消息。
@@ -97,7 +95,9 @@ message UpdateOrderReq {
 }
 
 // 修改订单信息的响应消息
-message UpdateOrderResp {}
+message UpdateOrderResp {
+  bool success = 1;                       // 是否修改成功
+}
 
 // 取消订单的请求消息
 message CancelOrderReq {
@@ -105,4 +105,6 @@ message CancelOrderReq {
 }
 
 // 取消订单的响应消息
-message CancelOrderResp {}
+message CancelOrderResp {
+  bool success = 1;                       // 是否取消成功
+}

@@ -27,14 +27,14 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 	cachedProduct, err := redis.RedisClient.Get(s.ctx, fmt.Sprintf("product:%d", req.GetId())).Result()
 	if errors.Is(err, redis.Nil) {
 		// 如果缓存没有命中，从数据库获取
-		p, categories, err := model.GetProductWithCategory(mysql.DB, int(req.GetId()))
+		p, categories, err := model.GetProductWithCategory(mysql.DB, req.GetId())
 		if err != nil {
 			return nil, err
 		}
 		// 设置缓存，缓存过期时间为 1 小时
 		cacheData := &product.GetProductResp{
 			Product: &product.Product{
-				Id:            uint32(p.ID),
+				Id:            p.ID,
 				Name:          p.Name,
 				Description:   p.Description,
 				Images:        p.Images,

@@ -22,7 +22,7 @@ func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product
 		Success: false,
 		Message: "error",
 	}
-	getProduct, err := model.GetProduct(mysql.DB, int(req.GetId()))
+	getProduct, err := model.GetProduct(mysql.DB, req.GetId())
 	if err != nil {
 
 		return nil, err

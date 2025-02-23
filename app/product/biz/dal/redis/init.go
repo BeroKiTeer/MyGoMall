@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/pkg/klog"
 
 	"github.com/redis/go-redis/v9"
 	"product/conf"
@@ -20,6 +21,7 @@ func Init() {
 		DB:       conf.GetConf().Redis.DB,
 	})
 	if err := RedisClient.Ping(context.Background()).Err(); err != nil {
+		klog.Fatal("redis连接失败: ", err)
 		panic(err)
 	}
 }

@@ -23,7 +23,7 @@ func (s *UpdateProductService) Run(req *product.UpdateProductReq) (resp *product
 	}
 	temp := req.GetProduct()
 	getProduct := &model.Product{
-		Base:          model.Base{ID: int(temp.Id)},
+		Base:          model.Base{ID: temp.Id},
 		Name:          temp.Name,
 		Price:         temp.Price,
 		Description:   temp.Description,
@@ -46,8 +46,8 @@ func (s *UpdateProductService) Run(req *product.UpdateProductReq) (resp *product
 		}
 		//插入关联表
 		newCategoryProduct := &model.CategoryProduct{
-			ProductId:  int64(temp.GetId()),
-			CategoryId: int64(category.ID),
+			ProductId:  temp.GetId(),
+			CategoryId: category.ID,
 		}
 		err = model.CreateCPRelation(mysql.DB, newCategoryProduct)
 		if err != nil {

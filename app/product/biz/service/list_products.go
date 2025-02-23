@@ -25,7 +25,7 @@ func (s *ListProductsService) Run(req *product.ListProductsReq) (resp *product.L
 	products, categories, err := model.GetProductsByCategoryName(mysql.DB, int(req.Page), int(req.PageSize), req.CategoryName)
 	for i, item := range products {
 		pro := &product.Product{
-			Id:          uint32(item.ID),
+			Id:          item.ID,
 			Name:        item.Name,
 			Description: item.Description,
 			Images:      item.Images,
