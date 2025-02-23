@@ -52,8 +52,8 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 		}
 		// 插入关联表
 		newCategoryProduct := &model.CategoryProduct{
-			ProductId:  int64(newProduct.ID),
-			CategoryId: int64(category.ID),
+			ProductId:  newProduct.ID,
+			CategoryId: category.ID,
 		}
 		result = tx.Create(newCategoryProduct)
 		if result.Error != nil {

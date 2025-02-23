@@ -348,7 +348,7 @@ func (x *Order) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	if err != nil {
 		return offset, err
 	}
-	x.OrderItems = &v
+	x.OrderItems = append(x.OrderItems, &v)
 	return offset, nil
 }
 
@@ -821,7 +821,9 @@ func (x *Order) fastWriteField1(buf []byte) (offset int) {
 	if x.OrderItems == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetOrderItems())
+	for i := range x.GetOrderItems() {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.GetOrderItems()[i])
+	}
 	return offset
 }
 
@@ -1236,7 +1238,9 @@ func (x *Order) sizeField1() (n int) {
 	if x.OrderItems == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.GetOrderItems())
+	for i := range x.GetOrderItems() {
+		n += fastpb.SizeMessage(1, x.GetOrderItems()[i])
+	}
 	return n
 }
 

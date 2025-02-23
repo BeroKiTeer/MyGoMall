@@ -18,7 +18,7 @@ func TestCreateProduct_Run(t *testing.T) {
 		Description:   "1",
 		Price:         int64(2),
 		OriginalPrice: int64(1),
-		Stock:         uint32(1),
+		Stock:         1,
 		Images:        "1",
 		Status:        uint32(1),
 	}

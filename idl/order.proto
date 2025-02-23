@@ -61,7 +61,7 @@ message ListOrderReq {
 
 // Order 表示一个订单的详细信息
 message Order {
-  OrderItem order_items = 1;              // 订单中的商品列表
+  repeated OrderItem order_items = 1;     // 订单中的商品列表
   string order_id = 2;                    // 订单 ID
   uint32 user_id = 3;                     // 用户 ID
   string user_currency = 4;               // 货币类型
