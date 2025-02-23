@@ -27,6 +27,13 @@ type Order struct {
 	Remark          *string    `gorm:"column:remark;comment:订单备注"`
 }
 
+type OrderItem struct {
+	ID        int64  `gorm:"column:id;primary_key;auto_increment;comment:订单项ID"`
+	OrderId   string `gorm:"column:order_id; not null; comment:关联的订单ID"`
+	ProductId int64  `gorm:"column:product_id; not null; comment:关联的商品ID"`
+	Quantity  int64  `gorm:"column:quantity; not null; comment:商品数量"`
+}
+
 func (u Order) TableName() string {
 	return "orders"
 }
@@ -67,8 +74,12 @@ func CreateOrder(db *gorm.DB, order *Order) {
 	mysql.DB.Table("orders").Create(order)
 }
 
+func CreateOrderItem(db *gorm.DB, orderItem *OrderItem) error {
+	return mysql.DB.Table("order_item").Create(orderItem).Error
+}
+
 func UpdateOrder(db *gorm.DB, order *Order) error {
-	return db.Exec(`update orders 
+	return db.Exec(`update order 
 					   set shipping_address=? ,
 					       recipient_name=?,
 					       phone_number=?
