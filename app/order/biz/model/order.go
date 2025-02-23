@@ -54,6 +54,28 @@ func GetOrdersByUserID(db *gorm.DB, UserID int64) ([]Order, error) {
 	return orders, nil
 }
 
+func GetOrder(db *gorm.DB, ID string) (Order, error) {
+	var row Order
+	err := db.Model(&Order{}).Where("ID=?", ID).Find(&row).Error
+	if err != nil {
+		return row, fmt.Errorf("failed to find order: %w", err)
+	}
+	return row, nil
+}
+
 func CreateOrder(db *gorm.DB, order *Order) {
 	mysql.DB.Table("orders").Create(order)
+}
+
+func UpdateOrder(db *gorm.DB, order *Order) error {
+	return db.Exec(`update orders 
+					   set shipping_address=? ,
+					       recipient_name=?,
+					       phone_number=?
+					   where id=?`,
+		order.ShippingAddress,
+		order.RecipientName,
+		order.PhoneNumber,
+		order.ID,
+	).Error
 }

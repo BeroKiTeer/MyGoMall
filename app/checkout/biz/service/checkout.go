@@ -34,7 +34,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		if err != nil {
 			return nil, err
 		}
-		if uint32(val.Quantity) > productResp.Product.Stock {
+		if int64(val.Quantity) > productResp.Product.Stock {
 			return nil, errors.New("库存不足！")
 		}
 
@@ -42,7 +42,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		//ToDo...
 
 		//将该商品加入订单
-		orderItems = append(orderItems, &order.OrderItem{Item: val})
+		orderItems = append(orderItems, val)
 		//计算金额
 		amount += productResp.Product.Price * int64(val.Quantity)
 	}
