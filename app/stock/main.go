@@ -1,6 +1,7 @@
 package main
 
 import (
+	"auth/biz/dal"
 	"net"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 )
 
 func main() {
+	dal.Init()
 	opts := kitexInit()
 
 	svr := stockservice.NewServer(new(StockServiceImpl), opts...)
