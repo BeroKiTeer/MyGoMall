@@ -73,7 +73,7 @@ ReadFieldError:
 }
 
 func (x *Product) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Id, offset, err = fastpb.ReadUint32(buf, _type)
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -98,7 +98,7 @@ func (x *Product) fastReadField5(buf []byte, _type int8) (offset int, err error)
 }
 
 func (x *Product) fastReadField6(buf []byte, _type int8) (offset int, err error) {
-	x.Stock, offset, err = fastpb.ReadUint32(buf, _type)
+	x.Stock, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -218,7 +218,7 @@ ReadFieldError:
 }
 
 func (x *GetProductReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Id, offset, err = fastpb.ReadUint32(buf, _type)
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -358,7 +358,7 @@ ReadFieldError:
 }
 
 func (x *CreateProductResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.ProductId, offset, err = fastpb.ReadUint32(buf, _type)
+	x.ProductId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -448,7 +448,7 @@ ReadFieldError:
 }
 
 func (x *DeleteProductReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Id, offset, err = fastpb.ReadUint32(buf, _type)
+	x.Id, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -510,8 +510,8 @@ ReadFieldError:
 func (x *GetProductsBatchReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	offset, err = fastpb.ReadList(buf, _type,
 		func(buf []byte, _type int8) (n int, err error) {
-			var v uint32
-			v, offset, err = fastpb.ReadUint32(buf, _type)
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
 			if err != nil {
 				return offset, err
 			}
@@ -571,7 +571,7 @@ func (x *Product) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetId())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -611,7 +611,7 @@ func (x *Product) fastWriteField6(buf []byte) (offset int) {
 	if x.Stock == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 6, x.GetStock())
+	offset += fastpb.WriteInt64(buf[offset:], 6, x.GetStock())
 	return offset
 }
 
@@ -705,7 +705,7 @@ func (x *GetProductReq) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetId())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -787,7 +787,7 @@ func (x *CreateProductResp) fastWriteField1(buf []byte) (offset int) {
 	if x.ProductId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetProductId())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetProductId())
 	return offset
 }
 
@@ -844,7 +844,7 @@ func (x *DeleteProductReq) fastWriteField1(buf []byte) (offset int) {
 	if x.Id == 0 {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetId())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetId())
 	return offset
 }
 
@@ -888,7 +888,7 @@ func (x *GetProductsBatchReq) fastWriteField1(buf []byte) (offset int) {
 	offset += fastpb.WriteListPacked(buf[offset:], 1, len(x.GetIds()),
 		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
 			offset := 0
-			offset += fastpb.WriteUint32(buf[offset:], numTagOrKey, x.GetIds()[numIdxOrVal])
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.GetIds()[numIdxOrVal])
 			return offset
 		})
 	return offset
@@ -932,7 +932,7 @@ func (x *Product) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(1, x.GetId())
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -972,7 +972,7 @@ func (x *Product) sizeField6() (n int) {
 	if x.Stock == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(6, x.GetStock())
+	n += fastpb.SizeInt64(6, x.GetStock())
 	return n
 }
 
@@ -1066,7 +1066,7 @@ func (x *GetProductReq) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(1, x.GetId())
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -1148,7 +1148,7 @@ func (x *CreateProductResp) sizeField1() (n int) {
 	if x.ProductId == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(1, x.GetProductId())
+	n += fastpb.SizeInt64(1, x.GetProductId())
 	return n
 }
 
@@ -1205,7 +1205,7 @@ func (x *DeleteProductReq) sizeField1() (n int) {
 	if x.Id == 0 {
 		return n
 	}
-	n += fastpb.SizeUint32(1, x.GetId())
+	n += fastpb.SizeInt64(1, x.GetId())
 	return n
 }
 
@@ -1249,7 +1249,7 @@ func (x *GetProductsBatchReq) sizeField1() (n int) {
 	n += fastpb.SizeListPacked(1, len(x.GetIds()),
 		func(numTagOrKey, numIdxOrVal int32) int {
 			n := 0
-			n += fastpb.SizeUint32(numTagOrKey, x.GetIds()[numIdxOrVal])
+			n += fastpb.SizeInt64(numTagOrKey, x.GetIds()[numIdxOrVal])
 			return n
 		})
 	return n

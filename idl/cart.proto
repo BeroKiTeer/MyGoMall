@@ -16,7 +16,7 @@ service CartService {
 
 // 购物车中的一项商品
 message CartItem {
-  uint32 product_id = 1;      // 商品ID
+  int64 product_id = 1;      // 商品ID
   int32  quantity = 2;        // 商品数量
 }
 

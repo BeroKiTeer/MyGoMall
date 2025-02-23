@@ -15,7 +15,7 @@ func QueryItemsByUser(userCart *cart.Cart) {
 }
 
 // CheckItemsByUserAndProduct 检查商品是否已存在在购物车
-func CheckItemsByUserAndProduct(UserID uint32, ProductID uint32, targetItemQuantity *int32) {
+func CheckItemsByUserAndProduct(UserID uint32, ProductID int64, targetItemQuantity *int32) {
 	mysql.DB.Table("carts").
 		Select("quantity").
 		Where("product_id = ?", ProductID).
@@ -31,7 +31,7 @@ func CheckItemsByUser(UserID uint32, targetItemQuantity *int32) {
 }
 
 // AddItem 向用户购物车中添加商品
-func AddItem(UserID uint32, ProductID uint32, Quantity int32) {
+func AddItem(UserID uint32, ProductID int64, Quantity int32) {
 	mysql.DB.Table("carts").Create(&Cart{
 		UserID:    UserID,
 		ProductID: ProductID,
@@ -40,7 +40,7 @@ func AddItem(UserID uint32, ProductID uint32, Quantity int32) {
 }
 
 // UpdateItem 在已有的商品上面更新数量
-func UpdateItem(UserID uint32, ProductID uint32, Quantity int32) {
+func UpdateItem(UserID uint32, ProductID int64, Quantity int32) {
 	mysql.DB.Table("carts").
 		Select("quantity").
 		Where("product_id = ?", ProductID).

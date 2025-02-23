@@ -21,7 +21,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 	// Finish your business logic.
 	// TODO: 1. 验证库存
 	_, err = rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{
-		Id: req.OrderItems.Item.Items[0].ProductId,
+		Id: req.OrderItems.ProductId,
 	})
 
 	// TODO: 2. 计算订单价格 (checkout RPC)

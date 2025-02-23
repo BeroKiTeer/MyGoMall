@@ -66,5 +66,5 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	if err = tx.Commit().Error; err != nil {
 		return nil, err
 	}
-	return &product.CreateProductResp{ProductId: uint32(newProduct.ID)}, nil
+	return &product.CreateProductResp{ProductId: newProduct.ID}, nil
 }

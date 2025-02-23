@@ -24,7 +24,7 @@ func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *produ
 	resp = &product.SearchProductsResp{}
 	for i, item := range products {
 		pro := &product.Product{
-			Id:          uint32(item.ID),
+			Id:          item.ID,
 			Name:        item.Name,
 			Description: item.Description,
 			Images:      item.Images,
