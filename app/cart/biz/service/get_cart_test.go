@@ -2,8 +2,8 @@ package service
 
 import (
 	"cart/biz/dal/mysql"
-	cart "cart/kitex_gen/cart"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"testing"
 )
 

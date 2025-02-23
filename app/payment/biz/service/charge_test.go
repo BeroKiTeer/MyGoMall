@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"payment/biz/dal/mysql"
-	payment "payment/kitex_gen/payment"
 	"testing"
 )
 

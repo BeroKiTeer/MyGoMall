@@ -8,9 +8,9 @@ import (
 	"context"
 
 	product "apis/hertz_gen/api/product"
+	product_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	product_kitex "product/kitex_gen/product"
 )
 
 // ListProducts .

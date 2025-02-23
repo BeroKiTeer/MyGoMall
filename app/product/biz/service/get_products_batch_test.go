@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	product "product/kitex_gen/product"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"testing"
 )
 

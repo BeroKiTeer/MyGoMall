@@ -2,7 +2,7 @@ package model
 
 import (
 	"cart/biz/dal/mysql"
-	"cart/kitex_gen/cart"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"gorm.io/gorm"
 )
 

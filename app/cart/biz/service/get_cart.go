@@ -2,9 +2,9 @@ package service
 
 import (
 	"cart/biz/model"
-	cart "cart/kitex_gen/cart"
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 )
 
 type GetCartService struct {

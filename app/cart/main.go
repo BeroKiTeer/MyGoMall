@@ -3,6 +3,7 @@ package main
 import (
 	"cart/biz/dal"
 	"cart/rpc"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart/cartservice"
 	consul "github.com/kitex-contrib/registry-consul"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
@@ -10,7 +11,6 @@ import (
 	"time"
 
 	"cart/conf"
-	"cart/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"

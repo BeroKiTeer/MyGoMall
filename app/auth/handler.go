@@ -2,8 +2,8 @@ package main
 
 import (
 	"auth/biz/service"
-	auth "auth/kitex_gen/auth"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 )
 
 // AuthServiceImpl implements the last service interface defined in the IDL.

@@ -4,16 +4,16 @@ package user
 
 import (
 	"apis/biz/utils"
-	"auth/kitex_gen/auth"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"log"
 	"strconv"
 
 	"apis/hertz_gen/api/user"
 	"apis/rpc"
+	user_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	user_kitex "user/kitex_gen/user"
 )
 
 // UserGet .
