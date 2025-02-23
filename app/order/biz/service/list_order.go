@@ -30,7 +30,6 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 				StreetAddress:   item.ShippingAddress,
 				Name:            item.RecipientName,
 			},
-			OrderItems: &order.OrderItem{},
 		}
 		resp.Orders = append(resp.Orders, ord)
 	}

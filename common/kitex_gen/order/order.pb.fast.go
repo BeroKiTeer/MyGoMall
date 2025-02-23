@@ -158,7 +158,7 @@ func (x *PlaceOrderReq) fastReadField5(buf []byte, _type int8) (offset int, err 
 	if err != nil {
 		return offset, err
 	}
-	x.OrderItems = &v
+	x.OrderItems = append(x.OrderItems, &v)
 	return offset, nil
 }
 
@@ -716,7 +716,9 @@ func (x *PlaceOrderReq) fastWriteField5(buf []byte) (offset int) {
 	if x.OrderItems == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 5, x.GetOrderItems())
+	for i := range x.GetOrderItems() {
+		offset += fastpb.WriteMessage(buf[offset:], 5, x.GetOrderItems()[i])
+	}
 	return offset
 }
 
@@ -1133,7 +1135,9 @@ func (x *PlaceOrderReq) sizeField5() (n int) {
 	if x.OrderItems == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(5, x.GetOrderItems())
+	for i := range x.GetOrderItems() {
+		n += fastpb.SizeMessage(5, x.GetOrderItems()[i])
+	}
 	return n
 }
 
