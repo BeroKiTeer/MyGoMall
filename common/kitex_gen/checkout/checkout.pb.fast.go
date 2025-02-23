@@ -4,7 +4,6 @@ package checkout
 
 import (
 	fmt "fmt"
-	cart "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	order "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	fastpb "github.com/cloudwego/fastpb"
 )
@@ -90,7 +89,7 @@ func (x *CheckoutReq) fastReadField5(buf []byte, _type int8) (offset int, err er
 }
 
 func (x *CheckoutReq) fastReadField6(buf []byte, _type int8) (offset int, err error) {
-	var v cart.CartItem
+	var v order.OrderItem
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -324,5 +323,4 @@ var fieldIDToName_CheckoutResp = map[int32]string{
 	2: "Amount",
 }
 
-var _ = cart.File_cart_proto
 var _ = order.File_order_proto
