@@ -26,30 +26,34 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// Registry 注册中心，用于注册指标
 var Registry *prometheus.Registry
 
+// InitMetric 初始化指标
 func InitMetric(serviceName string, metricsPort string, registryAddr string) {
 	Registry = prometheus.NewRegistry()
+	// 注册 go 运行时相关指标
 	Registry.MustRegister(collectors.NewGoCollector())
+	// 注册进程相关指标
 	Registry.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
-
+	// Prometheus 注册到 Consul 注册中心
 	r, _ := consul.NewConsulRegister(registryAddr)
 
 	addr, _ := net.ResolveTCPAddr("tcp", metricsPort)
-
+	// 构建注册信息
 	registryInfo := &registry.Info{
 		ServiceName: "prometheus",
 		Addr:        addr,
 		Weight:      1,
 		Tags:        map[string]string{"service": serviceName},
 	}
-
 	_ = r.Register(registryInfo)
-
+	// 注册关闭 Hook 函数，在服务关闭时注销注册信息
 	server.RegisterShutdownHook(func() {
 		r.Deregister(registryInfo) //nolint:errcheck
 	})
-
+	// 启动 HTTP 服务，暴露指标
 	http.Handle("/metrics", promhttp.HandlerFor(Registry, promhttp.HandlerOpts{}))
+	// 异步启动 Server
 	go http.ListenAndServe(metricsPort, nil) //nolint:errcheck
 }

@@ -1,22 +1,19 @@
 package main
 
 import (
-	"cart/rpc"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
-	consul "github.com/kitex-contrib/registry-consul"
-	"log"
 	"net"
-	"product/biz/dal"
+	"payment/biz/dal"
 	"time"
 
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"product/conf"
+	"payment/conf"
 )
 
 var (
@@ -26,10 +23,11 @@ var (
 
 func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
-	opts := kitexInit()
-	rpc.InitClient() //初始化客户端
-	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
 	dal.Init()
+	opts := kitexInit()
+
+	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
+
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
@@ -47,12 +45,6 @@ func kitexInit() (opts []server.Option) {
 		RegistryAddr:       RegistryAddr,
 	}))
 
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
-
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)
@@ -68,10 +60,7 @@ func kitexInit() (opts []server.Option) {
 	}
 	klog.SetOutput(asyncWriter)
 	server.RegisterShutdownHook(func() {
-		err := asyncWriter.Sync()
-		if err != nil {
-			return
-		}
+		asyncWriter.Sync()
 	})
 	return
 }
