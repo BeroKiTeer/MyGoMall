@@ -2,6 +2,7 @@ package main
 
 import (
 	"auth/biz/dal"
+	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
@@ -23,8 +24,11 @@ var (
 
 func main() {
 	dal.Init()
-	opts := kitexInit()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	// 服务关闭之前把剩余的链路数据都上传完
+	defer p.Shutdown(context.Background())
+	opts := kitexInit()
 
 	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
 

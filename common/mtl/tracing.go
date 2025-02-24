@@ -16,6 +16,7 @@ package mtl
 
 import (
 	"context"
+	"github.com/kitex-contrib/obs-opentelemetry/provider"
 
 	"github.com/cloudwego/kitex/server"
 	"go.opentelemetry.io/otel"
@@ -27,7 +28,7 @@ import (
 
 var TracerProvider *tracesdk.TracerProvider
 
-func InitTracing(serviceName string) {
+func InitTracing(serviceName string) provider.OtelProvider {
 	exporter, err := otlptracegrpc.New(context.Background())
 	if err != nil {
 		panic(err)
@@ -42,4 +43,5 @@ func InitTracing(serviceName string) {
 	}
 	TracerProvider = tracesdk.NewTracerProvider(tracesdk.WithSpanProcessor(processor), tracesdk.WithResource(res))
 	otel.SetTracerProvider(TracerProvider)
+	return TracerProvider
 }
