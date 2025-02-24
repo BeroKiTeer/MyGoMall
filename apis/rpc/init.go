@@ -13,7 +13,8 @@ func InitClient() {
 		initUserClient()
 		initProductClient()
 		initCartClient()
-		//initOrderClient()
+		initOrderClient()
+		initCheckoutClient()
 		initPaymentClient()
 	})
 }
