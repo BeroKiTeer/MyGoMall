@@ -25,11 +25,12 @@ var (
 )
 
 func main() {
+	dal.Init()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
 	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
-	dal.Init()
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())

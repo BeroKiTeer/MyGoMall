@@ -25,6 +25,7 @@ var (
 
 func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	dal.Init()
 	rpc.InitClient() //初始化客户端
 	opts := kitexInit()
