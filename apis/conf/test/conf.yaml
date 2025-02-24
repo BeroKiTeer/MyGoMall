@@ -1,6 +1,7 @@
 hertz:
   service: "apis"
   address: "127.0.0.1:8080"
+  metrics_port: "127.0.0.1:8090"
   enable_pprof: true
   enable_gzip: true
   enable_access_log: true

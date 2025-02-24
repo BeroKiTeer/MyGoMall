@@ -48,6 +48,8 @@ type Hertz struct {
 	LogMaxSize      int    `yaml:"log_max_size"`
 	LogMaxBackups   int    `yaml:"log_max_backups"`
 	LogMaxAge       int    `yaml:"log_max_age"`
+	RegistryAddr    string `yaml:"registry_addr"`
+	MetricsPort     string `yaml:"metrics_port"`
 }
 
 type Registry struct {

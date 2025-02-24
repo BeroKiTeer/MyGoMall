@@ -15,6 +15,7 @@
 package mtl
 
 import (
+	"github.com/cloudwego/kitex/pkg/klog"
 	"net"
 	"net/http"
 
@@ -30,7 +31,7 @@ import (
 var Registry *prometheus.Registry
 
 // InitMetric 初始化指标
-func InitMetric(serviceName string, metricsPort string, registryAddr string) {
+func InitMetric(serviceName string, metricsPort string, registryAddr string) (registry.Registry, *registry.Info) {
 	Registry = prometheus.NewRegistry()
 	// 注册 go 运行时相关指标
 	Registry.MustRegister(collectors.NewGoCollector())
@@ -50,10 +51,15 @@ func InitMetric(serviceName string, metricsPort string, registryAddr string) {
 	_ = r.Register(registryInfo)
 	// 注册关闭 Hook 函数，在服务关闭时注销注册信息
 	server.RegisterShutdownHook(func() {
-		r.Deregister(registryInfo) //nolint:errcheck
+		err := r.Deregister(registryInfo)
+		if err != nil {
+			klog.Fatal(err)
+			return
+		}
 	})
 	// 启动 HTTP 服务，暴露指标
 	http.Handle("/metrics", promhttp.HandlerFor(Registry, promhttp.HandlerOpts{}))
 	// 异步启动 Server
 	go http.ListenAndServe(metricsPort, nil) //nolint:errcheck
+	return r, registryInfo
 }
