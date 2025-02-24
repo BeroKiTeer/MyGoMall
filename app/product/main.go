@@ -3,6 +3,8 @@ package main
 import (
 	"cart/rpc"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
+	"github.com/BeroKiTeer/MyGoMall/common/mtl"
+	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	consul "github.com/kitex-contrib/registry-consul"
 	"log"
 	"net"
@@ -10,7 +12,6 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"go.uber.org/zap/zapcore"
@@ -18,11 +19,18 @@ import (
 	"product/conf"
 )
 
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+)
+
 func main() {
+	dal.Init()
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
 	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
-	dal.Init()
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
@@ -35,11 +43,9 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])

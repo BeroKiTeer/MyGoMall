@@ -1,21 +1,19 @@
 package main
 
 import (
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user/userservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"net"
+	"payment/biz/dal"
+	"time"
+
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"log"
-	"net"
-	"time"
-	"user/biz/dal"
-	"user/conf"
-	"user/rpc"
+	"payment/conf"
 )
 
 var (
@@ -27,10 +25,9 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	dal.Init()
-	rpc.InitClient() //初始化客户端
 	opts := kitexInit()
 
-	svr := userservice.NewServer(new(UserServiceImpl), opts...)
+	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
 
 	err := svr.Run()
 	if err != nil {
@@ -48,12 +45,6 @@ func kitexInit() (opts []server.Option) {
 		CurrentServiceName: ServiceName,
 		RegistryAddr:       RegistryAddr,
 	}))
-
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()

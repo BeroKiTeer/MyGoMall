@@ -1,6 +1,7 @@
 package stock
 
 import (
+	"github.com/cloudwego/kitex/pkg/discovery"
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
@@ -10,10 +11,8 @@ var (
 	// todo edit custom config
 	defaultClient     RPCClient
 	defaultDstService = "stock"
-	defaultClientOpts = []client.Option{
-		client.WithHostPorts("127.0.0.1:8888"),
-	}
-	once sync.Once
+	consulResolver    discovery.Resolver // 解析器字段
+	once              sync.Once
 )
 
 func init() {
@@ -22,7 +21,10 @@ func init() {
 
 func DefaultClient() RPCClient {
 	once.Do(func() {
-		defaultClient = newClient(defaultDstService, defaultClientOpts...)
+		opts := []client.Option{
+			client.WithResolver(consulResolver), // 使用Consul解析器
+		}
+		defaultClient = newClient(defaultDstService, opts...)
 	})
 	return defaultClient
 }
@@ -36,5 +38,10 @@ func newClient(dstService string, opts ...client.Option) RPCClient {
 }
 
 func InitClient(dstService string, opts ...client.Option) {
+	baseOpts := []client.Option{
+		client.WithResolver(consulResolver),
+	}
+	opts = append(baseOpts, opts...)
+
 	defaultClient = newClient(dstService, opts...)
 }

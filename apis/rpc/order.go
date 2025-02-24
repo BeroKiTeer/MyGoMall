@@ -1,24 +1,24 @@
 package rpc
 
 import (
-	"auth/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/cloudwego/kitex/client"
+	"order/conf"
 )
 
 var (
-	AuthClient authservice.Client
+	OrderClient orderservice.Client
 )
 
-func initAuthClient() {
+func initOrderClient() {
 	opts := []client.Option{
 		client.WithSuite(clientsuite.CommonClientSuite{
 			CurrentServiceName: conf.GetConf().Kitex.Service,
 			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 		}),
 	}
-	AuthClient, err = authservice.NewClient("auth", opts...)
+	OrderClient, err = orderservice.NewClient("order", opts...)
 	if err != nil {
 		panic(err)
 	}

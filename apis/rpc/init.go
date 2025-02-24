@@ -4,6 +4,7 @@ import "sync"
 
 var (
 	once sync.Once
+	err  error
 )
 
 func InitClient() {
@@ -12,7 +13,8 @@ func InitClient() {
 		initUserClient()
 		initProductClient()
 		initCartClient()
-		//initOrderClient()
+		initOrderClient()
+		initCheckoutClient()
 		initPaymentClient()
 	})
 }
