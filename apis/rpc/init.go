@@ -4,6 +4,7 @@ import "sync"
 
 var (
 	once sync.Once
+	err  error
 )
 
 func InitClient() {
