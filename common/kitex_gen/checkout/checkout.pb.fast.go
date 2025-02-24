@@ -45,6 +45,11 @@ func (x *CheckoutReq) FastRead(buf []byte, _type int8, number int32) (offset int
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 7:
+		offset, err = x.fastReadField7(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -98,6 +103,11 @@ func (x *CheckoutReq) fastReadField6(buf []byte, _type int8) (offset int, err er
 	return offset, nil
 }
 
+func (x *CheckoutReq) fastReadField7(buf []byte, _type int8) (offset int, err error) {
+	x.PaymentMethod, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
 func (x *CheckoutResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -143,6 +153,7 @@ func (x *CheckoutReq) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField4(buf[offset:])
 	offset += x.fastWriteField5(buf[offset:])
 	offset += x.fastWriteField6(buf[offset:])
+	offset += x.fastWriteField7(buf[offset:])
 	return offset
 }
 
@@ -196,6 +207,14 @@ func (x *CheckoutReq) fastWriteField6(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *CheckoutReq) fastWriteField7(buf []byte) (offset int) {
+	if x.PaymentMethod == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 7, x.GetPaymentMethod())
+	return offset
+}
+
 func (x *CheckoutResp) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -231,6 +250,7 @@ func (x *CheckoutReq) Size() (n int) {
 	n += x.sizeField4()
 	n += x.sizeField5()
 	n += x.sizeField6()
+	n += x.sizeField7()
 	return n
 }
 
@@ -284,6 +304,14 @@ func (x *CheckoutReq) sizeField6() (n int) {
 	return n
 }
 
+func (x *CheckoutReq) sizeField7() (n int) {
+	if x.PaymentMethod == "" {
+		return n
+	}
+	n += fastpb.SizeString(7, x.GetPaymentMethod())
+	return n
+}
+
 func (x *CheckoutResp) Size() (n int) {
 	if x == nil {
 		return n
@@ -316,6 +344,7 @@ var fieldIDToName_CheckoutReq = map[int32]string{
 	4: "Email",
 	5: "Address",
 	6: "Items",
+	7: "PaymentMethod",
 }
 
 var fieldIDToName_CheckoutResp = map[int32]string{

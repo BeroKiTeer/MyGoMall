@@ -20,7 +20,7 @@ import "order.proto";
 
 
 message checkoutReq{
-  string token=1 [json_name="token"];
+  uint32 user_id=1 [json_name="user_id"];
   string firstname = 2 [json_name="firstname"];                      // 用户的名字
   string lastname = 3 [json_name="lastname"];                       // 用户的姓氏
   string email = 4 [json_name="email"];                          // 用户的邮箱
@@ -32,7 +32,7 @@ message checkoutReq{
 message checkoutResp{
   string order_id = 1 [json_name="order_id"];                // 订单 ID
   string url_callback=2[json_name="url_callback"]; //用于重定向的url
-  int64 amount=3[json_name="url_callback"];//价格
+  int64 amount=3[json_name="amount"];//价格
 }
 
 service checkoutService{

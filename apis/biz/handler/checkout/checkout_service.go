@@ -3,18 +3,13 @@
 package checkout
 
 import (
-	MQ "apis/biz/dal/RabbitMQ"
 	"apis/biz/utils"
 	"apis/hertz_gen/api/checkout"
 	"apis/rpc"
 	"context"
-	"fmt"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	checkout_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout"
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/json"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/streadway/amqp"
 )
 
 // Checkout .
@@ -33,43 +28,21 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	//获取请求头的token
-	token := c.Request.Header.Get("Authorization")
-	//获取用户id
-	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
-	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
-		return
-	}
-	//获取调用rpc服务所需的请求字段
+
 	reqRpc := checkout_kitex.CheckoutReq{
-		UserId:    uint32(rawID.UserId),
-		Firstname: req.Firstname,
-		Lastname:  req.Lastname,
-		Email:     req.Email,
-		Address:   req.Address,
-		Items:     nil,
+		UserId:        req.UserId,
+		Firstname:     req.Firstname,
+		Lastname:      req.Lastname,
+		Email:         req.Email,
+		Address:       req.Address,
+		Items:         nil,
+		PaymentMethod: req.PaymentMethod,
 	}
 	//调用后端rpc服务的方法返回金额与订单号
 	checkoutResp, err := rpc.CheckoutClient.Checkout(ctx, &reqRpc)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
-	}
-	switch req.PaymentMethod {
-	case "credit_card":
-		{
-			urlCallback = "/api/pay/card_pay"
-			cardPayReq := CardPaymentRequest{
-				OrderId:     checkoutResp.OrderId,
-				Amount:      checkoutResp.Amount,
-				CallbackURL: "/api/checkout",
-			}
-			err := sendCardPaymentRequest(ctx, cardPayReq)
-			if err != nil {
-				return
-			}
-		}
 	}
 
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, checkout.CheckoutResp{
@@ -78,81 +51,4 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 		Amount:      checkoutResp.Amount,
 	})
 
-}
-
-type CardPaymentRequest struct {
-	OrderId     string `json:"order_id"`
-	Amount      int64  `json:"amount"`
-	CallbackURL string `json:"callback_url"`
-}
-
-func sendCardPaymentRequest(ctx context.Context, paymentReq CardPaymentRequest) error {
-	//初始化消息队列
-	mq := MQ.NewRabbitMQ("cardPay_queue", "cardPay_request_exchange", "cardPay_request")
-
-	//关闭队列，释放资源
-	defer mq.ReleaseRes()
-
-	_, err := mq.Channel.QueueDeclare(
-		mq.QueueName, //队列名
-		true,         //是否持久化（防止关机后队列资源丢失）
-		false,        //是否自动删除(前提是至少有一个消费者连接到这个队列，之后所有与这个队列连接的消费者都断开时，才会自动删除。注意：生产者客户端创建这个队列，或者没有消费者客户端与这个队列连接时，都不会自动删除这个队列)
-		false,        //排他队列标志，设置为 true 时队列仅对声明它的连接可见，连接关闭后自动删除
-		false,        //非阻塞标志，设置为 true 时将不等待服务器响应
-		nil,          //额外参数，用于配置队列特性（如消息TTL、队列长度限制等）
-	)
-	if err != nil {
-		fmt.Println("声明队列失败", err)
-		return err
-	}
-	// 2.声明交换器
-	err = mq.Channel.ExchangeDeclare(
-		mq.Exchange, //交换器名
-		"topic",     //exchange type：一般用fanout、direct、topic
-		true,        // 是否持久化
-		false,       //是否自动删除（自动删除的前提是至少有一个队列或者交换器与这和交换器绑定，之后所有与这个交换器绑定的队列或者交换器都与此解绑）
-		false,       //设置是否内置的。true表示是内置的交换器，客户端程序无法直接发送消息到这个交换器中，只能通过交换器路由到交换器这种方式
-		false,       // 是否阻塞
-		nil,         // 额外属性
-	)
-	if err != nil {
-		fmt.Println("声明交换器失败", err)
-		return err
-	}
-	// 3.建立Binding(可随心所欲建立多个绑定关系)
-	err = mq.Channel.QueueBind(
-		mq.QueueName,  // 绑定的队列名称
-		mq.RoutingKey, // bindkey 用于消息路由分发的key
-		mq.Exchange,   // 绑定的exchange名
-		false,         // 是否阻塞
-		nil,           // 额外属性
-	)
-
-	if err != nil {
-		fmt.Println("绑定队列和交换器失败", err)
-		return err
-	}
-
-	// 修改消息发布部分的代码
-	jsonData, err := json.Marshal(paymentReq)
-	if err != nil {
-		fmt.Println("JSON序列化失败", err)
-		return err
-	}
-
-	// 4.发送消息
-	err = mq.Channel.Publish(
-		mq.Exchange,   // 交换器名
-		mq.RoutingKey, // routing key
-		false,         // 是否返回消息(匹配队列)，如果为true, 会根据binding规则匹配queue，如未匹配queue，则把发送的消息返回给发送者
-		false,         // 是否返回消息(匹配消费者)，如果为true, 消息发送到queue后发现没有绑定消费者，则把发送的消息返回给发送者
-		amqp.Publishing{ // 发送的消息，固定有消息体和一些额外的消息头，包中提供了封装对象
-			ContentType: "application/json", // 消息内容的类型
-			Body:        jsonData,           // 消息内容
-		},
-	)
-	if err != nil {
-		return err
-	}
-	return nil
 }
