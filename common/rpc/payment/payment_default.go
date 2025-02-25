@@ -24,3 +24,12 @@ func CancelPayment(ctx context.Context, req *payment.CancelReq, callOptions ...c
 	}
 	return resp, nil
 }
+
+func ChargeByThirdParty(ctx context.Context, req *payment.ChargeByThirdPartyReq, callOptions ...callopt.Option) (resp *payment.ChargeByThirdPartyResp, err error) {
+	resp, err = defaultClient.ChargeByThirdParty(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "ChargeByThirdParty call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
