@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/google/uuid"
 	"payment/biz/dal/mysql"
 	"payment/biz/model"
-	payment "payment/kitex_gen/payment"
 	"time"
 )
 

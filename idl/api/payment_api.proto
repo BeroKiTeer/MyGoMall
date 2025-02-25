@@ -12,18 +12,10 @@ service PaymentService {
   }
 }
 
-// 用户的信用卡信息
-message CreditCardInfo {
-  string credit_card_number = 1          [(api.form) = "credit_card_number"];             // 信用卡号
-  int32 credit_card_cvv = 2              [(api.form) = "credit_card_cvv"];                // 信用卡 CVV
-  int32 credit_card_expiration_year = 3  [(api.form) = "credit_card_expiration_year"];    // 信用卡到期年份
-  int32 credit_card_expiration_month = 4 [(api.form) = "credit_card_expiration_month"];   // 信用卡到期月份
-}
-
 message ChargeReq {
   int64 amount = 1                 [(api.form) = "amount"];        // 支付金额
-  CreditCardInfo credit_card = 2   [(api.form) = "credit_card"];   // 信用卡信息
-  string order_id = 3              [(api.form) = "order_id"];      // 订单 ID
+  string order_id = 2              [(api.form) = "order_id"];      // 订单 ID
+  string way = 3                   [(api.form) = "way"];
 }
 
 message ChargeResp {

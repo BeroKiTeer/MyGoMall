@@ -38,16 +38,11 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp, err := rpc.PaymentClient.Charge(ctx, &payment_kitex.ChargeReq{
-		Amount: req.Amount,
-		CreditCard: &payment_kitex.CreditCardInfo{
-			CreditCardNumber:          req.CreditCard.CreditCardNumber,
-			CreditCardCvv:             req.CreditCard.CreditCardCvv,
-			CreditCardExpirationYear:  req.CreditCard.CreditCardExpirationYear,
-			CreditCardExpirationMonth: req.CreditCard.CreditCardExpirationMonth,
-		},
+	resp, err := rpc.PaymentClient.ChargeByThirdParty(ctx, &payment_kitex.ChargeByThirdPartyReq{
+		Amount:  req.Amount,
 		OrderId: req.OrderId,
 		UserId:  uint32(userID.UserId),
+		Way:     req.Way,
 	})
 
 	if err != nil {
