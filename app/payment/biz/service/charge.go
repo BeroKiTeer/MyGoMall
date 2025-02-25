@@ -48,6 +48,7 @@ func (s *ChargeService) Run(req *payment.ChargeReq) (resp *payment.ChargeResp, e
 		TransactionID: transactionID.String(),
 		Amount:        req.Amount,
 		PayAt:         time.Now(),
+		Way:           "credit_card",
 	})
 
 	if err != nil {
