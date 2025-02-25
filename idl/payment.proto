@@ -10,6 +10,8 @@ service PaymentService {
   rpc Charge(ChargeReq) returns (ChargeResp) {}
   //取消支付
   rpc CancelPayment(CancelReq) returns (CancelResp) {}
+  // 第三方支付
+  rpc ChargeByThirdParty(ChargeByThirdPartyReq) returns (ChargeByThirdPartyResp) {}
 }
 
 // 用户的信用卡信息
@@ -41,4 +43,17 @@ message CancelReq {
 // 取消支付的响应消息
 message CancelResp {
   string status = 1;                // 状态，"success" 或 "error"。
+}
+
+// 第三方支付请求
+message ChargeByThirdPartyReq {
+  int64 amount = 1;                  // 支付金额
+  string order_id = 2;                // 订单 ID
+  uint32 user_id = 3;
+  string way = 4;
+}
+
+// 第三方支付相应
+message ChargeByThirdPartyResp {
+  string transaction_id = 1;          // 交易 ID
 }

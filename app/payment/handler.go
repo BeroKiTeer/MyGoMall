@@ -22,3 +22,10 @@ func (s *PaymentServiceImpl) CancelPayment(ctx context.Context, req *payment.Can
 
 	return resp, err
 }
+
+// ChargeByThirdParty implements the PaymentServiceImpl interface.
+func (s *PaymentServiceImpl) ChargeByThirdParty(ctx context.Context, req *payment.ChargeByThirdPartyReq) (resp *payment.ChargeByThirdPartyResp, err error) {
+	resp, err = service.NewChargeByThirdPartyService(ctx).Run(req)
+
+	return resp, err
+}

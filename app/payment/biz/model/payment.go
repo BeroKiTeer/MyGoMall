@@ -13,6 +13,7 @@ type Payment struct {
 	TransactionID string    `json:"transaction_id"`
 	Amount        int64     `json:"amount"`
 	PayAt         time.Time `json:"pay_at"`
+	Way           string    `json:"way"`
 	Status        uint8     `json:"status"`
 }
 
