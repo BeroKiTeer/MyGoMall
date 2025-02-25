@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
+	"stock/biz/dal/mysql"
 	"stock/biz/model"
 )
 
@@ -18,7 +19,7 @@ func NewReduceItemService(ctx context.Context) *ReduceItemService {
 func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceItemResp, err error) {
 
 	// 先看看有没有这么多商品
-	quantity, err := model.CheckQuantity(req.ProductId)
+	quantity, err := model.CheckQuantity(mysql.DB, req.ProductId)
 
 	// 数据库查询遇到了问题
 	if err != nil {
@@ -31,7 +32,7 @@ func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceIte
 	}
 
 	// 减少商品数量
-	err = model.ReduceItem(req.ProductId, req.Quantity)
+	err = model.ReduceItem(mysql.DB, req.ProductId, req.Quantity)
 
 	return &stock.ReduceItemResp{Success: true}, nil
 }

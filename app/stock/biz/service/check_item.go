@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
+	"stock/biz/dal/mysql"
 	"stock/biz/model"
 )
 
@@ -17,7 +18,7 @@ func NewCheckItemService(ctx context.Context) *CheckItemService {
 func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemResp, err error) {
 
 	// 查询商品剩余
-	quantity, err := model.CheckQuantity(req.ProductId)
+	quantity, err := model.CheckQuantity(mysql.DB, req.ProductId)
 
 	return &stock.CheckItemResp{Quantity: quantity}, err
 }
