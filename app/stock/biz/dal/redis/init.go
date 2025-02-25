@@ -9,6 +9,7 @@ import (
 
 var (
 	RedisClient *redis.Client
+	Nil         redis.Error = redis.Nil
 )
 
 func Init() {
