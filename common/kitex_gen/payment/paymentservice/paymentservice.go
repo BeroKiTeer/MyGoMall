@@ -29,6 +29,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"ChargeByThirdParty": kitex.NewMethodInfo(
+		chargeByThirdPartyHandler,
+		newChargeByThirdPartyArgs,
+		newChargeByThirdPartyResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -401,6 +408,159 @@ func (p *CancelPaymentResult) GetResult() interface{} {
 	return p.Success
 }
 
+func chargeByThirdPartyHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(payment.ChargeByThirdPartyReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(payment.PaymentService).ChargeByThirdParty(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *ChargeByThirdPartyArgs:
+		success, err := handler.(payment.PaymentService).ChargeByThirdParty(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*ChargeByThirdPartyResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newChargeByThirdPartyArgs() interface{} {
+	return &ChargeByThirdPartyArgs{}
+}
+
+func newChargeByThirdPartyResult() interface{} {
+	return &ChargeByThirdPartyResult{}
+}
+
+type ChargeByThirdPartyArgs struct {
+	Req *payment.ChargeByThirdPartyReq
+}
+
+func (p *ChargeByThirdPartyArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(payment.ChargeByThirdPartyReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *ChargeByThirdPartyArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *ChargeByThirdPartyArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *ChargeByThirdPartyArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *ChargeByThirdPartyArgs) Unmarshal(in []byte) error {
+	msg := new(payment.ChargeByThirdPartyReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var ChargeByThirdPartyArgs_Req_DEFAULT *payment.ChargeByThirdPartyReq
+
+func (p *ChargeByThirdPartyArgs) GetReq() *payment.ChargeByThirdPartyReq {
+	if !p.IsSetReq() {
+		return ChargeByThirdPartyArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *ChargeByThirdPartyArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ChargeByThirdPartyArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type ChargeByThirdPartyResult struct {
+	Success *payment.ChargeByThirdPartyResp
+}
+
+var ChargeByThirdPartyResult_Success_DEFAULT *payment.ChargeByThirdPartyResp
+
+func (p *ChargeByThirdPartyResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(payment.ChargeByThirdPartyResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *ChargeByThirdPartyResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *ChargeByThirdPartyResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *ChargeByThirdPartyResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *ChargeByThirdPartyResult) Unmarshal(in []byte) error {
+	msg := new(payment.ChargeByThirdPartyResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *ChargeByThirdPartyResult) GetSuccess() *payment.ChargeByThirdPartyResp {
+	if !p.IsSetSuccess() {
+		return ChargeByThirdPartyResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *ChargeByThirdPartyResult) SetSuccess(x interface{}) {
+	p.Success = x.(*payment.ChargeByThirdPartyResp)
+}
+
+func (p *ChargeByThirdPartyResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ChargeByThirdPartyResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -426,6 +586,16 @@ func (p *kClient) CancelPayment(ctx context.Context, Req *payment.CancelReq) (r 
 	_args.Req = Req
 	var _result CancelPaymentResult
 	if err = p.c.Call(ctx, "CancelPayment", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ChargeByThirdParty(ctx context.Context, Req *payment.ChargeByThirdPartyReq) (r *payment.ChargeByThirdPartyResp, err error) {
+	var _args ChargeByThirdPartyArgs
+	_args.Req = Req
+	var _result ChargeByThirdPartyResult
+	if err = p.c.Call(ctx, "ChargeByThirdParty", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
