@@ -1,13 +1,16 @@
 package service
 
 import (
+	mq "checkout/biz/dal/RabbitMQ"
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	order_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/order"
 	pdc_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/product"
+	stock_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/stock"
 )
 
 type CheckoutService struct {
@@ -38,7 +41,14 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 			return nil, errors.New("库存不足！")
 		}
 
-		//库存预留操作 ToDo
+		//库存预留操作
+		_, err = stock_rpc.DefaultClient().ReserveItem(s.ctx, &stock.ReserveItemReq{
+			ProductId: val.ProductId,
+			Quantity:  int64(val.Quantity),
+		})
+		if err != nil {
+			return nil, err
+		}
 
 		//将该商品加入订单
 		orderItems = append(orderItems, val)
@@ -54,10 +64,20 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		OrderItems:   orderItems,
 	},
 	)
-	//发送支付请求到队列
-
 	if err != nil {
 		return nil, errors.New("获取订单号失败！")
+	}
+	//发送支付请求到队列
+	switch req.PaymentMethod {
+	case "credit_card":
+		{
+			cardPaymentReq := &mq.CardPayment{
+				OrderID:     placeOrderResp.Order.OrderId,
+				Amount:      amount,
+				CallbackURL: "...", //todo,关于url的生成仍未实现
+			}
+			mq.CardPaymentProducer.Send(cardPaymentReq)
+		}
 	}
 
 	resp = &checkout.CheckoutResp{

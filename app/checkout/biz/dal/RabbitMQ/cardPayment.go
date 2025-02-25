@@ -1,6 +1,12 @@
 package rabbitMq
 
-import "github.com/cloudwego/hertz/pkg/common/json"
+import (
+	"github.com/cloudwego/hertz/pkg/common/json"
+)
+
+var (
+	CardPaymentProducer *PaymentProducer
+)
 
 // 信用卡支付
 type CardPayment struct {
@@ -9,8 +15,8 @@ type CardPayment struct {
 	CallbackURL string `json:"callback_url"`
 }
 
-func (c *CardPayment) GetRoutingKey() string {
-	return "payment.card" // 专属路由键
+func (c *CardPayment) GetRoutineKey() string {
+	return CardPaymentProducer.config.RoutineKey // 专属路由键
 }
 
 func (c *CardPayment) Marshal() ([]byte, error) {

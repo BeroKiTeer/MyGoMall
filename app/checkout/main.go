@@ -4,9 +4,11 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"log"
 	"net"
 	"time"
 
+	mq "checkout/biz/dal/RabbitMQ"
 	"checkout/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/server"
@@ -25,6 +27,7 @@ func main() {
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
 
+	RabbitMQInit()
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 
 	err := svr.Run()
@@ -62,4 +65,29 @@ func kitexInit() (opts []server.Option) {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func RabbitMQInit() {
+	config, err := conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	mqConfig := mq.MQConfig{
+		Exchange:     config.Exchange,
+		Queue:        config.Queue,
+		RoutineKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
+	config, err = conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	mqConfig = mq.MQConfig{
+		Exchange:     config.Exchange,
+		Queue:        config.Queue,
+		RoutineKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
 }

@@ -24,5 +24,10 @@ redis:
   db: 0
 
 rabbitmq:
-  cardPayURL: "payment.card"
-  aliPayURL:
+  creditCard:
+      URL: "payment.card"
+      exchange: "payment_exchange"
+      queue: "creditCard_queue"
+      routing_key: "payments.creditCard"
+      exchange_type: "topic"
+  aliPay:

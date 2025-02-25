@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/streadway/amqp"
-	"sync"
 	"time"
 )
 
@@ -16,9 +15,9 @@ type PaymentRequest interface {
 
 // 生产者基础结构体
 type PaymentProducer struct {
-	mq       *RabbitMQ
-	config   MQConfig
-	initOnce sync.Once
+	mq     *RabbitMQ
+	config MQConfig
+	//initOnce sync.Once
 }
 
 type MQConfig struct {
@@ -49,45 +48,45 @@ func NewPaymentProducer(config MQConfig) (*PaymentProducer, error) {
 // 初始化AMQP资源（线程安全）
 func (p *PaymentProducer) initialize() error {
 	var initErr error
-	p.initOnce.Do(func() {
-		// 1. 声明交换机
-		if err := p.mq.Channel.ExchangeDeclare(
-			p.config.Exchange,
-			p.config.ExchangeType,
-			true,  // durable
-			false, // autoDelete
-			false, // internal
-			false, // noWait
-			nil,   // args
-		); err != nil {
-			initErr = fmt.Errorf("声明交换机失败: %w", err)
-			return
-		}
 
-		// 2. 声明队列
-		if _, err := p.mq.Channel.QueueDeclare(
-			p.config.Queue,
-			true,  // durable
-			false, // autoDelete
-			false, // exclusive
-			false, // noWait
-			nil,   // args
-		); err != nil {
-			initErr = fmt.Errorf("声明队列失败: %w", err)
-			return
-		}
+	// 1. 声明交换机
+	if err := p.mq.Channel.ExchangeDeclare(
+		p.config.Exchange,
+		p.config.ExchangeType,
+		true,  // durable
+		false, // autoDelete
+		false, // internal
+		false, // noWait
+		nil,   // args
+	); err != nil {
+		initErr = fmt.Errorf("声明交换机失败: %w", err)
+		return err
+	}
 
-		// 3. 绑定队列
-		if err := p.mq.Channel.QueueBind(
-			p.config.Queue,
-			p.config.RoutineKey,
-			p.config.Exchange,
-			false, // noWait
-			nil,   // args
-		); err != nil {
-			initErr = fmt.Errorf("绑定队列失败: %w", err)
-		}
-	})
+	// 2. 声明队列
+	if _, err := p.mq.Channel.QueueDeclare(
+		p.config.Queue,
+		true,  // durable
+		false, // autoDelete
+		false, // exclusive
+		false, // noWait
+		nil,   // args
+	); err != nil {
+		initErr = fmt.Errorf("声明队列失败: %w", err)
+		return err
+	}
+
+	// 3. 绑定队列
+	if err := p.mq.Channel.QueueBind(
+		p.config.Queue,
+		p.config.RoutineKey,
+		p.config.Exchange,
+		false, // noWait
+		nil,   // args
+	); err != nil {
+		initErr = fmt.Errorf("绑定队列失败: %w", err)
+	}
+
 	return initErr
 }
 

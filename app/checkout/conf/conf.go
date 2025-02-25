@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -19,10 +20,11 @@ var (
 
 type Config struct {
 	Env      string
-	Kitex    Kitex    `yaml:"kitex"`
-	MySQL    MySQL    `yaml:"mysql"`
-	Redis    Redis    `yaml:"redis"`
-	Registry Registry `yaml:"registry"`
+	Kitex    Kitex          `yaml:"kitex"`
+	MySQL    MySQL          `yaml:"mysql"`
+	Redis    Redis          `yaml:"redis"`
+	Registry Registry       `yaml:"registry"`
+	RabbitMQ RabbitMQConfig `yaml:"rabbitmq"`
 }
 
 type MySQL struct {
@@ -51,6 +53,18 @@ type Registry struct {
 	RegistryAddress []string `yaml:"registry_address"`
 	Username        string   `yaml:"username"`
 	Password        string   `yaml:"password"`
+}
+
+type RabbitMQConfig struct {
+	Payments map[string]PaymentConfig `yaml:"payments" validate:"nonzero"`
+}
+
+type PaymentConfig struct {
+	URL          string `yaml:"URL"`
+	Exchange     string `yaml:"exchange"`
+	Queue        string `yaml:"queue"`
+	RoutingKey   string `yaml:"routing_key"`
+	ExchangeType string `yaml:"exchange_type"`
 }
 
 // GetConf gets configuration instance
@@ -108,4 +122,21 @@ func LogLevel() klog.Level {
 	default:
 		return klog.LevelInfo
 	}
+}
+
+func GetMQConfig(paymentType string) (PaymentConfig, error) {
+	conf := GetConf()
+
+	// 检查支付类型是否存在
+	config, exists := conf.RabbitMQ.Payments[paymentType]
+	if !exists {
+		return PaymentConfig{}, fmt.Errorf("payment type [%s] 未配置", paymentType)
+	}
+
+	// 验证必填字段
+	if config.Exchange == "" || config.RoutingKey == "" {
+		return PaymentConfig{}, fmt.Errorf("payment type [%s] 配置不完整", paymentType)
+	}
+
+	return config, nil
 }
