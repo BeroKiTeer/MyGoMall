@@ -38,8 +38,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 			return nil, errors.New("库存不足！")
 		}
 
-		//库存预留操作
-		//ToDo...
+		//库存预留操作 ToDo
 
 		//将该商品加入订单
 		orderItems = append(orderItems, val)
@@ -55,6 +54,8 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		OrderItems:   orderItems,
 	},
 	)
+	//发送支付请求到队列
+
 	if err != nil {
 		return nil, errors.New("获取订单号失败！")
 	}

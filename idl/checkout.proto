@@ -33,6 +33,7 @@ message CheckoutReq {
   string email = 4;                          // 用户的邮箱
   order.Address address = 5;                       // 用户的地址信息
   repeated order.OrderItem items = 6;    //增加商品清单
+  string payment_method=7; //支付方式
 }
 
 // 结账操作的响应消息

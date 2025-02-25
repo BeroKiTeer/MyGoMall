@@ -22,3 +22,7 @@ redis:
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  cardPayURL: "payment.card"
+  aliPayURL:
