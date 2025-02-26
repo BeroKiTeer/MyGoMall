@@ -14,12 +14,12 @@ service StockService {
 }
 
 message ReduceItemReq {
-  int64 product_id = 1;
-  int64 quantity = 2;
+  string order_id = 1;
+  int64 product_id = 2;
 }
 
 message ReduceItemResp {
-  bool Success = 1;
+  bool success = 1;
 }
 
 message CheckItemReq {

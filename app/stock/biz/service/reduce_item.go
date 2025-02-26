@@ -2,10 +2,9 @@ package service
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
-	"stock/biz/dal/mysql"
-	"stock/biz/model"
+	"stock/biz/dal/redis"
 )
 
 type ReduceItemService struct {
@@ -18,21 +17,11 @@ func NewReduceItemService(ctx context.Context) *ReduceItemService {
 // Run create note info
 func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceItemResp, err error) {
 
-	// 先看看有没有这么多商品
-	quantity, err := model.CheckQuantity(mysql.DB, req.ProductId)
-
-	// 数据库查询遇到了问题
+	key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), req.GetProductId())
+	err = redis.RedisClient.Del(s.ctx, key).Err()
 	if err != nil {
 		return &stock.ReduceItemResp{Success: false}, err
 	}
-
-	// 商品数量不足
-	if quantity < req.Quantity {
-		return &stock.ReduceItemResp{Success: false}, errors.New("商品数量不足！")
-	}
-
-	// 减少商品数量
-	err = model.ReduceItem(mysql.DB, req.ProductId, req.Quantity)
 
 	return &stock.ReduceItemResp{Success: true}, nil
 }

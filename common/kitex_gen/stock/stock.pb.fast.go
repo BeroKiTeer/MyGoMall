@@ -38,12 +38,12 @@ ReadFieldError:
 }
 
 func (x *ReduceItemReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.ProductId, offset, err = fastpb.ReadInt64(buf, _type)
+	x.OrderId, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
 func (x *ReduceItemReq) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Quantity, offset, err = fastpb.ReadInt64(buf, _type)
+	x.ProductId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -202,18 +202,18 @@ func (x *ReduceItemReq) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *ReduceItemReq) fastWriteField1(buf []byte) (offset int) {
-	if x.ProductId == 0 {
+	if x.OrderId == "" {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetProductId())
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetOrderId())
 	return offset
 }
 
 func (x *ReduceItemReq) fastWriteField2(buf []byte) (offset int) {
-	if x.Quantity == 0 {
+	if x.ProductId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetQuantity())
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetProductId())
 	return offset
 }
 
@@ -325,18 +325,18 @@ func (x *ReduceItemReq) Size() (n int) {
 }
 
 func (x *ReduceItemReq) sizeField1() (n int) {
-	if x.ProductId == 0 {
+	if x.OrderId == "" {
 		return n
 	}
-	n += fastpb.SizeInt64(1, x.GetProductId())
+	n += fastpb.SizeString(1, x.GetOrderId())
 	return n
 }
 
 func (x *ReduceItemReq) sizeField2() (n int) {
-	if x.Quantity == 0 {
+	if x.ProductId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.GetQuantity())
+	n += fastpb.SizeInt64(2, x.GetProductId())
 	return n
 }
 
@@ -439,8 +439,8 @@ func (x *ReserveItemResp) sizeField1() (n int) {
 }
 
 var fieldIDToName_ReduceItemReq = map[int32]string{
-	1: "ProductId",
-	2: "Quantity",
+	1: "OrderId",
+	2: "ProductId",
 }
 
 var fieldIDToName_ReduceItemResp = map[int32]string{
