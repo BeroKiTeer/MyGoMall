@@ -31,6 +31,16 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 			},
 			OrderItems: []*order.OrderItem{},
 		}
+		ord_itms, _ := model.GetOrderItemByOrderID(mysql.DB, item.ID)
+		for _, pro := range ord_itms {
+			orderItem := &order.OrderItem{
+				ProductId: pro.ProductId,
+				Quantity:  int32(pro.Quantity),
+				//Cost:      pro.cost,
+			}
+			ord.OrderItems = append(ord.OrderItems, orderItem)
+		}
+
 		resp.Orders = append(resp.Orders, ord)
 	}
 	return resp, nil

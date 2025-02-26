@@ -61,6 +61,20 @@ func GetOrdersByUserID(db *gorm.DB, UserID int64) ([]Order, error) {
 	return orders, nil
 }
 
+func GetOrderItemByOrderID(db *gorm.DB, OrderID string) ([]OrderItem, error) {
+	// 检查数据库连接是否有效
+	if db == nil {
+		return nil, fmt.Errorf("database connection is nil")
+	}
+	var orderitems []OrderItem
+	// 查询与用户ID相关联的所有订单
+	err := db.Model(&OrderItem{}).Where("order_id=?", OrderID).Find(&orderitems).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to find orderitems: %w", err)
+	}
+	return orderitems, nil
+}
+
 func GetOrder(db *gorm.DB, ID string) (Order, error) {
 	var row Order
 	err := db.Model(&Order{}).Where("ID=?", ID).Find(&row).Error
