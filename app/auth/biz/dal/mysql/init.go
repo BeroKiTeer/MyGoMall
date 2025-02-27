@@ -3,7 +3,6 @@ package mysql
 import (
 	"auth/conf"
 	"github.com/cloudwego/kitex/pkg/klog"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentelemetry/tracing"

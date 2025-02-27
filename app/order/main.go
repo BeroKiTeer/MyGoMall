@@ -5,6 +5,8 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"net"
+	"order/biz/dal"
+	"order/rpc"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -21,6 +23,8 @@ var (
 )
 
 func main() {
+	dal.Init()
+	rpc.InitClient()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
