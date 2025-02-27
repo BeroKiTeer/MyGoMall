@@ -33,6 +33,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		}
 		if stk.Quantity < int64(req.OrderItems[idx].Quantity) {
 			klog.Warn("库存不足，下单失败。", err)
+			return nil, nil
 		}
 	}
 
@@ -61,7 +62,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 	}
 
 	// 2.2.3 创建空订单表记录
-	model.CreateOrder(mysql.DB, &model.Order{
+	model.CreateOrder(tx, &model.Order{
 		Base: model.Base{
 			ID: orderUUID.String(),
 		},
@@ -97,6 +98,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 
 	// 提交事务
 	if err = tx.Commit().Error; err != nil {
+		klog.Warn("数据库事务提交失败", err)
 		return nil, err
 	}
 
