@@ -1,22 +1,35 @@
 package main
 
 import (
+	"checkout/biz/dal"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
+	"github.com/BeroKiTeer/MyGoMall/common/mtl"
+	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"log"
 	"net"
 	"time"
 
+	mq "checkout/biz/dal/RabbitMQ"
 	"checkout/conf"
-	"checkout/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+)
+
 func main() {
+	dal.Init()
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
 
+	RabbitMQInit()
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 
 	err := svr.Run()
@@ -31,11 +44,9 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	// klog
@@ -56,4 +67,29 @@ func kitexInit() (opts []server.Option) {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func RabbitMQInit() {
+	config, err := conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	mqConfig := mq.MQConfig{
+		Exchange:     config.Exchange,
+		Queue:        config.Queue,
+		RoutineKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
+	config, err = conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	mqConfig = mq.MQConfig{
+		Exchange:     config.Exchange,
+		Queue:        config.Queue,
+		RoutineKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
 }

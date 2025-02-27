@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package order;
 
-import "cart.proto";
-
 option go_package = "/order";
 
 // 定义了订单相关的服务接口。
@@ -14,15 +12,20 @@ service OrderService {
   rpc ListOrder(ListOrderReq) returns (ListOrderResp);
   // 标记订单为已支付。
   rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp);
+  // 修改订单信息
+  rpc UpdateOrder(UpdateOrderReq) returns (UpdateOrderResp);
+  // 取消订单
+  rpc CancelOrder(CancelOrderReq) returns (CancelOrderResp);
 }
 
-// 用户的地址信息。
+// 地址信息。
 message Address {
-  string street_address = 1;       // 街道地址。
-  string city = 2;                 // 城市。
-  string state = 3;                // 州或省。
-  string country = 4;              // 国家。
-  string zip_code = 5;             // 邮政编码。
+  string street_address = 1;       // 街道地址
+  string city = 2;                 // 城市
+  string state = 3;                // 省
+  string country = 4;              // 国家
+  string telephone_number = 5;     // 收件人电话
+  string name = 6;                 // 收件人姓名
 }
 
 // 创建订单的请求消息。
@@ -36,8 +39,9 @@ message PlaceOrderReq {
 
 // 订单中的一项商品。
 message OrderItem {
-  cart.CartItem item = 1; // 购物车中的商品信息。
-  float cost = 2;         // 商品的单价。
+  int64 product_id = 1;       // 商品ID
+  int32 quantity = 2;         // 商品数量
+  int64 cost = 3;             // 商品的单价。
 }
 
 // 订单的基本信息。
@@ -63,7 +67,8 @@ message Order {
   string user_currency = 4;               // 货币类型
   Address address = 5;                    // 地址信息
   string email = 6;                       // 邮箱
-  int32 created_at = 7;                   // 订单创建时间
+  string created_at = 7;                  // 订单创建时间
+  string update_at = 8;                   // 订单最后更新时间
 }
 
 // 获取订单列表的响应消息。
@@ -80,4 +85,26 @@ message MarkOrderPaidReq {
 // 标记订单已支付的响应消息。
 message MarkOrderPaidResp {
   string status = 1;                // 状态，"success" 或 "error"。
+}
+
+// 修改订单信息的请求消息
+message UpdateOrderReq {
+  string order_id = 1;                    // 订单 ID
+  Address address = 2;                    // 新的地址信息
+  string email = 3;                       // 新的邮箱
+}
+
+// 修改订单信息的响应消息
+message UpdateOrderResp {
+  bool success = 1;                       // 是否修改成功
+}
+
+// 取消订单的请求消息
+message CancelOrderReq {
+  string order_id = 1;                    // 订单 ID
+}
+
+// 取消订单的响应消息
+message CancelOrderResp {
+  bool success = 1;                       // 是否取消成功
 }

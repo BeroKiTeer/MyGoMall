@@ -7,25 +7,20 @@ import (
 
 type Product struct {
 	Base
-	Name          string  `gorm:"column:name"`
-	Description   string  `gorm:"column:description"`
-	Price         float32 `gorm:"column:price"`
-	OriginalPrice float32 `gorm:"column:original_price"`
-	Images        string  `gorm:"column:images"`
-	Stock         uint32  `gorm:"column:stock"`
-	Status        int     `gorm:"column:status"`
+	Name          string `gorm:"column:name"`
+	Description   string `gorm:"column:description"`
+	Price         int64  `gorm:"column:price"`
+	OriginalPrice int64  `gorm:"column:original_price"`
+	Images        string `gorm:"column:images"`
+	Stock         int64  `gorm:"column:stock"`
+	Status        int    `gorm:"column:status"`
 }
 
 func (p Product) TableName() string {
 	return "products"
 }
 
-// CreateProduct 添加商品
-func CreateProduct(db *gorm.DB, product *Product) error {
-	return db.Create(product).Error
-}
-
-func GetProduct(db *gorm.DB, id int) (Product, error) {
+func GetProduct(db *gorm.DB, id int64) (Product, error) {
 	var row Product
 	err := db.Model(&Product{}).Where("id=?", id).Find(&row).Error
 	if err != nil {
@@ -35,7 +30,7 @@ func GetProduct(db *gorm.DB, id int) (Product, error) {
 }
 
 // GetProductWithCategory 按照id查询单个商品
-func GetProductWithCategory(db *gorm.DB, id int) (Product, []string, error) {
+func GetProductWithCategory(db *gorm.DB, id int64) (Product, []string, error) {
 	var row Product
 	var categories []string
 
@@ -48,7 +43,7 @@ func GetProductWithCategory(db *gorm.DB, id int) (Product, []string, error) {
 	row, err := GetProduct(db, id)
 
 	// 查询产品类别ID
-	categoryId, err := SelectCategoryId(db, int64(id))
+	categoryId, err := SelectCategoryId(db, id)
 	if err != nil {
 		return Product{}, nil, err
 	}
@@ -76,7 +71,7 @@ func GetProductsByCategoryName(db *gorm.DB, page int, pageSize int, categoryName
 	}
 	fmt.Printf("%+v\n", productsId)
 	for _, item := range productsId {
-		p, category, _ := GetProductWithCategory(db, int(item))
+		p, category, _ := GetProductWithCategory(db, item)
 		products = append(products, p)
 		categories = append(categories, category)
 	}

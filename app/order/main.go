@@ -1,20 +1,32 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
+	"github.com/BeroKiTeer/MyGoMall/common/mtl"
+	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"net"
+	"order/biz/dal"
+	"order/rpc"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"order/conf"
-	"order/kitex_gen/order/orderservice"
+)
+
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
 )
 
 func main() {
+	dal.Init()
+	rpc.InitClient()
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
 
 	svr := orderservice.NewServer(new(OrderServiceImpl), opts...)
@@ -31,11 +43,9 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	// klog

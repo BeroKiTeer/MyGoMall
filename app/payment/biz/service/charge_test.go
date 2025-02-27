@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"payment/biz/dal/mysql"
-	payment "payment/kitex_gen/payment"
 	"testing"
 )
 
@@ -14,7 +14,7 @@ func TestCharge_Run(t *testing.T) {
 	// init req and assert value
 
 	req := &payment.ChargeReq{
-		UserId: 1, OrderId: "2", Amount: 0.01, CreditCard: &payment.CreditCardInfo{
+		UserId: 1, OrderId: "2", Amount: 1, CreditCard: &payment.CreditCardInfo{
 			CreditCardNumber:          "4242424242424242",
 			CreditCardCvv:             1111,
 			CreditCardExpirationYear:  2025,
@@ -24,7 +24,5 @@ func TestCharge_Run(t *testing.T) {
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
-
-	// todo: edit your unit test
 
 }

@@ -18,17 +18,19 @@
 
 - **主键策略**：AUTO
 
-  | 字段名              | 数据类型           | 是否主键 | 是否允许为空 | 默认值                                             | 备注    |
-   |------------------|----------------| ------- | ------------ |-------------------------------------------------|-------|
+  | 字段名              | 数据类型           | 是否主键 | 是否允许为空 | 默认值                                             | 备注          |
+   |------------------|----------------| ------- | ------------ |-------------------------------------------------|-------------|
   | `id`             | `BIGINT`       | ✅       | ❌            | `AUTO_INCREMENT`                                | 主键，用于区分每条数据 |
-  | `user_id`        | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 用户ID  |
-  | `order_id`       | `VARCHAR(255)` | ❌       | ❌            | `NULL`                                          | 订单ID  |
-  | `transaction_id` | `VARCHAR(36)`  | ❌       | ❌            | `NULL`                                          | 交易ID(uuid) |
-  | `amount`         | `DOUBLE`       | ❌       | ❌            | `NULL`                                          | 交易金额  |
-  | `pay_at`         | `DATETIME`     | ❌       | ❌            | `CURRENT_TIMESTAMP`                             | 交易时间  |
-  | `created_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP`                             | 创建时间  |
-  | `updated_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间  |
-  | `deleted_at`     | `DATETIME`     | ❌        | ✅            | `NULL`                                          | 删除时间  |
+  | `user_id`        | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 用户ID        |
+  | `order_id`       | `VARCHAR(255)` | ❌       | ❌            | `NULL`                                          | 订单ID        |
+  | `transaction_id` | `VARCHAR(36)`  | ❌       | ❌            | `NULL`                                          | 交易ID(uuid)  |
+  | `way`            | `VARCHAR(255)` | ❌       | ❌            | `NULL`                                          | 交易方式        |
+  | `amount`         | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 交易金额        |
+  | `status`         | `BIGINT`       | ❌       | ❌            | `NULL`                                          | 订单状态        |
+  | `pay_at`         | `DATETIME`     | ❌       | ❌            | `CURRENT_TIMESTAMP`                             | 交易时间        |
+  | `created_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP`                             | 创建时间        |
+  | `updated_at`     | `DATETIME`     | ❌        | ❌            | `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP` | 更新时间        |
+  | `deleted_at`     | `DATETIME`     | ❌        | ✅            | `NULL`                                          | 删除时间        |
 
 ### 3.2 建表语句
 
@@ -39,7 +41,9 @@ CREATE TABLE payments
   user_id         BIGINT        NOT NULL                  COMMENT '用户ID',
   order_id        VARCHAR(255)  NOT NULL                  COMMENT '订单ID',
   transaction_id  VARCHAR(36)   NOT NULL                  COMMENT '交易ID(uuid)',
-  amount          DOUBLE        NOT NULL                  COMMENT '交易金额',
+  way             VARCHAR(255)  NOT NULL                  COMMENT '交易方式',
+  amount          BIGINT        NOT NULL                  COMMENT '交易金额',
+  status          BIGINT        NOT NULL                  COMMENT '订单状态',
   pay_at   DATETIME NOT NULL    DEFAULT CURRENT_TIMESTAMP COMMENT '交易时间',
   created_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   updated_at   DATETIME NOT NULL   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

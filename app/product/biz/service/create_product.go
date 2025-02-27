@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"product/biz/dal/mysql"
 	"product/biz/model"
-	"product/kitex_gen/product"
 )
 
 type CreateProductService struct {
@@ -25,8 +25,8 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	newProduct := &model.Product{
 		Name:          req.Product.Name,
 		Description:   req.Product.Description,
-		Price:         float32(req.Product.Price),
-		OriginalPrice: float32(req.Product.OriginalPrice),
+		Price:         req.Product.Price,
+		OriginalPrice: req.Product.OriginalPrice,
 		Stock:         req.Product.Stock,
 		Images:        req.Product.Images,
 		Status:        int(req.Product.Status),
@@ -52,8 +52,8 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 		}
 		// 插入关联表
 		newCategoryProduct := &model.CategoryProduct{
-			ProductId:  int64(newProduct.ID),
-			CategoryId: int64(category.ID),
+			ProductId:  newProduct.ID,
+			CategoryId: category.ID,
 		}
 		result = tx.Create(newCategoryProduct)
 		if result.Error != nil {
@@ -66,5 +66,5 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	if err = tx.Commit().Error; err != nil {
 		return nil, err
 	}
-	return &product.CreateProductResp{ProductId: uint32(newProduct.ID)}, nil
+	return &product.CreateProductResp{ProductId: newProduct.ID}, nil
 }

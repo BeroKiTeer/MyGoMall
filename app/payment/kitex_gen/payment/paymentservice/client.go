@@ -12,6 +12,8 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Charge(ctx context.Context, Req *payment.ChargeReq, callOptions ...callopt.Option) (r *payment.ChargeResp, err error)
+	CancelPayment(ctx context.Context, Req *payment.CancelReq, callOptions ...callopt.Option) (r *payment.CancelResp, err error)
+	ChargeByThirdParty(ctx context.Context, Req *payment.ChargeByThirdPartyReq, callOptions ...callopt.Option) (r *payment.ChargeByThirdPartyResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,4 +48,14 @@ type kPaymentServiceClient struct {
 func (p *kPaymentServiceClient) Charge(ctx context.Context, Req *payment.ChargeReq, callOptions ...callopt.Option) (r *payment.ChargeResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Charge(ctx, Req)
+}
+
+func (p *kPaymentServiceClient) CancelPayment(ctx context.Context, Req *payment.CancelReq, callOptions ...callopt.Option) (r *payment.CancelResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CancelPayment(ctx, Req)
+}
+
+func (p *kPaymentServiceClient) ChargeByThirdParty(ctx context.Context, Req *payment.ChargeByThirdPartyReq, callOptions ...callopt.Option) (r *payment.ChargeByThirdPartyResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ChargeByThirdParty(ctx, Req)
 }

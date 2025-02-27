@@ -1,6 +1,7 @@
 kitex:
   service: "cart"
-  address: ":8882"
+  address: "127.0.0.1:8882"
+  metrics_port: "127.0.0.1:9993"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -14,7 +15,7 @@ registry:
   password: ""
 
 mysql:
-  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:root@tcp(127.0.0.1:3306)/mygomall?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
   address: "127.0.0.1:6379"

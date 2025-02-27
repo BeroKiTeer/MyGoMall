@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package api.payment;
+
+option go_package = "/api/payment";
+
+import "api.proto";
+
+service PaymentService {
+  rpc Charge(ChargeReq) returns (ChargeResp) {
+    option (api.post) = "/api/payment/charge";
+  }
+}
+
+message ChargeReq {
+  int64 amount = 1                 [(api.form) = "amount"];        // 支付金额
+  string order_id = 2              [(api.form) = "order_id"];      // 订单 ID
+  string way = 3                   [(api.form) = "way"];
+}
+
+message ChargeResp {
+  string transaction_id = 1        [(api.form) = "transaction_id"];
+}

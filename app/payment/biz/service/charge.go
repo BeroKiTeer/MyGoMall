@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	creditcard "github.com/durango/go-credit-card"
 	"github.com/google/uuid"
 	"payment/biz/dal/mysql"
 	"payment/biz/model"
-	payment "payment/kitex_gen/payment"
 	"strconv"
 	"time"
 )
@@ -48,6 +48,7 @@ func (s *ChargeService) Run(req *payment.ChargeReq) (resp *payment.ChargeResp, e
 		TransactionID: transactionID.String(),
 		Amount:        req.Amount,
 		PayAt:         time.Now(),
+		Way:           "credit_card",
 	})
 
 	if err != nil {

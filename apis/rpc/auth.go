@@ -1,10 +1,10 @@
 package rpc
 
 import (
-	"apis/conf"
-	"auth/kitex_gen/auth/authservice"
+	"auth/conf"
+	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
-	consul "github.com/kitex-contrib/registry-consul"
 )
 
 var (
@@ -12,12 +12,12 @@ var (
 )
 
 func initAuthClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		panic(err)
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: conf.GetConf().Kitex.Service,
+			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
+		}),
 	}
-	opts = append(opts, client.WithResolver(r))
 	AuthClient, err = authservice.NewClient("auth", opts...)
 	if err != nil {
 		panic(err)

@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"golang.org/x/crypto/bcrypt"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
 )
 
 type RegisterService struct {

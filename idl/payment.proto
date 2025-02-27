@@ -8,6 +8,10 @@ option go_package = "/payment";
 service PaymentService {
   // 用于发起支付操作
   rpc Charge(ChargeReq) returns (ChargeResp) {}
+  //取消支付
+  rpc CancelPayment(CancelReq) returns (CancelResp) {}
+  // 第三方支付
+  rpc ChargeByThirdParty(ChargeByThirdPartyReq) returns (ChargeByThirdPartyResp) {}
 }
 
 // 用户的信用卡信息
@@ -20,7 +24,7 @@ message CreditCardInfo {
 
 // 支付操作的请求消息
 message ChargeReq {
-  double amount = 1;                   // 支付金额
+  int64 amount = 1;                  // 支付金额
   CreditCardInfo credit_card = 2;     // 信用卡信息
   string order_id = 3;                // 订单 ID
   uint32 user_id = 4;                 // 用户 ID
@@ -28,5 +32,28 @@ message ChargeReq {
 
 // 支付操作的响应消息
 message ChargeResp {
+  string transaction_id = 1;          // 交易 ID
+}
+
+// 取消支付的请求消息
+message CancelReq {
+  int32 id = 1;                // 订单 ID
+}
+
+// 取消支付的响应消息
+message CancelResp {
+  string status = 1;                // 状态，"success" 或 "error"。
+}
+
+// 第三方支付请求
+message ChargeByThirdPartyReq {
+  int64 amount = 1;                  // 支付金额
+  string order_id = 2;                // 订单 ID
+  uint32 user_id = 3;
+  string way = 4;
+}
+
+// 第三方支付相应
+message ChargeByThirdPartyResp {
   string transaction_id = 1;          // 交易 ID
 }

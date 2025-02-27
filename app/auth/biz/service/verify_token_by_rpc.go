@@ -2,9 +2,9 @@ package service
 
 import (
 	"auth/biz/dal/redis"
-	auth "auth/kitex_gen/auth"
 	"context"
 	"fmt"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/golang-jwt/jwt/v4"
 	"strconv"
 )

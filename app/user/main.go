@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user/userservice"
+	"github.com/BeroKiTeer/MyGoMall/common/mtl"
+	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
@@ -13,11 +15,17 @@ import (
 	"time"
 	"user/biz/dal"
 	"user/conf"
-	"user/kitex_gen/user/userservice"
 	"user/rpc"
 )
 
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+)
+
 func main() {
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	mtl.InitTracing(ServiceName)
 	dal.Init()
 	rpc.InitClient() //初始化客户端
 	opts := kitexInit()
@@ -36,11 +44,9 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])

@@ -1,8 +1,8 @@
 package service
 
 import (
-	auth "auth/kitex_gen/auth"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 )
 
 type RefreshTokenService struct {

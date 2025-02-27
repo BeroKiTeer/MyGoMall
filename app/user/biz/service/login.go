@@ -1,14 +1,14 @@
 package service
 
 import (
-	"auth/kitex_gen/auth"
 	"context"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
-	user "user/kitex_gen/user"
 	"user/rpc"
 )
 

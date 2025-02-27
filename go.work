@@ -8,6 +8,7 @@ use (
 	app/order
 	app/payment
 	app/product
+	app/stock
 	app/user
 	common
 )

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package stock;
+
+option go_package="/stock";
+
+service StockService {
+  // 减少库存
+  rpc ReduceItem(ReduceItemReq) returns (ReduceItemResp);
+  // 检查库存
+  rpc CheckItem(CheckItemReq) returns (CheckItemResp);
+  // 预留库存
+  rpc ReserveItem(ReserveItemReq) returns (ReserveItemResp);
+}
+
+message ReduceItemReq {
+  string order_id = 1;
+  int64 product_id = 2;
+}
+
+message ReduceItemResp {
+  bool success = 1;
+}
+
+message CheckItemReq {
+  int64 product_id = 1;
+}
+
+message CheckItemResp {
+  int64 quantity = 1;
+}
+
+message ReserveItemReq {
+  string order_id = 1;
+  int64 product_id = 2;
+  int64 quantity = 3;
+}
+
+message ReserveItemResp {
+  bool Success = 1;
+}

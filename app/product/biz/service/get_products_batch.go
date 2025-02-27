@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"product/biz/dal/mysql"
 	"product/biz/model"
-	"product/kitex_gen/product"
 )
 
 type GetProductsBatchService struct {
@@ -27,7 +27,7 @@ func (s *GetProductsBatchService) Run(req *product.GetProductsBatchReq) (resp *p
 	products, categories, _ := model.GetProductsByIds(mysql.DB, ids)
 	for i, v := range products {
 		temp := &product.Product{
-			Id:            uint32(v.ID),
+			Id:            v.ID,
 			Name:          v.Name,
 			Price:         v.Price,
 			Stock:         v.Stock,

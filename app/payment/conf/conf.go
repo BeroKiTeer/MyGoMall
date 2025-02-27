@@ -22,6 +22,7 @@ type Config struct {
 	Kitex    Kitex    `yaml:"kitex"`
 	MySQL    MySQL    `yaml:"mysql"`
 	Redis    Redis    `yaml:"redis"`
+	RabbitMQ RabbitMQ `yaml:"rabbitmq"`
 	Registry Registry `yaml:"registry"`
 }
 
@@ -35,6 +36,13 @@ type Redis struct {
 	Password string `yaml:"password"`
 	DB       int    `yaml:"db"`
 }
+type RabbitMQ struct {
+	RabbitMQURL        string `yaml:"rabbitmqURL"`
+	PaymentExchange    string `yaml:"paymentExchange"`
+	PaymentQueue       string `yaml:"paymentQueue"`
+	PaymentDLXExchange string `yaml:"paymentDLXExchange"`
+	PaymentDLXQueue    string `yaml:"paymentDLXQueue"`
+}
 
 type Kitex struct {
 	Service       string `yaml:"service"`
@@ -44,6 +52,7 @@ type Kitex struct {
 	LogMaxSize    int    `yaml:"log_max_size"`
 	LogMaxBackups int    `yaml:"log_max_backups"`
 	LogMaxAge     int    `yaml:"log_max_age"`
+	MetricsPort   string `yaml:"metrics_port"`
 }
 
 type Registry struct {

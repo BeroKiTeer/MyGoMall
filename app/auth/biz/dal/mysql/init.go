@@ -2,9 +2,10 @@ package mysql
 
 import (
 	"auth/conf"
-
+	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 var (
@@ -21,5 +22,8 @@ func Init() {
 	)
 	if err != nil {
 		panic(err)
+	}
+	if err := DB.Use(tracing.NewPlugin(tracing.WithoutMetrics())); err != nil {
+		klog.Fatal(err)
 	}
 }

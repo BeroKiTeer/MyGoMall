@@ -1,6 +1,7 @@
 kitex:
   service: "user"
-  address: ":8888"
+  address: "127.0.0.1:8888"
+  metrics_port: "127.0.0.1:9993"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -22,7 +23,7 @@ registry:
 
 
 mysql:
-  dsn: "root:root@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:root@tcp(127.0.0.1:3306)/mygomall?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
   address: "127.0.0.1:6379"
