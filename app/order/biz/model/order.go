@@ -32,6 +32,7 @@ type OrderItem struct {
 	OrderId   string `gorm:"column:order_id; not null; comment:关联的订单ID"`
 	ProductId int64  `gorm:"column:product_id; not null; comment:关联的商品ID"`
 	Quantity  int64  `gorm:"column:quantity; not null; comment:商品数量"`
+	Price     int64  `gorm:"column:price; not null; comment:商品单价"`
 }
 
 func (u Order) TableName() string {
