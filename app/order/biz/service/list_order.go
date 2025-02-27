@@ -36,7 +36,7 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 			orderItem := &order.OrderItem{
 				ProductId: pro.ProductId,
 				Quantity:  int32(pro.Quantity),
-				//Cost:      pro.cost,
+				Cost:      pro.Price,
 			}
 			ord.OrderItems = append(ord.OrderItems, orderItem)
 		}
