@@ -8,7 +8,6 @@ import (
 	"context"
 
 	pay "apis/hertz_gen/api/pay"
-	pay_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -28,13 +27,14 @@ func CardPay(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	reqRpc := pay_kitex.ChargeReq{
-		Amount:     req.CardPayReq.Amount,
-		CreditCard: req.CardPayReq.CreditCard,
-		OrderId:    req.CardPayReq.OrderId,
-	}
+	//reqRpc := pay_kitex.ChargeReq{
+	//	Amount:     req.CardPayReq.Amount,
+	//	CreditCard: req.CardPayReq.CreditCard,
+	//	OrderId:    req.CardPayReq.OrderId,
+	//}
 	//respRpc := pa
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, pay.CardPayResp{})
 }
 
 func startPaymentConsumer() {

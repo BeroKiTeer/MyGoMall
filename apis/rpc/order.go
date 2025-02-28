@@ -1,10 +1,10 @@
 package rpc
 
 import (
+	"apis/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/cloudwego/kitex/client"
-	"order/conf"
 )
 
 var (
@@ -14,7 +14,7 @@ var (
 func initOrderClient() {
 	opts := []client.Option{
 		client.WithSuite(clientsuite.CommonClientSuite{
-			CurrentServiceName: conf.GetConf().Kitex.Service,
+			CurrentServiceName: conf.GetConf().Hertz.Service,
 			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 		}),
 	}

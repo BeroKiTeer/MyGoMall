@@ -8,19 +8,24 @@ ENV GOPROXY=https://goproxy.cn,direct
 WORKDIR /usr/src/mygomall
 
 # 将工作目录下的 go.mod 和 go.sum 文件复制到容器中
-COPY apis/go.mod apis/go.sum ./
-COPY common common
+COPY ../../../apis/go.mod apis/go.sum ./apis/
+COPY ../../../common common
 
 # 下载依赖
-RUN cd apis/ && go mod download && go mod verify
-
+WORKDIR /usr/src/mygomall/apis
+RUN go mod download
+RUN go mod verify
 # 将这个微服务目录的所有文件复制到容器中
-COPY apis apis
+COPY ../../../apis /usr/src/mygomall/apis/
 
 # 构建应用程序
-RUN cd apis/ && go build -o /opt/mygomall/apis/server
+RUN go build -o /opt/mygomall/apis/server
 
-COPY apis/conf /opt/mygomall/apis/conf
+FROM busybox
+
+COPY --from=builder /opt/mygomall/apis/server /opt/mygomall/apis/server
+
+COPY ../../../apis/conf /opt/mygomall/apis/conf
 
 WORKDIR /opt/mygomall/apis
 
