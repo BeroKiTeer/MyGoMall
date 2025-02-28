@@ -448,7 +448,7 @@ ReadFieldError:
 }
 
 func (x *MarkOrderPaidReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.UserId, offset, err = fastpb.ReadUint32(buf, _type)
+	x.TransactionId, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -913,10 +913,10 @@ func (x *MarkOrderPaidReq) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *MarkOrderPaidReq) fastWriteField1(buf []byte) (offset int) {
-	if x.UserId == 0 {
+	if x.TransactionId == "" {
 		return offset
 	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetUserId())
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetTransactionId())
 	return offset
 }
 
@@ -1332,10 +1332,10 @@ func (x *MarkOrderPaidReq) Size() (n int) {
 }
 
 func (x *MarkOrderPaidReq) sizeField1() (n int) {
-	if x.UserId == 0 {
+	if x.TransactionId == "" {
 		return n
 	}
-	n += fastpb.SizeUint32(1, x.GetUserId())
+	n += fastpb.SizeString(1, x.GetTransactionId())
 	return n
 }
 
@@ -1496,7 +1496,7 @@ var fieldIDToName_ListOrderResp = map[int32]string{
 }
 
 var fieldIDToName_MarkOrderPaidReq = map[int32]string{
-	1: "UserId",
+	1: "TransactionId",
 	2: "OrderId",
 }
 
