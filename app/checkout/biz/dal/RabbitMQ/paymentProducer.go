@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/streadway/amqp"
+	"log"
 	"sync"
 	"time"
 )
@@ -36,7 +37,13 @@ func NewPaymentProducer(config MQConfig) (*PaymentProducer, error) {
 	if err != nil {
 		return nil, errors.New("建立连接失败！")
 	}
-
+	log.Printf("连接成功")
+	producer.initOnce.Do(func() {
+		err := producer.initialize()
+		if err != nil {
+			return
+		} // 保证只执行一次
+	})
 	return producer, nil
 }
 
@@ -88,13 +95,7 @@ func (p *PaymentProducer) initialize() error {
 // 发送支付请求
 func (p *PaymentProducer) Send(req PaymentRequest) error {
 	// 1. 确保初始化完成
-	p.initOnce.Do(func() {
-		err := p.initialize()
-		if err != nil {
-			return
-		} // 保证只执行一次
-	})
-	//有一个问题，就是这段代码可以让生产者与多个队列建立连接吗？
+
 	// 2. 序列化消息
 	data, err := req.Marshal()
 	if err != nil {

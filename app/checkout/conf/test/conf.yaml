@@ -24,7 +24,7 @@ redis:
   db: 0
 
 rabbitmq:
-  MqURL : "amqp://guest:guest@localhost:15672/"
+  mqURL : "amqp://admin:123456@localhost:5673/"
   payment_producer:
     methods:
       creditCard:
@@ -33,14 +33,12 @@ rabbitmq:
           queue: "creditCard_queue"
           routing_key: "creditCard_pay"
           exchange_type: "topic"
-      aliPay:
+
 
   checkout_consumer:
     processors:
       payment_processor:
         exchange: "payment_exchange"
         queue: "payment_queue"
-        binding_keys:
-          - "payment.#"
+        binding_keys: ["payment.#"]
         exchange_type: "topic"
-      refund_processo:

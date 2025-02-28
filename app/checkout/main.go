@@ -1,7 +1,6 @@
 package main
 
 import (
-	"checkout/biz/dal"
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
@@ -25,7 +24,7 @@ var (
 )
 
 func main() {
-	dal.Init()
+	//rerrdal.Init()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
@@ -71,22 +70,14 @@ func kitexInit() (opts []server.Option) {
 }
 
 func PymentProducerInit() {
+
 	config, err := conf.GetMQConfig("creditCard")
 	if err != nil {
 		log.Fatalf("获取支付配置失败: %v", err)
 	}
+	log.Printf("尝试连接RabbitMQ: %s", config.URL)
+
 	mqConfig := mq.MQConfig{
-		Exchange:     config.Exchange,
-		QueueName:    config.Queue,
-		RoutingKey:   config.RoutingKey,
-		ExchangeType: config.ExchangeType,
-	}
-	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
-	config, err = conf.GetMQConfig("creditCard")
-	if err != nil {
-		log.Fatalf("获取支付配置失败: %v", err)
-	}
-	mqConfig = mq.MQConfig{
 		Exchange:     config.Exchange,
 		QueueName:    config.Queue,
 		RoutingKey:   config.RoutingKey,

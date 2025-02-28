@@ -56,13 +56,13 @@ type Registry struct {
 }
 
 type RabbitMQConfig struct {
-	MqURL    string `yaml:"MqURL"`
+	MqURL    string `yaml:"mqURL"  `
 	Payments struct {
-		Methods map[string]PaymentConfig `yaml:"methods" validate:"required"`
-	} `yaml:"payment_producer"`
+		Methods map[string]PaymentConfig `yaml:"methods"`
+	} `yaml:"payment_producer" `
 	Consumers struct {
-		Processors map[string]ConsumerConfig `yaml:"processors" validate:"required"`
-	} `yaml:"checkout_consumer" validate:"required"`
+		Processors map[string]ConsumerConfig `yaml:"processors"`
+	} `yaml:"checkout_consumer"`
 }
 
 // 生产者配置结构
