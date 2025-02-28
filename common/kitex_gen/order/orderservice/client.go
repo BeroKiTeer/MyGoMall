@@ -16,6 +16,7 @@ type Client interface {
 	MarkOrderPaid(ctx context.Context, Req *order.MarkOrderPaidReq, callOptions ...callopt.Option) (r *order.MarkOrderPaidResp, err error)
 	UpdateOrder(ctx context.Context, Req *order.UpdateOrderReq, callOptions ...callopt.Option) (r *order.UpdateOrderResp, err error)
 	CancelOrder(ctx context.Context, Req *order.CancelOrderReq, callOptions ...callopt.Option) (r *order.CancelOrderResp, err error)
+	ShowOrderDetail(ctx context.Context, Req *order.ShowOrderDetailReq, callOptions ...callopt.Option) (r *order.ShowOrderDetailResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +71,9 @@ func (p *kOrderServiceClient) UpdateOrder(ctx context.Context, Req *order.Update
 func (p *kOrderServiceClient) CancelOrder(ctx context.Context, Req *order.CancelOrderReq, callOptions ...callopt.Option) (r *order.CancelOrderResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CancelOrder(ctx, Req)
+}
+
+func (p *kOrderServiceClient) ShowOrderDetail(ctx context.Context, Req *order.ShowOrderDetailReq, callOptions ...callopt.Option) (r *order.ShowOrderDetailResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ShowOrderDetail(ctx, Req)
 }

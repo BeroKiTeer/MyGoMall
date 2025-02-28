@@ -51,3 +51,12 @@ func CancelOrder(ctx context.Context, req *order.CancelOrderReq, callOptions ...
 	}
 	return resp, nil
 }
+
+func ShowOrderDetail(ctx context.Context, req *order.ShowOrderDetailReq, callOptions ...callopt.Option) (resp *order.ShowOrderDetailResp, err error) {
+	resp, err = defaultClient.ShowOrderDetail(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "ShowOrderDetail call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

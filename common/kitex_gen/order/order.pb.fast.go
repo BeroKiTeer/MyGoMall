@@ -607,6 +607,61 @@ func (x *CancelOrderResp) fastReadField1(buf []byte, _type int8) (offset int, er
 	return offset, err
 }
 
+func (x *ShowOrderDetailReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ShowOrderDetailReq[number], err)
+}
+
+func (x *ShowOrderDetailReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.OrderId, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *ShowOrderDetailResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ShowOrderDetailResp[number], err)
+}
+
+func (x *ShowOrderDetailResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v OrderItem
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.OrderItems = append(x.OrderItems, &v)
+	return offset, nil
+}
+
 func (x *Address) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1023,6 +1078,40 @@ func (x *CancelOrderResp) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteBool(buf[offset:], 1, x.GetSuccess())
+	return offset
+}
+
+func (x *ShowOrderDetailReq) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *ShowOrderDetailReq) fastWriteField1(buf []byte) (offset int) {
+	if x.OrderId == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetOrderId())
+	return offset
+}
+
+func (x *ShowOrderDetailResp) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *ShowOrderDetailResp) fastWriteField1(buf []byte) (offset int) {
+	if x.OrderItems == nil {
+		return offset
+	}
+	for i := range x.GetOrderItems() {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.GetOrderItems()[i])
+	}
 	return offset
 }
 
@@ -1445,6 +1534,40 @@ func (x *CancelOrderResp) sizeField1() (n int) {
 	return n
 }
 
+func (x *ShowOrderDetailReq) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *ShowOrderDetailReq) sizeField1() (n int) {
+	if x.OrderId == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.GetOrderId())
+	return n
+}
+
+func (x *ShowOrderDetailResp) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *ShowOrderDetailResp) sizeField1() (n int) {
+	if x.OrderItems == nil {
+		return n
+	}
+	for i := range x.GetOrderItems() {
+		n += fastpb.SizeMessage(1, x.GetOrderItems()[i])
+	}
+	return n
+}
+
 var fieldIDToName_Address = map[int32]string{
 	1: "StreetAddress",
 	2: "City",
@@ -1520,4 +1643,12 @@ var fieldIDToName_CancelOrderReq = map[int32]string{
 
 var fieldIDToName_CancelOrderResp = map[int32]string{
 	1: "Success",
+}
+
+var fieldIDToName_ShowOrderDetailReq = map[int32]string{
+	1: "OrderId",
+}
+
+var fieldIDToName_ShowOrderDetailResp = map[int32]string{
+	1: "OrderItems",
 }
