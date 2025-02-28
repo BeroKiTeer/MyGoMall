@@ -2,6 +2,7 @@ package main
 
 import (
 	"checkout/biz/dal"
+	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
@@ -28,8 +29,8 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
-
-	RabbitMQInit()
+	go PaymentConsumerInit()
+	PymentProducerInit()
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 
 	err := svr.Run()
@@ -69,15 +70,15 @@ func kitexInit() (opts []server.Option) {
 	return
 }
 
-func RabbitMQInit() {
+func PymentProducerInit() {
 	config, err := conf.GetMQConfig("creditCard")
 	if err != nil {
 		log.Fatalf("获取支付配置失败: %v", err)
 	}
 	mqConfig := mq.MQConfig{
 		Exchange:     config.Exchange,
-		Queue:        config.Queue,
-		RoutineKey:   config.RoutingKey,
+		QueueName:    config.Queue,
+		RoutingKey:   config.RoutingKey,
 		ExchangeType: config.ExchangeType,
 	}
 	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
@@ -87,9 +88,38 @@ func RabbitMQInit() {
 	}
 	mqConfig = mq.MQConfig{
 		Exchange:     config.Exchange,
-		Queue:        config.Queue,
-		RoutineKey:   config.RoutingKey,
+		QueueName:    config.Queue,
+		RoutingKey:   config.RoutingKey,
 		ExchangeType: config.ExchangeType,
 	}
 	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
+}
+
+func PaymentConsumerInit() {
+	// 1. 获取MQ配置
+	config := conf.GetConf().RabbitMQ.Consumers.Processors["payment_processor"]
+
+	// 2. 创建消费者实例
+	consumer, err := mq.GetCheckoutConsumer(&mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		ExchangeType: config.ExchangeType,
+	})
+	if err != nil {
+		log.Fatalf("创建消费者失败: %v", err)
+	}
+
+	// 3. 绑定队列
+	for _, key := range config.BindingKeys {
+		if err := consumer.BindQueue(config.Queue, config.Exchange, key); err != nil {
+			log.Fatalf("队列绑定失败: %v", err)
+		}
+	}
+
+	// 4. 启动消费监听
+	ctx := context.Background()
+	handler := &mq.PaymentHandler{}
+	if err := consumer.Consume(ctx, handler); err != nil {
+		log.Printf("消费异常终止: %v", err)
+	}
 }

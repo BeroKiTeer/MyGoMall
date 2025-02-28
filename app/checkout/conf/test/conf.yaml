@@ -24,10 +24,23 @@ redis:
   db: 0
 
 rabbitmq:
-  creditCard:
-      URL: "payment.card"
-      exchange: "payment_exchange"
-      queue: "creditCard_queue"
-      routing_key: "payments.creditCard"
-      exchange_type: "topic"
-  aliPay:
+  MqURL : "amqp://guest:guest@localhost:15672/"
+  payment_producer:
+    methods:
+      creditCard:
+          URL: "payment.card"
+          exchange: "payment_exchange"
+          queue: "creditCard_queue"
+          routing_key: "creditCard_pay"
+          exchange_type: "topic"
+      aliPay:
+
+  checkout_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys:
+          - "payment.#"
+        exchange_type: "topic"
+      refund_processo:

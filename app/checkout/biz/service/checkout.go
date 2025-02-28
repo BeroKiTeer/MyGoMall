@@ -31,30 +31,6 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	//计算所购买的货物总价格
 	var amount int64 = 0
 	var orderItems []*order.OrderItem
-	for _, val := range req.Items {
-		//先验证是否有库存
-		productResp, err := productClient.GetProduct(s.ctx, &product.GetProductReq{Id: val.ProductId})
-		if err != nil {
-			return nil, err
-		}
-		if int64(val.Quantity) > productResp.Product.Stock {
-			return nil, errors.New("库存不足！")
-		}
-
-		//库存预留操作
-		_, err = stock_rpc.DefaultClient().ReserveItem(s.ctx, &stock.ReserveItemReq{
-			ProductId: val.ProductId,
-			Quantity:  int64(val.Quantity),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		//将该商品加入订单
-		orderItems = append(orderItems, val)
-		//计算金额
-		amount += productResp.Product.Price * int64(val.Quantity)
-	}
 	//获取订单号
 	placeOrderResp, err := orderClient.PlaceOrder(s.ctx, &order.PlaceOrderReq{
 		UserId:       req.UserId,
@@ -67,6 +43,31 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		return nil, errors.New("获取订单号失败！")
 	}
+
+	for _, val := range req.Items {
+		//先验证是否有库存
+		productResp, err := productClient.GetProduct(s.ctx, &product.GetProductReq{Id: val.ProductId})
+		if err != nil {
+			return nil, err
+		}
+		if int64(val.Quantity) > productResp.Product.Stock {
+			return nil, errors.New("库存不足！")
+		}
+
+		//库存预留操作
+		_, err = stock_rpc.DefaultClient().ReserveItem(s.ctx, &stock.ReserveItemReq{
+			OrderId: resp.OrderId,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		//将该商品加入订单
+		orderItems = append(orderItems, val)
+		//计算金额
+		amount += productResp.Product.Price * int64(val.Quantity)
+	}
+
 	//发送支付请求到队列
 	switch req.PaymentMethod {
 	case "credit_card":
@@ -76,7 +77,10 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 				Amount:      amount,
 				CallbackURL: "...", //todo,关于url的生成仍未实现
 			}
-			mq.CardPaymentProducer.Send(cardPaymentReq)
+			err := mq.CardPaymentProducer.Send(cardPaymentReq)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@ package pay
 
 import (
 	"apis/biz/utils"
-	"apis/rpc"
+
 	"context"
 
 	pay "apis/hertz_gen/api/pay"
@@ -32,15 +32,11 @@ func CardPay(ctx context.Context, c *app.RequestContext) {
 		Amount:     req.CardPayReq.Amount,
 		CreditCard: req.CardPayReq.CreditCard,
 		OrderId:    req.CardPayReq.OrderId,
-		UserId:     req.CardPayReq.UserId,
 	}
-
-	resp, err := rpc.PaymentClient.Charge(ctx, &pay_kitex.ChargeReq{
-		Amount:     reqRpc.Amount,
-		CreditCard: reqRpc.CreditCard,
-		OrderId:    reqRpc.OrderId,
-		UserId:     reqRpc.UserId,
-	})
-
+	//respRpc := pa
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+}
+
+func startPaymentConsumer() {
+
 }
