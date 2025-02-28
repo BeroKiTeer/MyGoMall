@@ -1,10 +1,10 @@
 package rpc
 
 import (
-	"auth/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
+	"order/conf"
 )
 
 var (
