@@ -1,10 +1,12 @@
 package service
 
 import (
+	"cart/biz/dal/redis"
 	"cart/biz/model"
 	"cart/rpc"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 )
@@ -53,6 +55,15 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	} else {
 		model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
+	}
+
+	var userCart cart.Cart
+	userCart.UserId = req.UserId
+	model.QueryItemsByUser(&userCart)
+
+	for _, item := range userCart.Items {
+		key := fmt.Sprintf("cart:%d:%d", req.UserId, item.ProductId)
+		redis.RedisClient.Set(s.ctx, key, item.Quantity, 3600*24)
 	}
 
 	return
