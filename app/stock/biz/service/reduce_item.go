@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"stock/biz/dal/redis"
+	"stock/rpc"
 )
 
 type ReduceItemService struct {
@@ -17,10 +19,18 @@ func NewReduceItemService(ctx context.Context) *ReduceItemService {
 // Run create note info
 func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceItemResp, err error) {
 
-	key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), req.GetProductId())
-	err = redis.RedisClient.Del(s.ctx, key).Err()
+	// TODO: 此处应为消息队列处理分布式事务，暂时使用rpc调用
+	items, err := rpc.OrderClient.ShowOrderDetail(s.ctx, &order.ShowOrderDetailReq{OrderId: req.OrderId})
 	if err != nil {
 		return &stock.ReduceItemResp{Success: false}, err
+	}
+	for _, item := range items.OrderItems {
+		// TODO: Redis 事务
+		key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), item.ProductId)
+		err = redis.RedisClient.Del(s.ctx, key).Err()
+		if err != nil {
+			return &stock.ReduceItemResp{Success: false}, err
+		}
 	}
 
 	return &stock.ReduceItemResp{Success: true}, nil

@@ -109,3 +109,10 @@ func UpdateOrder(db *gorm.DB, order *Order) error {
 func CancelOrder(db *gorm.DB, status int8, orderID string) error {
 	return db.Exec(`update order set order_status=? where id=?`, status, orderID).Error
 }
+
+func SelectOrderItemsById(db *gorm.DB, orderID string) (orderItems []*OrderItem, err error) {
+	err = db.Model(&OrderItem{}).
+		Where("order_id=?", orderID).
+		Find(&orderItems).Error
+	return orderItems, err
+}
