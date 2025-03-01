@@ -9,6 +9,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type GetCartService struct {
@@ -56,7 +57,7 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 			value := fmt.Sprintf("%d:%d", item.ProductId, item.Quantity)
 			err = redis.RedisClient.LPush(s.ctx, key, value).Err()
 		}
-		err = redis.RedisClient.Expire(s.ctx, key, 3600*6).Err()
+		err = redis.RedisClient.Expire(s.ctx, key, 3600*6*time.Second).Err()
 	}
 
 	return &cart.GetCartResp{Cart: &userCart}, err
