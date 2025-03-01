@@ -11,6 +11,8 @@ service StockService {
   rpc CheckItem(CheckItemReq) returns (CheckItemResp);
   // 预留库存
   rpc ReserveItem(ReserveItemReq) returns (ReserveItemResp);
+  // 恢复库存
+  rpc RecoverItem(RecoverItemReq) returns (RecoverItemResp);
 }
 
 message ReduceItemReq {
@@ -35,5 +37,13 @@ message ReserveItemReq {
 }
 
 message ReserveItemResp {
-  bool Success = 1;
+  bool success = 1;
+}
+
+message RecoverItemReq {
+  string order_id = 1;
+}
+
+message RecoverItemResp {
+  bool success = 1;
 }
