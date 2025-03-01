@@ -30,7 +30,7 @@ COPY ../../../app/user/conf /opt/mygomall/app/user/conf
 WORKDIR /opt/mygomall/app/user
 
 # 暴露的端口
-EXPOSE 8883
+# EXPOSE 8883
 
 # 启动程序
 CMD ["./server"]
