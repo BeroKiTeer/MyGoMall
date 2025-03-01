@@ -1,4 +1,4 @@
-package checkout
+package user
 
 import (
 	"checkout/conf"
@@ -11,7 +11,7 @@ import (
 var (
 	// todo edit custom config
 	defaultClient     RPCClient
-	defaultDstService = "checkout"
+	defaultDstService = "user"
 	consulResolver    discovery.Resolver // 解析器字段
 	once              sync.Once
 )

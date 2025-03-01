@@ -2,7 +2,7 @@ package rabbitMq
 
 import (
 	"checkout/conf"
-	"github.com/cloudwego/hertz/pkg/common/json"
+	"encoding/json"
 )
 
 var (

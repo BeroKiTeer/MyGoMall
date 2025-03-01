@@ -2,7 +2,7 @@ package order
 
 import (
 	"context"
-	order "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/cloudwego/kitex/client"

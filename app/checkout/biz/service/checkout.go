@@ -2,15 +2,15 @@ package service
 
 import (
 	mq "checkout/biz/dal/RabbitMQ"
+	order_rpc "checkout/rpc/order"
+	pdc_rpc "checkout/rpc/product"
+	stock_rpc "checkout/rpc/stock"
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
-	order_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/order"
-	pdc_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/product"
-	stock_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/stock"
 )
 
 type CheckoutService struct {

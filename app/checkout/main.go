@@ -1,6 +1,7 @@
 package main
 
 import (
+	"checkout/biz/dal"
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
@@ -24,7 +25,7 @@ var (
 )
 
 func main() {
-	//rerrdal.Init()
+	dal.Init()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()

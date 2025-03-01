@@ -1,10 +1,10 @@
 package order
 
 import (
+	"checkout/conf"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/discovery"
 	consul "github.com/kitex-contrib/registry-consul"
-	"order/conf"
 	"sync"
 )
 

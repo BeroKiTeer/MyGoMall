@@ -2,13 +2,13 @@ package rabbitMq
 
 import (
 	"checkout/conf"
+	order_rpc "checkout/rpc/order"
+	stock_rpc "checkout/rpc/stock"
 	"context"
 	"encoding/json"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
-	order_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/order"
-	stock_rpc "github.com/BeroKiTeer/MyGoMall/common/rpc/stock"
 	"github.com/streadway/amqp"
 )
 
