@@ -1,12 +1,10 @@
 package service
 
 import (
-	"cart/biz/dal/redis"
 	"cart/biz/model"
 	"cart/rpc"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 )
@@ -48,23 +46,18 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
-	model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
+	err = model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
+
+	if err != nil {
+		return nil, err
+	}
 
 	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
 	if targetItemQuantity == -1 {
-		model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
+		err = model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	} else {
-		model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
+		err = model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	}
 
-	var userCart cart.Cart
-	userCart.UserId = req.UserId
-	model.QueryItemsByUser(&userCart)
-
-	for _, item := range userCart.Items {
-		key := fmt.Sprintf("cart:%d:%d", req.UserId, item.ProductId)
-		redis.RedisClient.Set(s.ctx, key, item.Quantity, 3600*24)
-	}
-
-	return
+	return &cart.AddItemResp{}, err
 }

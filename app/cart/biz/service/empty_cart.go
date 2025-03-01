@@ -24,12 +24,16 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
-	model.CheckItemsByUser(req.UserId, &targetItemQuantity)
+	err = model.CheckItemsByUser(req.UserId, &targetItemQuantity)
+
+	if err != nil {
+		return nil, err
+	}
 
 	// 删除
 	if targetItemQuantity != -1 {
-		model.EmptyCart(req.UserId)
+		err = model.EmptyCart(req.UserId)
 	}
 
-	return
+	return &cart.EmptyCartResp{}, err
 }
