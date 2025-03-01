@@ -3,7 +3,7 @@ package model
 import (
 	"fmt"
 	"gorm.io/gorm"
-	"product/biz/dal/mysql"
+	"order/biz/dal/mysql"
 	"time"
 )
 

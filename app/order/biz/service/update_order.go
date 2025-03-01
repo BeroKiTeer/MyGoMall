@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"order/biz/dal/mysql"
 	"order/biz/model"
-	"product/biz/dal/mysql"
 )
 
 type UpdateOrderService struct {

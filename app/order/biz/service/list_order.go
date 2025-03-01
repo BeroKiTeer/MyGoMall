@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"order/biz/dal/mysql"
 	"order/biz/model"
-	"product/biz/dal/mysql"
 )
 
 type ListOrderService struct {
