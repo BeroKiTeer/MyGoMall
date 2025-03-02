@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/google/uuid"
 	"payment/biz/dal/mysql"
 	"payment/biz/model"
@@ -23,6 +24,7 @@ func (s *ChargeByThirdPartyService) Run(req *payment.ChargeByThirdPartyReq) (res
 	// 生成一个交易 ID （UUID）
 	transactionID, err := uuid.NewRandom()
 	if err != nil {
+		klog.Error("UUID生成失败", err)
 		return nil, errors.New("UUID生成失败：" + err.Error())
 	}
 
@@ -36,6 +38,7 @@ func (s *ChargeByThirdPartyService) Run(req *payment.ChargeByThirdPartyReq) (res
 	})
 
 	if err != nil {
+		klog.Error("数据库存储失败", err)
 		return nil, errors.New("数据库存储失败：" + err.Error())
 	}
 
