@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"stock/biz/dal/mysql"
 	"stock/biz/model"
 	"stock/rpc"
@@ -23,6 +24,7 @@ func (s *RecoverItemService) Run(req *stock.RecoverItemReq) (resp *stock.Recover
 	// 根据 order_id 查所有的商品
 	orderDetails, err := rpc.OrderClient.ShowOrderDetail(s.ctx, &order.ShowOrderDetailReq{OrderId: req.OrderId})
 	if err != nil {
+		klog.Errorf("show order detail failed, err: %v", err)
 		return &stock.RecoverItemResp{Success: false}, errors.New("无法根据 order_查到对应商品！")
 	}
 
@@ -30,6 +32,7 @@ func (s *RecoverItemService) Run(req *stock.RecoverItemReq) (resp *stock.Recover
 	for _, item := range orderDetails.OrderItems {
 		err = model.RecoverItem(mysql.DB, item.ProductId, int64(item.Quantity))
 		if err != nil {
+			klog.Errorf("recover item failed, err: %v", err)
 			return &stock.RecoverItemResp{Success: false}, err
 		}
 	}

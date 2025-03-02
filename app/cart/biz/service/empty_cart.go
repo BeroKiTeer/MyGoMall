@@ -35,6 +35,7 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 
 	// 删除
 	if targetItemQuantity != -1 {
+		klog.Info("清空购物车接口响应成功")
 		err = model.EmptyCart(req.UserId)
 	}
 	return &cart.EmptyCartResp{}, err
