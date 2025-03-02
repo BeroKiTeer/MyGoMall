@@ -31,17 +31,22 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 		return nil, err
 	}
 
-	newUser := &model.User{
-		Email:          req.Email,
+	err = model.CreateUser(mysql.DB, &model.User{
+		Username:       req.Email,
 		PasswordHashed: string(passwordHashed),
-	}
-
-	err = model.CreateUser(mysql.DB, newUser)
+		PhoneNumber:    "",
+		Email:          req.Email,
+		Status:         0,
+		Role:           0,
+	})
+	klog.Info("注册用户:", req.Email)
 
 	if err != nil {
 		klog.Error("创建用户错误", err)
 		return nil, err
 	}
 
-	return &user.RegisterResp{UserId: int32(newUser.ID)}, err
+	return &user.RegisterResp{
+		UserId: 1,
+	}, err
 }

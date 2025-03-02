@@ -96,7 +96,7 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 		Email:       req.Email,
 		Password:    req.Password,
 		PhoneNumber: req.PhoneNumber,
-		AddressId:   req.Address,
+		Address:     req.Address,
 	})
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
