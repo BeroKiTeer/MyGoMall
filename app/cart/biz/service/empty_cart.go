@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type EmptyCartService struct {
@@ -19,6 +20,7 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 
 	// 参数检查
 	if req.UserId == 0 {
+		klog.Error("未输入用户id", err)
 		return nil, errors.New("empty user id")
 	}
 
@@ -27,6 +29,7 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 	err = model.CheckItemsByUser(req.UserId, &targetItemQuantity)
 
 	if err != nil {
+		klog.Error("未查询到商品", err)
 		return nil, err
 	}
 
@@ -34,6 +37,5 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 	if targetItemQuantity != -1 {
 		err = model.EmptyCart(req.UserId)
 	}
-
 	return &cart.EmptyCartResp{}, err
 }

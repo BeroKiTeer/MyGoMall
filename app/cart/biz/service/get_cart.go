@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"strconv"
 	"strings"
 	"time"
@@ -24,6 +25,7 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 
 	// 参数检查
 	if req.UserId == 0 {
+		klog.Error("未输入用户id", err)
 		return nil, errors.New("user id is required")
 	}
 
