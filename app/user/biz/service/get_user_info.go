@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 	"user/biz/dal/mysql"
 	"user/biz/model"
@@ -32,13 +33,17 @@ func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserIn
 	  string created_at = 8;   // 账户创建时间
 	  string updated_at = 9;   // 账户最近更新时间
 	*/
-
+	address, err := model.GetAddressById(mysql.DB, s.ctx, row.AddressId)
+	if err != nil {
+		klog.Error(err)
+		return nil, err
+	}
 	resp = &user.GetUserInfoResp{
 		UserId:      int32(row.ID),
-		Email:       string(row.Email),
-		Username:    string(row.Username),
-		PhoneNumber: string(row.PhoneNumber),
-		AddressId:   row.AddressId,
+		Email:       row.Email,
+		Username:    row.Username,
+		PhoneNumber: row.PhoneNumber,
+		Address:     address.Address,
 		CreatedAt:   row.CreatedAt.Format(time.DateTime),
 		UpdatedAt:   row.UpdatedAt.Format(time.DateTime),
 	}

@@ -55,8 +55,8 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	if req.PhoneNumber != "" {
 		updates["phone_number"] = req.PhoneNumber
 	}
-	if req.AddressId != 0 {
-		updates["address_id"] = req.AddressId
+	if req.Address != "" {
+		updates["address"] = req.Address
 	}
 
 	// 如果没有需要更新的字段，直接返回成功
