@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
 	"user/biz/dal/mysql"
 	"user/biz/model"
@@ -20,11 +21,13 @@ func NewRegisterService(ctx context.Context) *RegisterService {
 func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, err error) {
 	// Finish your business logic.
 	if req.Password != req.ConfirmPassword {
+		klog.Error("Passwords do not match!")
 		return nil, errors.New("Passwords do not match!")
 	}
 	passwordHashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), 12)
 
 	if err != nil {
+		klog.Error("密码加密错误", err)
 		return nil, err
 	}
 
@@ -36,6 +39,7 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 	err = model.CreateUser(mysql.DB, newUser)
 
 	if err != nil {
+		klog.Error("创建用户错误", err)
 		return nil, err
 	}
 

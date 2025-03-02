@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
 	"user/rpc"
@@ -28,10 +28,12 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	}
 	row, err := model.GetByEmail(mysql.DB, s.ctx, req.Email)
 	if err != nil {
+		klog.Error("查询用户失败", err)
 		return nil, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(row.PasswordHashed), []byte(req.Password))
 	if err != nil {
+		klog.Error("密码错误", err)
 		return nil, err
 	}
 	// 调用auth服务，生成 token
@@ -40,7 +42,8 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		klog.Fatal(err)
+		return nil, err
 	}
 
 	resp = &user.LoginResp{

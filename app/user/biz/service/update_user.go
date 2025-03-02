@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
 	"user/rpc"
@@ -31,7 +31,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	})
 
 	if err != nil {
-		log.Fatal("token无效，请重新登录，", err)
+		klog.Fatal("token无效，请重新登录，", err)
 		return nil, err
 	}
 
@@ -41,6 +41,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	})
 	row, err := model.UserExistsByID(mysql.DB, r.UserId)
 	if row == false || err != nil {
+		klog.Error("用户不存在")
 		return nil, errors.New("用户不存在")
 	}
 
@@ -67,6 +68,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 
 	// 4️⃣ 执行更新操作
 	if err := model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
+		klog.Error("更新用户SQL语句失败：", err)
 		return nil, err
 	}
 
@@ -79,6 +81,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 func hashPassword(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		klog.Error("密码加密错误", err)
 		return "", err
 	}
 	return string(hashed), nil
