@@ -20,6 +20,7 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	// 开始事务
 	tx := mysql.DB.Begin()
 	if tx.Error != nil {
+		klog.Errorf("tx begin failed, err: %v", tx.Error)
 		return nil, tx.Error
 	}
 
@@ -38,6 +39,7 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	if result.Error != nil {
 		// 发生错误时回滚事务
 		tx.Rollback()
+		klog.Error(result.Error)
 		return nil, result.Error
 	}
 
@@ -67,7 +69,6 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 	}
 	// 提交事务
 	if err = tx.Commit().Error; err != nil {
-
 		klog.Errorf(err.Error())
 		return nil, err
 	}
