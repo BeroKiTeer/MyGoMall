@@ -7,6 +7,7 @@ import (
 	"apis/rpc"
 	"context"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/kitex/pkg/klog"
 
 	product "apis/hertz_gen/api/product"
 	product_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
@@ -94,15 +95,14 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req product.CreateProductReq
-	hlog.Info(req.Product)
-	hlog.Info(req.Product.Name, req.Product.Stock)
-	err = c.BindAndValidate(&req)
+	klog.Info("11111111111111111\n")
+	arg := &product_kitex.CreateProductReq{}
+	err = utils.BindJson(c, &req)
 	if err != nil {
 		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	arg := &product_kitex.CreateProductReq{}
 	arg.Product.Name = req.Product.Name
 	arg.Product.Description = req.Product.Description
 	arg.Product.Price = req.Product.Price
@@ -110,19 +110,32 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	arg.Product.Stock = req.Product.Stock
 	arg.Product.Categories = req.Product.Categories
 	arg.Product.Images = req.Product.Images
-	err = utils.BindJson(c, &arg)
+
+	klog.Info("111111111555555555\n")
+	err = c.BindAndValidate(&req)
+	hlog.Info(req.Product)
+	hlog.Info(req.Product.Name, req.Product.Stock)
+	klog.Info(err)
+	klog.Info('\n')
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
+		return
 	}
+	klog.Info("222222222222222222\n")
+
 	r, err := rpc.ProductClient.CreateProduct(ctx, arg)
+	klog.Info("3333333333333333333\n")
 	if err != nil {
 		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
+	klog.Info("44444444444444444\n")
 	resp := new(product.CreateProductResp)
 	resp.ProductId = r.ProductId
 
+	klog.Info("55555555555555555\n")
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
