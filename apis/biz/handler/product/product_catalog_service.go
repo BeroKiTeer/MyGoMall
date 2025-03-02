@@ -97,7 +97,7 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.CreateProductReq
 	err = c.BindAndValidate(&req)
 	klog.Info("11111111111111111\n")
-	err = utils.BindJson(c, &req)
+	err = utils.BindJson(c, &req.Product)
 	klog.Info("111111111555555555\n")
 	if err != nil {
 		hlog.Error(err)

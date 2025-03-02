@@ -4,8 +4,6 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
-	consul "github.com/kitex-contrib/registry-consul"
-	"log"
 	"net"
 	"product/biz/dal"
 	"time"
@@ -45,12 +43,6 @@ func kitexInit() (opts []server.Option) {
 		CurrentServiceName: ServiceName,
 		RegistryAddr:       RegistryAddr,
 	}))
-
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()
