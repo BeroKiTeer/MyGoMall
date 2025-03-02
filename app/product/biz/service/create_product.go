@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 )
@@ -48,6 +49,7 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 		if result.Error != nil {
 			// 发生错误时回滚事务
 			tx.Rollback()
+			klog.Errorf(result.Error.Error())
 			return nil, result.Error
 		}
 		// 插入关联表
@@ -59,11 +61,14 @@ func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product
 		if result.Error != nil {
 			// 发生错误时回滚事务
 			tx.Rollback()
+			klog.Errorf(result.Error.Error())
 			return nil, result.Error
 		}
 	}
 	// 提交事务
 	if err = tx.Commit().Error; err != nil {
+
+		klog.Errorf(err.Error())
 		return nil, err
 	}
 	return &product.CreateProductResp{ProductId: newProduct.ID}, nil

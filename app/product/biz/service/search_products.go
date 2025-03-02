@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 )
@@ -19,6 +20,7 @@ func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *produ
 	// Finish your business logic.
 	products, categories, err := model.GetProductByName(mysql.DB, req.GetName())
 	if err != nil {
+		klog.Error(err)
 		return nil, err
 	}
 	resp = &product.SearchProductsResp{}
