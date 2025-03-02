@@ -9,6 +9,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	cart_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
@@ -83,6 +84,7 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 	var req common.Empty
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
@@ -90,12 +92,14 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 	//获取请求头的token
 	token := c.Request.Header.Get("Authorization")
 	if token == "" {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
@@ -103,6 +107,7 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 	resp, err := rpc.CartClient.EmptyCart(ctx, &cart_kitex.EmptyCartReq{UserId: uint32(rawID.UserId)})
 
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
@@ -117,6 +122,7 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 	var req cart.AddItemReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
@@ -124,12 +130,14 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 	//获取请求头的token
 	token := c.Request.Header.Get("Authorization")
 	if token == "" {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
@@ -142,6 +150,7 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 		},
 	})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type AddItemService struct {
@@ -29,6 +30,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	}
 
 	if req.Item.Quantity == 0 {
+		klog.Warn("数量是0")
 		return nil, errors.New("quantity is 0")
 	}
 
@@ -49,6 +51,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	err = model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
 
 	if err != nil {
+		klog.Error("商品查询失败", err)
 		return nil, err
 	}
 
