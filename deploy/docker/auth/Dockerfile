@@ -28,9 +28,5 @@ COPY --from=builder /opt/mygomall/app/auth/server /opt/mygomall/app/auth/server
 COPY ../../../app/auth/conf /opt/mygomall/app/auth/conf
 
 WORKDIR /opt/mygomall/app/auth
-
-# 暴露的端口
-# EXPOSE 8080
-
 # 启动程序
 CMD ["./server"]

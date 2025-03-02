@@ -12,7 +12,7 @@ type User struct {
 	PasswordHashed string
 	PhoneNumber    string `gorm:"unique"`
 	Email          string `gorm:"unique"`
-	Address        string
+	AddressId      int64
 	Status         int8
 	Role           int8
 }

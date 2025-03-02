@@ -303,7 +303,7 @@ func (x *UpdateUserReq) fastReadField4(buf []byte, _type int8) (offset int, err 
 }
 
 func (x *UpdateUserReq) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Address, offset, err = fastpb.ReadString(buf, _type)
+	x.AddressId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -438,7 +438,7 @@ func (x *GetUserInfoResp) fastReadField4(buf []byte, _type int8) (offset int, er
 }
 
 func (x *GetUserInfoResp) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Address, offset, err = fastpb.ReadString(buf, _type)
+	x.AddressId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -662,10 +662,10 @@ func (x *UpdateUserReq) fastWriteField4(buf []byte) (offset int) {
 }
 
 func (x *UpdateUserReq) fastWriteField5(buf []byte) (offset int) {
-	if x.Address == "" {
+	if x.AddressId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.GetAddress())
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.GetAddressId())
 	return offset
 }
 
@@ -750,10 +750,10 @@ func (x *GetUserInfoResp) fastWriteField4(buf []byte) (offset int) {
 }
 
 func (x *GetUserInfoResp) fastWriteField5(buf []byte) (offset int) {
-	if x.Address == "" {
+	if x.AddressId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.GetAddress())
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.GetAddressId())
 	return offset
 }
 
@@ -989,10 +989,10 @@ func (x *UpdateUserReq) sizeField4() (n int) {
 }
 
 func (x *UpdateUserReq) sizeField5() (n int) {
-	if x.Address == "" {
+	if x.AddressId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(5, x.GetAddress())
+	n += fastpb.SizeInt64(5, x.GetAddressId())
 	return n
 }
 
@@ -1077,10 +1077,10 @@ func (x *GetUserInfoResp) sizeField4() (n int) {
 }
 
 func (x *GetUserInfoResp) sizeField5() (n int) {
-	if x.Address == "" {
+	if x.AddressId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(5, x.GetAddress())
+	n += fastpb.SizeInt64(5, x.GetAddressId())
 	return n
 }
 
@@ -1156,7 +1156,7 @@ var fieldIDToName_UpdateUserReq = map[int32]string{
 	2: "Email",
 	3: "Password",
 	4: "PhoneNumber",
-	5: "Address",
+	5: "AddressId",
 }
 
 var fieldIDToName_UpdateUserResp = map[int32]string{
@@ -1172,7 +1172,7 @@ var fieldIDToName_GetUserInfoResp = map[int32]string{
 	2: "Email",
 	3: "Username",
 	4: "PhoneNumber",
-	5: "Address",
+	5: "AddressId",
 	6: "Role",
 	7: "Status",
 	8: "CreatedAt",

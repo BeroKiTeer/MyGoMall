@@ -30,6 +30,7 @@ func main() {
 	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
 
 	err := svr.Run()
+	klog.Info(err)
 	if err != nil {
 		klog.Error(err.Error())
 	}

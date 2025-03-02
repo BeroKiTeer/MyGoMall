@@ -1,7 +1,6 @@
 # 选择基础镜像
 FROM golang:1.23 AS builder
 
-ENV GO_ENV=online
 ENV GOPROXY=https://goproxy.cn,direct
 
 # 设置工作目录为

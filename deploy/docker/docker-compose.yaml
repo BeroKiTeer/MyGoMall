@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  auth:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/auth/Dockerfile
+    container_name: auth
+    environment:
+      - GO_ENV=dev
+      - GOPROXY=https://goproxy.cn,direct
+    ports:
+      - "8881:8881"
+    restart: unless-stopped  # 容器失败时会自动重启，除非手动停止

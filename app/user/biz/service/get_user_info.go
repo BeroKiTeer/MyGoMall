@@ -38,7 +38,7 @@ func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserIn
 		Email:       string(row.Email),
 		Username:    string(row.Username),
 		PhoneNumber: string(row.PhoneNumber),
-		Address:     string(row.Address),
+		AddressId:   row.AddressId,
 		CreatedAt:   row.CreatedAt.Format(time.DateTime),
 		UpdatedAt:   row.UpdatedAt.Format(time.DateTime),
 	}

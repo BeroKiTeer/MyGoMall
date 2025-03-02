@@ -82,6 +82,7 @@ func initConf() {
 
 func GetEnv() string {
 	e := os.Getenv("GO_ENV")
+	klog.Info(e)
 	if len(e) == 0 {
 		return "test"
 	}

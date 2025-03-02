@@ -96,7 +96,7 @@ func UserUpdate(ctx context.Context, c *app.RequestContext) {
 		Email:       req.Email,
 		Password:    req.Password,
 		PhoneNumber: req.PhoneNumber,
-		Address:     req.Address,
+		AddressId:   req.Address,
 	})
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
@@ -185,6 +185,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		ConfirmPassword: req.ConfirmPassword,
 	})
 	if err != nil {
+		log.Printf("RPC Register error: %v", err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
