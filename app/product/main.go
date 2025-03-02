@@ -1,7 +1,6 @@
 package main
 
 import (
-	"cart/rpc"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
@@ -29,7 +28,6 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
-	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
 	err := svr.Run()
 	if err != nil {

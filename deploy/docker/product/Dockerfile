@@ -15,8 +15,6 @@ COPY ../../../common common
 WORKDIR /usr/src/mygomall/app/product
 RUN go mod download
 RUN go mod verify
-RUN go mod tidy
-
 # 将这个微服务目录的所有文件复制到容器中
 COPY ../../../app/product /usr/src/mygomall/app/product/
 
@@ -30,9 +28,5 @@ COPY --from=builder /opt/mygomall/app/product/server /opt/mygomall/app/product/s
 COPY ../../../app/product/conf /opt/mygomall/app/product/conf
 
 WORKDIR /opt/mygomall/app/product
-
-# 暴露的端口
-# EXPOSE 8883
-
 # 启动程序
 CMD ["./server"]
