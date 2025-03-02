@@ -68,7 +68,7 @@ message UpdateUserReq {
   string email = 2;  // 新邮箱（可选）
   string password = 3; // 新密码（可选）
   string phone_number = 4; // 新手机号（可选）
-  int64 address_id = 5; // 新地址（可选）
+  string address = 5; // 新地址（可选）
 }
 
 // 更新用户的响应消息
@@ -87,7 +87,7 @@ message GetUserInfoResp {
   string email = 2;        // 用户邮箱
   string username = 3;     // 用户名
   string phone_number = 4; // 手机号
-  int64 address_id = 5;      // 地址
+  string address = 5;      // 地址
   string role = 6;         // 角色（如"admin", "user"）
   string status = 7;       // 账户状态（如"active", "banned", "pending"）
   string created_at = 8;   // 账户创建时间
