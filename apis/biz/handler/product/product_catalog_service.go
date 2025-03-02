@@ -95,25 +95,16 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req product.CreateProductReq
+	err = c.BindAndValidate(&req)
 	klog.Info("11111111111111111\n")
 	err = utils.BindJson(c, &req)
+	klog.Info("111111111555555555\n")
 	if err != nil {
 		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 
-	klog.Info("111111111555555555\n")
-	err = c.BindAndValidate(&req)
-	hlog.Info(req.Product)
-	hlog.Info(req.Product.Name, req.Product.Stock)
-	klog.Info(err)
-	klog.Info('\n')
-	if err != nil {
-		hlog.Error(err)
-		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
-		return
-	}
 	klog.Info("222222222222222222\n")
 
 	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{
