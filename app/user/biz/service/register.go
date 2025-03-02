@@ -22,7 +22,7 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 	// Finish your business logic.
 	if req.Password != req.ConfirmPassword {
 		klog.Error("Passwords do not match!")
-		return nil, errors.New("Passwords do not match!")
+		return nil, errors.New("passwords do not match")
 	}
 	passwordHashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), 12)
 
