@@ -99,7 +99,15 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{})
+	arg := &product_kitex.CreateProductReq{}
+	arg.Product.Name = req.Product.Name
+	arg.Product.Description = req.Product.Description
+	arg.Product.Price = req.Product.Price
+	arg.Product.OriginalPrice = req.Product.OriginalPrice
+	arg.Product.Stock = req.Product.Stock
+	arg.Product.Categories = req.Product.Categories
+	arg.Product.Images = req.Product.Images
+	r, err := rpc.ProductClient.CreateProduct(ctx, arg)
 	if err != nil {
 		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
