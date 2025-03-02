@@ -62,6 +62,7 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 		hlog.Error(err)
 		return
 	}
+
 	r, err := rpc.ProductClient.SearchProducts(ctx, &product_kitex.SearchProductsReq{
 		Name: req.Name,
 	})
@@ -109,6 +110,10 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	arg.Product.Stock = req.Product.Stock
 	arg.Product.Categories = req.Product.Categories
 	arg.Product.Images = req.Product.Images
+	err = utils.BindJson(c, &arg)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
+	}
 	r, err := rpc.ProductClient.CreateProduct(ctx, arg)
 	if err != nil {
 		hlog.Error(err)
