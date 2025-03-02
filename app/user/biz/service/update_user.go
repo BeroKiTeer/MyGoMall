@@ -39,6 +39,10 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	r, err := rpc.AuthClient.DecodeToken(s.ctx, &auth.DecodeTokenReq{
 		Token: req.Token,
 	})
+	if err != nil {
+		klog.Error(err)
+		return nil, err
+	}
 	row, err := model.UserExistsByID(mysql.DB, r.UserId)
 	if row == false || err != nil {
 		klog.Error("用户不存在")
@@ -56,8 +60,17 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	if req.PhoneNumber != "" {
 		updates["phone_number"] = req.PhoneNumber
 	}
-	if req.Address != "" {
-		updates["address"] = req.Address
+	userById, err := model.GetUserById(mysql.DB, s.ctx, r.UserId)
+	if err != nil {
+		return nil, err
+	}
+	if req.Address != "" || userById.AddressId != 0 {
+		address, err := model.GetAddressByUserId(mysql.DB, s.ctx, r.UserId)
+		if err != nil {
+			klog.Error("获取用户地址失败：", err)
+			return nil, err
+		}
+		updates["address"] = address.Address
 	}
 
 	// 如果没有需要更新的字段，直接返回成功

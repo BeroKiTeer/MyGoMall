@@ -25,3 +25,8 @@ func GetAddressById(db *gorm.DB, ctx context.Context, id int64) (address *Addres
 	err = db.WithContext(ctx).Where("id = ?", id).First(&address).Error
 	return address, err
 }
+
+func GetAddressByUserId(db *gorm.DB, ctx context.Context, userId int32) (address *Address, err error) {
+	err = db.WithContext(ctx).Where("user_id = ?", userId).First(&address).Error
+	return address, err
+}
