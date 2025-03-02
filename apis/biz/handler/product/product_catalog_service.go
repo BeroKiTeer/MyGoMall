@@ -96,20 +96,12 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req product.CreateProductReq
 	klog.Info("11111111111111111\n")
-	arg := &product_kitex.CreateProductReq{}
 	err = utils.BindJson(c, &req)
 	if err != nil {
 		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	arg.Product.Name = req.Product.Name
-	arg.Product.Description = req.Product.Description
-	arg.Product.Price = req.Product.Price
-	arg.Product.OriginalPrice = req.Product.OriginalPrice
-	arg.Product.Stock = req.Product.Stock
-	arg.Product.Categories = req.Product.Categories
-	arg.Product.Images = req.Product.Images
 
 	klog.Info("111111111555555555\n")
 	err = c.BindAndValidate(&req)
@@ -124,7 +116,17 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	}
 	klog.Info("222222222222222222\n")
 
-	r, err := rpc.ProductClient.CreateProduct(ctx, arg)
+	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{
+		Product: &product_kitex.Product{
+			Name:          req.Product.Name,
+			Description:   req.Product.Description,
+			Price:         req.Product.Price,
+			OriginalPrice: req.Product.OriginalPrice,
+			Stock:         req.Product.Stock,
+			Images:        req.Product.Images,
+			Categories:    req.Product.Categories,
+		},
+	})
 	klog.Info("3333333333333333333\n")
 	if err != nil {
 		hlog.Error(err)
