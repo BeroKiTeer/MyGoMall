@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/rand"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang-jwt/jwt/v4"
 	"strconv"
 	"time"
@@ -26,6 +27,7 @@ func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, erro
 	secretKey := make([]byte, 32)
 	_, err := rand.Read(secretKey)
 	if err != nil {
+		klog.Error("生成密钥错误", err)
 		return "", err
 	}
 
@@ -37,6 +39,7 @@ func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, erro
 	// 把 userID 转为 string 类型 存到 key 里面，密钥是刚刚随机生成的
 	err = redis.RedisClient.Set(ctx, strconv.Itoa(int(userID)), secretKey, duration).Err()
 	if err != nil {
+		klog.Error(err)
 		return "", err
 	}
 
@@ -58,6 +61,7 @@ func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.De
 	token, err := GenerateJWT(req.UserId, 3600, s.ctx)
 
 	if err != nil {
+		klog.Error("生成 token 错误", err)
 		return nil, err
 	}
 
