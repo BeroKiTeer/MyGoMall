@@ -22,9 +22,9 @@ func Register(r *server.Hertz) {
 		_api.GET("/products", append(_listproductsMw(), product.ListProducts)...)
 		_products := _api.Group("/products", _productsMw()...)
 		_products.GET("/batch", append(_getproductsbatchMw(), product.GetProductsBatch)...)
-		_products.DELETE("/:id", append(_deleteproductMw(), product.DeleteProduct)...)
-		_products.GET("/:id", append(_getproductMw(), product.GetProduct)...)
-		_products.PUT("/:id", append(_updateproductMw(), product.UpdateProduct)...)
+		_products.DELETE("/{id}", append(_deleteproductMw(), product.DeleteProduct)...)
+		_products.GET("/{id}", append(_getproductMw(), product.GetProduct)...)
+		_products.PUT("/{id}", append(_updateproductMw(), product.UpdateProduct)...)
 		_products.GET("/search", append(_searchproductsMw(), product.SearchProducts)...)
 		_api.POST("/products", append(_createproductMw(), product.CreateProduct)...)
 	}
