@@ -11,6 +11,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type CheckoutService struct {
@@ -41,6 +42,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	},
 	)
 	if err != nil {
+		klog.Error("获取订单号失败", err)
 		return nil, errors.New("获取订单号失败！")
 	}
 
@@ -48,9 +50,11 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		//先验证是否有库存
 		productResp, err := productClient.GetProduct(s.ctx, &product.GetProductReq{Id: val.ProductId})
 		if err != nil {
+			klog.Error("GetProductReq接口无响应，无法查询到库存", err)
 			return nil, err
 		}
 		if int64(val.Quantity) > productResp.Product.Stock {
+			klog.Info("GetProductReq接口相应成功，查询到库存")
 			return nil, errors.New("库存不足！")
 		}
 
@@ -59,6 +63,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 			OrderId: resp.OrderId,
 		})
 		if err != nil {
+			klog.Error("ReserveItemReq接口无响应，无法预留库存", err)
 			return nil, err
 		}
 
@@ -79,6 +84,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 			}
 			err := mq.CardPaymentProducer.Send(cardPaymentReq)
 			if err != nil {
+				klog.Error("cardPaymentReq接口未响应，无法发送支付请求", err)
 				return nil, err
 			}
 		}

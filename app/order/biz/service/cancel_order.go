@@ -22,7 +22,7 @@ func (s *CancelOrderService) Run(req *order.CancelOrderReq) (resp *order.CancelO
 	//TODO： 1. 确认订单状态
 	od, err := model.GetOrder(mysql.DB, req.OrderId)
 	if err != nil {
-		klog.Error(err)
+		klog.Error("GetOrder接口未响应，无法获取订单状态", err)
 		return nil, err
 	}
 	if od.OrderStatus != constant.Canceled {
@@ -32,7 +32,7 @@ func (s *CancelOrderService) Run(req *order.CancelOrderReq) (resp *order.CancelO
 
 	//TODO： 2. 取消订单
 	if err = model.CancelOrder(mysql.DB, constant.Canceled, req.OrderId); err != nil {
-		klog.Error(err)
+		klog.Error("CancelOrder接口未响应，无法取消订单", err)
 		return nil, err
 	}
 

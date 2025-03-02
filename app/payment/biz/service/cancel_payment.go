@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"payment/biz/dal/mysql"
 	"payment/biz/model"
 )
@@ -24,6 +25,7 @@ func (s *CancelPaymentService) Run(req *payment.CancelReq) (resp *payment.Cancel
 	//查询订单信息
 	pay, err := model.QueryPayment(mysql.DB, int(req.Id))
 	if err != nil {
+		klog.Error("QueryPayment接口未响应，查询订单信息失败", err)
 		return cancelResp, err
 	}
 	// 判断订单状态
@@ -32,6 +34,7 @@ func (s *CancelPaymentService) Run(req *payment.CancelReq) (resp *payment.Cancel
 		pay.Status = 4
 		err := model.UpdatePaymentStatus(mysql.DB, pay)
 		if err != nil {
+			klog.Error("UpdatePaymentStatus接口未响应，订单更新失败", err)
 			cancelResp.Status = "订单更新失败，请重试"
 			return cancelResp, err
 		}
@@ -41,6 +44,7 @@ func (s *CancelPaymentService) Run(req *payment.CancelReq) (resp *payment.Cancel
 		pay.Status = 4
 		err := model.UpdatePaymentStatus(mysql.DB, pay)
 		if err != nil {
+			klog.Error("UpdatePaymentStatus接口未响应，订单更新失败", err)
 			cancelResp.Status = "订单更新失败，请重试"
 			return cancelResp, err
 		}
