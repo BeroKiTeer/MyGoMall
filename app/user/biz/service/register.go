@@ -32,7 +32,6 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 	}
 
 	err = model.CreateUser(mysql.DB, &model.User{
-		Username:       req.Email,
 		PasswordHashed: string(passwordHashed),
 		PhoneNumber:    "",
 		Email:          req.Email,

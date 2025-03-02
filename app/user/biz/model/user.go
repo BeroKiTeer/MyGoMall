@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	Base
-	Username       string `gorm:"unique"`
+	Username       string
 	PasswordHashed string
 	PhoneNumber    string `gorm:"unique"`
 	Email          string `gorm:"unique"`
