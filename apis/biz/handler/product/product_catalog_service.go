@@ -6,6 +6,7 @@ import (
 	"apis/biz/utils"
 	"apis/rpc"
 	"context"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 
 	product "apis/hertz_gen/api/product"
 	product_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
@@ -29,6 +30,7 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 		CategoryName: req.CategoryName,
 	})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -57,6 +59,7 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
+		hlog.Error(err)
 		return
 	}
 	r, err := rpc.ProductClient.SearchProducts(ctx, &product_kitex.SearchProductsReq{
@@ -64,6 +67,7 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	})
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
+		hlog.Error(err)
 		return
 	}
 	ans := r.Results
@@ -91,11 +95,13 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.CreateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
 	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -112,6 +118,7 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.UpdateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -128,6 +135,7 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	arg.Product.OriginalPrice = ans.OriginalPrice
 	r, err := rpc.ProductClient.UpdateProduct(ctx, arg)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -144,6 +152,7 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.DeleteProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -151,6 +160,7 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 		Id: req.GetId(),
 	})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -167,6 +177,7 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -174,6 +185,7 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 		Id: req.GetId(),
 	})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -201,6 +213,7 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductsBatchReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -208,6 +221,7 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 		Ids: req.GetIds(),
 	})
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
