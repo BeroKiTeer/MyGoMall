@@ -61,9 +61,10 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 
 	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
 	if targetItemQuantity == -1 {
-		klog.Error("添加失败", err)
+		klog.Info("添加购物车接口相应，添加到购物车成功")
 		err = model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	} else {
+		klog.Info("商品已存在，更新购物车成功")
 		err = model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	}
 
