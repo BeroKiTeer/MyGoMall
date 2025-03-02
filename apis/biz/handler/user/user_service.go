@@ -6,6 +6,7 @@ import (
 	"apis/biz/utils"
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"log"
 	"strconv"
 
@@ -119,6 +120,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -141,6 +143,7 @@ func UserLogout(ctx context.Context, c *app.RequestContext) {
 	var req user.UserLogoutReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -216,6 +219,7 @@ func UserChangePassword(ctx context.Context, c *app.RequestContext) {
 		Password: req.NewPassword},
 	)
 	if err != nil {
+		hlog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}

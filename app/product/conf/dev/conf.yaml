@@ -1,6 +1,6 @@
 kitex:
   service: "product"
-  address: ":127.0.0.1:8888"
+  address: ":8886"
   metrics_port: ":9993"
   log_level: info
   log_file_name: "log/kitex.log"
