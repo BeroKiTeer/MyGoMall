@@ -7,6 +7,7 @@ import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"log"
 	"strconv"
 
@@ -117,6 +118,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
+	klog.Info("111111111111111111\n")
 	//将请求体的json格式绑定到req这一结构体中(即将hjson中的value赋值到req对应的字段)
 	err = utils.BindJson(c, &req)
 	if err != nil {
@@ -124,15 +126,20 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
+	klog.Info("2222222222222222222\n")
 	resp, err = rpc.UserClient.Login(ctx, &user_kitex.LoginReq{
 		Email:    req.Email,
 		Password: req.Password,
 	})
+
+	klog.Info("3333333333333333333\n")
 	if err != nil {
 		log.Printf("RPC Register error: %v", err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
+
+	klog.Info("4444444444444444444\n")
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp.Token)
 }
 

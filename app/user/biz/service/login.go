@@ -22,6 +22,7 @@ func NewLoginService(ctx context.Context) *LoginService {
 // Run create note info
 func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error) {
 	// Finish your business logic.
+	klog.Info("LoginService Run")
 
 	if req.Email == "" || req.Password == "" {
 		return nil, errors.New("email or password is empty")
