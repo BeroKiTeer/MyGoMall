@@ -39,6 +39,7 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			return nil, err
 		}
 		if exists == 1 {
+			klog.Error("库存已预扣")
 			return nil, errors.New("库存已预扣")
 		}
 

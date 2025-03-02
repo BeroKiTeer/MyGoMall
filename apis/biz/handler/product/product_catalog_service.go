@@ -93,6 +93,8 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req product.CreateProductReq
+	hlog.Info(req.Product)
+	hlog.Info(req.Product.Name, req.Product.Stock)
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		hlog.Error(err)
