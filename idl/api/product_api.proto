@@ -91,7 +91,7 @@ message SearchProductsResp {
 
 // 创建商品的请求消息。
 message CreateProductReq {
-  Product product = 1[json_name="data"];          // 要创建的商品信息（ID字段应留空）
+  Product product = 1[json_name="product"];          // 要创建的商品信息（ID字段应留空）
 }
 
 // 创建商品的响应消息。
