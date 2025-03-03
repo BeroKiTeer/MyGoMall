@@ -3,9 +3,9 @@
 package main
 
 import (
+	"apis/infra/mtl"
 	"apis/rpc"
 	"context"
-	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	prometheus "github.com/hertz-contrib/monitor-prometheus"
 	"time"
 
@@ -21,7 +21,10 @@ import (
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
+	hertzotelprovider "github.com/hertz-contrib/obs-opentelemetry/provider"
+	hertzoteltracing "github.com/hertz-contrib/obs-opentelemetry/tracing"
 	"github.com/hertz-contrib/pprof"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -33,13 +36,21 @@ var (
 )
 
 func main() {
-	// init dal
-	// dal.Init()
-	consul, registryInfo := mtl.InitMetric(ServiceName, MetricsPort, RegistryAddr)
+	mtl.InitMtl()
+	//consul, registryInfo := mtl.InitMetric(ServiceName, MetricsPort, RegistryAddr)
 	// Hertz 停止时 Prometheus 也停止
-	defer consul.Deregister(registryInfo)
+	//defer consul.Deregister(registryInfo)
 	rpc.InitClient() //初始化客户端
 	address := conf.GetConf().Hertz.Address
+	_ = hertzotelprovider.NewOpenTelemetryProvider(
+		hertzotelprovider.WithSdkTracerProvider(mtl.TracerProvider),
+		hertzotelprovider.WithEnableMetrics(false),
+	)
+
+	_, cfg := hertzoteltracing.NewServerTracer(hertzoteltracing.WithCustomResponseHandler(func(ctx context.Context, c *app.RequestContext) {
+		c.Header("shop-trace-id", oteltrace.SpanFromContext(ctx).SpanContext().TraceID().String())
+	}))
+
 	h := server.New(server.WithHostPorts(address),
 		server.WithTracer(prometheus.NewServerTracer("",
 			"",
@@ -47,6 +58,7 @@ func main() {
 			prometheus.WithRegistry(mtl.Registry),
 		)),
 	)
+	h.Use(hertzoteltracing.ServerMiddleware(cfg))
 
 	registerMiddleware(h)
 
