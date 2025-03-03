@@ -6,8 +6,8 @@ import (
 	"apis/biz/utils"
 	"apis/rpc"
 	"context"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"strconv"
 
 	product "apis/hertz_gen/api/product"
 	product_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
@@ -25,13 +25,14 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
+	klog.Infof("ListProducts req: %v", req)
 	r, err := rpc.ProductClient.ListProducts(ctx, &product_kitex.ListProductsReq{
 		Page:         req.Page,
 		PageSize:     req.PageSize,
 		CategoryName: req.CategoryName,
 	})
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -60,7 +61,7 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
-		hlog.Error(err)
+		klog.Error(err)
 		return
 	}
 
@@ -69,7 +70,7 @@ func SearchProducts(ctx context.Context, c *app.RequestContext) {
 	})
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
-		hlog.Error(err)
+		klog.Error(err)
 		return
 	}
 	ans := r.Results
@@ -96,17 +97,12 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req product.CreateProductReq
 	err = c.BindAndValidate(&req)
-	klog.Info("11111111111111111\n")
 	err = utils.BindJson(c, &req.Product)
-	klog.Info("111111111555555555\n")
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-
-	klog.Info("222222222222222222\n")
-
 	r, err := rpc.ProductClient.CreateProduct(ctx, &product_kitex.CreateProductReq{
 		Product: &product_kitex.Product{
 			Name:          req.Product.Name,
@@ -120,7 +116,9 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	})
 	klog.Info("3333333333333333333\n")
 	if err != nil {
-		hlog.Error(err)
+		klog.Info("311111111111\n")
+		klog.Error(err)
+		klog.Info("322222222222\n")
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -139,24 +137,28 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.UpdateProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	arg := &product_kitex.UpdateProductReq{}
 	ans := req.Product
-	arg.Product.Id = ans.Id
-	arg.Product.Name = ans.Name
-	arg.Product.Description = ans.Description
-	arg.Product.Price = ans.Price
-	arg.Product.Stock = ans.Stock
-	arg.Product.Images = ans.Images
-	arg.Product.Status = ans.Status
-	arg.Product.Categories = ans.Categories
-	arg.Product.OriginalPrice = ans.OriginalPrice
+	id, _ := strconv.ParseInt(c.Param("id"), 2, 64)
+	arg := &product_kitex.UpdateProductReq{
+		Product: &product_kitex.Product{
+			Id:            id,
+			Name:          ans.Name,
+			Description:   ans.Description,
+			Price:         ans.Price,
+			OriginalPrice: ans.OriginalPrice,
+			Stock:         ans.Stock,
+			Images:        ans.Images,
+			Status:        ans.Status,
+			Categories:    ans.Categories,
+		},
+	}
 	r, err := rpc.ProductClient.UpdateProduct(ctx, arg)
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -173,15 +175,16 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.DeleteProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
+	id, _ := strconv.ParseInt(c.Param("id"), 2, 64)
 	r, err := rpc.ProductClient.DeleteProduct(ctx, &product_kitex.DeleteProductReq{
-		Id: req.GetId(),
+		Id: id,
 	})
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -198,15 +201,16 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
+	id, _ := strconv.ParseInt(c.Param("id"), 2, 64)
 	r, err := rpc.ProductClient.GetProduct(ctx, &product_kitex.GetProductReq{
-		Id: req.GetId(),
+		Id: id,
 	})
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
@@ -234,7 +238,7 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 	var req product.GetProductsBatchReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
@@ -242,7 +246,7 @@ func GetProductsBatch(ctx context.Context, c *app.RequestContext) {
 		Ids: req.GetIds(),
 	})
 	if err != nil {
-		hlog.Error(err)
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}

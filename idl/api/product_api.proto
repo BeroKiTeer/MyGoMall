@@ -8,6 +8,20 @@ import "api.proto";
 
 // 定义商品目录相关的服务接口。
 service ProductCatalogService {
+  // 修改商品信息。
+  rpc UpdateProduct(UpdateProductReq) returns (UpdateProductResp) {
+    option(api.put)="/api/products/:id";
+  }
+
+  // 删除商品。
+  rpc DeleteProduct(DeleteProductReq) returns (DeleteProductResp) {
+    option(api.delete)="/api/products/:id";
+  }
+
+  // 获取指定商品的详细信息。
+  rpc GetProduct(GetProductReq) returns (GetProductResp) {
+    option(api.get)="/api/products/:id";
+  }
   // 列出商品。
   rpc ListProducts(ListProductsReq) returns (ListProductsResp) {
     option(api.get)="/api/products";
@@ -21,21 +35,6 @@ service ProductCatalogService {
   // 添加商品。
   rpc CreateProduct(CreateProductReq) returns (CreateProductResp) {
     option(api.post)="/api/products";
-  }
-
-  // 修改商品信息。
-  rpc UpdateProduct(UpdateProductReq) returns (UpdateProductResp) {
-    option(api.put)="/api/products/{id}";
-  }
-
-  // 删除商品。
-  rpc DeleteProduct(DeleteProductReq) returns (DeleteProductResp) {
-    option(api.delete)="/api/products/{id}";
-  }
-
-  // 获取指定商品的详细信息。
-  rpc GetProduct(GetProductReq) returns (GetProductResp) {
-    option(api.get)="/api/products/{id}";
   }
 
   // 查询多个商品信息。
