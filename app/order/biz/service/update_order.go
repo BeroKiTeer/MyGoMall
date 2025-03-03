@@ -31,7 +31,6 @@ func (s *UpdateOrderService) Run(req *order.UpdateOrderReq) (resp *order.UpdateO
 
 	// 更新订单信息
 	if req.Address != nil {
-		ord.ShippingAddress = req.Address.StreetAddress
 		ord.RecipientName = req.Address.Name
 		ord.PhoneNumber = req.Address.TelephoneNumber
 	}
