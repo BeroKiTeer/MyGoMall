@@ -12,7 +12,7 @@ type Categories struct {
 }
 
 func (Categories) TableName() string {
-	return "categories"
+	return "category"
 }
 
 // GetByCategoryName 根据分类名查询分类
@@ -24,7 +24,7 @@ func GetByCategoryName(db *gorm.DB, ctx context.Context, name string) (category 
 // GetCategoryNameById 通过标签id查询标签名
 func GetCategoryNameById(db *gorm.DB, id []int64) (name []string, err error) {
 	var categories []string
-	err = db.Table("categories").Select("name").Where("id in ?", id).Find(&categories).Error
+	err = db.Table("category").Select("name").Where("id in ?", id).Find(&categories).Error
 	if err != nil {
 		return name, fmt.Errorf("failed to find categories: %w", err)
 	}
