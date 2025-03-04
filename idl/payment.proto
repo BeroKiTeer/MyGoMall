@@ -28,7 +28,7 @@ message ChargeReq {
   CreditCardInfo credit_card = 2;     // 信用卡信息
   string order_id = 3;                // 订单 ID
   uint32 user_id = 4;                 // 用户 ID
-}
+ }
 
 // 支付操作的响应消息
 message ChargeResp {
@@ -51,6 +51,7 @@ message ChargeByThirdPartyReq {
   string order_id = 2;                // 订单 ID
   uint32 user_id = 3;
   string way = 4;
+  string transaction_id=5; //交易ID
 }
 
 // 第三方支付相应
