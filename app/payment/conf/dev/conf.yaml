@@ -34,6 +34,7 @@ rabbitmq:
     processors:
       payment_processor:
         exchange: "payment_exchange"
-        queue: "payment_queue"
-        binding_keys: ["payment.#"]
+        queue: "checkout.payment.creditCard.process"  # 格式: 服务.模块.支付方式.动作
+        routing_key: "payment_method.creditCard.process"  # 路由键分层
+        binding_keys: ["payment_method.creditCard.#"]
         exchange_type: "topic"
