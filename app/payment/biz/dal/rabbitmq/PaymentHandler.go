@@ -12,7 +12,7 @@ import (
 
 type PaymentReq struct {
 	OrderId string `json:"order_id"`
-	Amount  string `json:"amount"`
+	Amount  int    `json:"amount"`
 	URL     bool   `json:"url"` //支付状态（成功还是失败）
 }
 
