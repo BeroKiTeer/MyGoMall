@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"gorm.io/gorm"
-	"order/biz/dal/mysql"
 	"time"
 )
 
@@ -35,7 +34,7 @@ type OrderItem struct {
 }
 
 func (u Order) TableName() string {
-	return "orders"
+	return "order"
 }
 
 func GetProductIdsFromOrder(db *gorm.DB, order string) (productIds []int64) {
@@ -55,13 +54,13 @@ func GetOrdersByUserID(db *gorm.DB, UserID int64) ([]Order, error) {
 		return nil, fmt.Errorf("database connection is nil")
 	}
 
-	var orders []Order
+	var order []Order
 	// 查询与用户ID相关联的所有订单
-	err := db.Model(&Order{}).Where("user_id=?", UserID).Find(&orders).Error
+	err := db.Model(&Order{}).Where("user_id=?", UserID).Find(&order).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to find orders for user: %w", err)
 	}
-	return orders, nil
+	return order, nil
 }
 
 func GetOrderItemByOrderID(db *gorm.DB, OrderID string) ([]OrderItem, error) {
@@ -87,12 +86,16 @@ func GetOrder(db *gorm.DB, ID string) (Order, error) {
 	return row, nil
 }
 
-func CreateOrder(db *gorm.DB, order *Order) {
-	mysql.DB.Table("orders").Create(order)
+func CreateOrder(db *gorm.DB, order *Order) (*Order, error) {
+	res := db.Table("order").Create(order)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	return order, nil
 }
 
 func CreateOrderItem(db *gorm.DB, orderItem *OrderItem) error {
-	return mysql.DB.Table("order_item").Create(orderItem).Error
+	return db.Table("order_item").Create(orderItem).Error
 }
 
 func UpdateOrder(db *gorm.DB, order *Order) error {

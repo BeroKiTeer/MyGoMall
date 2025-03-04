@@ -61,10 +61,11 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
+	orderId := orderUUID.String()
 	// 2.2.3 创建空订单表记录
-	model.CreateOrder(tx, &model.Order{
+	_, err = model.CreateOrder(tx, &model.Order{
 		Base: model.Base{
-			ID: orderUUID.String(),
+			ID: orderId,
 		},
 		UserID:         int64(req.UserId),
 		TotalPrice:     0,
@@ -110,7 +111,9 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
-	// TODO: 4. 计算订单价格 (checkout RPC)
-
-	return
+	return &order.PlaceOrderResp{
+		Order: &order.OrderResult{
+			OrderId: orderId,
+		},
+	}, nil
 }
