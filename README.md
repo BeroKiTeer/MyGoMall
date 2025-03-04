@@ -77,65 +77,36 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
     </tr>
   </table>
 </div>
-
-
 > [!TIP]  
 > 我们的技术栈中的每个组件都是基于其可靠性和在生产环境中的广泛采用而选择的。
 
-### 开发提示
+### 开发中的挑战
 
-#### 常见挑战
-1. **CORS问题**
-   - 确保正确的CORS中间件配置
-   - 检查浏览器开发工具中的请求头
-   - 验证API端点
+1. **认证流程**
 
-2. **认证流程**
-   - 安全存储JWT令牌
+   - 安全存储密钥
+   - 正确解码Token并认证
    - 处理令牌过期
-   - 实现正确的登出
 
-3. **表单处理**
+2. **表单处理**
    - 版本1：使用HTML5验证
    - 版本2：实现受控组件
 
-#### 最佳实践
-1. **错误处理**
-```javascript
-// 版本1
-fetch('/api/v1/login', {
-  // ... fetch配置
-}).catch(error => {
-  document.getElementById('error').textContent = error.message;
-});
+3. **容器化部署**
 
-// 版本2
-try {
-  await loginService.login(credentials);
-} catch (error) {
-  setError(error.response?.data?.message || '登录失败');
-}
-```
+   - Consul的服务注册与发现
+   - 检查网关与路由的配置
+   - Redis的集群部署
 
-2. **API集成**
-```javascript
-// 版本1
-const response = await fetch('/api/v1/register', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(formData)
-});
+4. **下单-扣除库存-支付**
 
-// 版本2
-const authService = {
-  register: async (userData) => {
-    const response = await http.post('/api/v1/register', userData);
-    return response.data;
-  }
-};
-```
+   - 准确的服务功能
+   - 操作的先后顺序
+   - Saga分布式事务
 
-## 📂 项目结构
+5. 
+
+   📂 项目结构
 
 ```tex
 MyGoMall/
@@ -176,7 +147,6 @@ MyGoMall/
 > - Go 1.16或更高版本
 > - MySQL 8.0或更高版本
 > - Git
-> - Make（可选，用于使用Makefile命令）
 
 ### 安装说明
 
@@ -195,13 +165,14 @@ go mod tidy
 
 3. 设置数据库：
 ```bash
-mysql -u root -p < docs/database/douyin_mall_go_template_structure_only.sql
+cd docs/database
+# 按照提示，在 `MyGoMall` database 中建立数据表与索引
 ```
 
 4. 配置应用：
 ```bash
-cp configs/config.yaml.example configs/config.yaml
-# 使用您的数据库凭证编辑configs/config.yaml
+cd app/[服务名]/conf/dev
+# 使用您的数据库凭证编辑 各个微服务的配置文件
 ```
 
 5. 启动服务器：
@@ -211,43 +182,11 @@ go run cmd/server/main.go
 
 ## 📝 API文档
 
+```bash
+cd docs/api
+```
 
 
-## 📖 开发指南
-
-### 项目组件
-
-> [!NOTE]  
-> 每个组件都设计为模块化，并遵循SOLID原则：
-
-- **api/v1/**: HTTP请求处理器
-  - `health.go`: 健康检查端点
-  - `user.go`: 用户相关端点
-
-- **internal/middleware/**: 自定义中间件
-  - `auth.go`: JWT认证
-  - `cors.go`: CORS处理
-  - `logger.go`: 请求日志
-
-- **internal/model/**: 数据模型
-  - `user.go`: 用户实体
-  - `dto/`: 数据传输对象
-
-- **internal/service/**: 业务逻辑
-  - `user_service.go`: 用户相关操作
-  - `product_service.go`: 商品相关操作
-  - `order_service.go`: 订单处理逻辑
-
-### 添加新功能
-
-> [!TIP]  
-> 按照以下步骤向项目添加新功能：
-
-1. 在 `internal/routes/routes.go` 中定义路由
-2. 在 `api/v1/` 中创建处理器
-3. 在 `internal/service/` 中实现服务逻辑
-4. 在 `internal/model/` 中定义模型
-5. 在 `internal/dao/` 中添加数据访问层
 
 ## 🗄️ 数据库架构
 
