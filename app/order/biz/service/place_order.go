@@ -103,7 +103,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
-	// TODO: 3. 清空购物车 （购物车服务RPC调用）
+	// 3. 清空购物车 （购物车服务RPC调用）
 	emptyCartResp, err := rpc.CartClient.EmptyCart(s.ctx, &cart.EmptyCartReq{
 		UserId: req.UserId,
 	})
