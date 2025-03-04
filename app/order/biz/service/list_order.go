@@ -26,7 +26,6 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 			UserId:  uint32(item.UserID),
 			Address: &order.Address{
 				TelephoneNumber: item.PhoneNumber,
-				StreetAddress:   item.ShippingAddress,
 				Name:            item.RecipientName,
 			},
 			OrderItems: []*order.OrderItem{},

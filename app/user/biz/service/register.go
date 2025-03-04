@@ -31,6 +31,11 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 		return nil, err
 	}
 
+	if email, err := model.GetByEmail(mysql.DB, s.ctx, req.Email); email != nil {
+		klog.Error("邮箱已存在", err)
+		return nil, errors.New("email already exists")
+	}
+
 	err = model.CreateUser(mysql.DB, &model.User{
 		PasswordHashed: string(passwordHashed),
 		PhoneNumber:    "",

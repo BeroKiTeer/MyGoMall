@@ -4,6 +4,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"github.com/cloudwego/kitex/tool/internal_pkg/log"
 	"net"
 	"order/biz/dal"
 	"order/rpc"
@@ -33,7 +34,7 @@ func main() {
 
 	err := svr.Run()
 	if err != nil {
-		klog.Error(err.Error())
+		log.Error(err.Error())
 	}
 }
 
