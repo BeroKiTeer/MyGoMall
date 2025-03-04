@@ -27,11 +27,11 @@ rabbitmq:
   mqURL : "amqp://guest:guest@115.190.108.142:5672/"
   payment_producer:
     methods:
-      creditCard:
+      creditCard: # 支付方式作为模块名
         URL: "payment.card"
         exchange: "payment_exchange"
-        queue: "creditCard_queue"
-        routing_key: "creditCard_pay"
+        queue: "checkout.payment.creditCard.process"  # 格式: 服务.模块.支付方式.动作
+        routing_key: "payment_method.creditCard.process"  # 路由键分层
         exchange_type: "topic"
 
 
@@ -39,6 +39,6 @@ rabbitmq:
     processors:
       payment_processor:
         exchange: "payment_exchange"
-        queue: "payment_queue"
-        binding_keys: ["payment.#"]
+        queue: "checkout.payment.creditCard.result"  # 与生产者分离处理队列
+        binding_keys: [ "payment_method.creditCard.#" ]  # 通配符匹配所有子事件
         exchange_type: "topic"
