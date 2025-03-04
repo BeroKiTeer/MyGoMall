@@ -1,11 +1,15 @@
 package service
 
 import (
+	"cart/biz/dal/redis"
 	"cart/biz/model"
+	"cart/conf"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"log"
 )
 
 type EmptyCartService struct {
@@ -31,6 +35,22 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 	if err != nil {
 		klog.Error("未查询到商品", err)
 		return nil, err
+	}
+
+	// 清除 redis 中该用户的商品的缓存。
+	key := fmt.Sprintf("cart:%d", req.UserId)
+	if conf.GetEnv() == "test" {
+		err = redis.RedisClient.Del(s.ctx, key).Err()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+	} else if conf.GetEnv() == "dev" {
+		err = redis.RedisClusterClient.Del(s.ctx, key).Err()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
 	}
 
 	// 删除

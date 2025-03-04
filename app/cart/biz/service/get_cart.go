@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -126,9 +125,6 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 		}
 
 	}
-
-	log.Println(err)
-	log.Println("666666666")
 
 	return &cart.GetCartResp{Cart: &userCart}, nil
 }
