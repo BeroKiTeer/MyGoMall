@@ -30,10 +30,11 @@ type MySQL struct {
 }
 
 type Redis struct {
-	Address  string `yaml:"address"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	DB       int    `yaml:"db"`
+	Address   string   `yaml:"address"`
+	Addresses []string `yaml:"addresses"`
+	Username  string   `yaml:"username"`
+	Password  string   `yaml:"password"`
+	DB        int      `yaml:"db"`
 }
 
 type Kitex struct {
