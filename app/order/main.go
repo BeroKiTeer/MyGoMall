@@ -4,9 +4,11 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"github.com/cloudwego/kitex/tool/internal_pkg/log"
 	"net"
 	"order/biz/dal"
 	"order/rpc"
+	"os"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -33,7 +35,7 @@ func main() {
 
 	err := svr.Run()
 	if err != nil {
-		klog.Error(err.Error())
+		log.Error(err.Error())
 	}
 }
 
@@ -61,7 +63,9 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})

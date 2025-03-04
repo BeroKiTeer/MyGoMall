@@ -38,11 +38,11 @@ func (u Order) TableName() string {
 	return "orders"
 }
 
-func GetProductIdsFromOrder(db *gorm.DB, order string) (productIds []int64, err error) {
-	if err = db.Model(&OrderItem{}).Where("order_id=?", order).Pluck("product_id", &productIds).Error; err != nil {
-		return nil, err
+func GetProductIdsFromOrder(db *gorm.DB, order string) (productIds []int64) {
+	if err := db.Model(&OrderItem{}).Where("order_id=?", order).Pluck("product_id", &productIds).Error; err != nil {
+		return nil
 	}
-	return productIds, nil
+	return productIds
 }
 
 func UpdateOrderStatus(db *gorm.DB, orderID string, status string) {
