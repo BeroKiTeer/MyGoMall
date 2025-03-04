@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"log"
 	"net"
 	"os"
 	"payment/biz/dal"
+	mq "payment/biz/dal/RabbitMQ"
 	"time"
 
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
@@ -26,6 +29,7 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	dal.Init()
+	PaymentConsumerInit()
 	opts := kitexInit()
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
@@ -67,4 +71,33 @@ func kitexInit() (opts []server.Option) {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func PaymentConsumerInit() {
+	// 1. 获取MQ配置
+	config := conf.GetConf().RabbitMQ.Consumers.Processors["payment_processor"]
+
+	// 2. 创建消费者实例
+	consumer, err := mq.GetPaymentConsumer(&mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		ExchangeType: config.ExchangeType,
+	})
+	if err != nil {
+		log.Fatalf("创建消费者失败: %v", err)
+	}
+
+	// 3. 绑定队列
+	for _, key := range config.BindingKeys {
+		if err := consumer.BindQueue(config.Queue, config.Exchange, key); err != nil {
+			log.Fatalf("队列绑定失败: %v", err)
+		}
+	}
+
+	// 4. 启动消费监听
+	ctx := context.Background()
+	handler := &mq.PaymentHandler{}
+	if err := consumer.Consume(ctx, handler); err != nil {
+		log.Printf("消费异常终止: %v", err)
+	}
 }
