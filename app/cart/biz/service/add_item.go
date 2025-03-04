@@ -30,44 +30,43 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		klog.Error("未输入用户id和商品信息", err)
 		return nil, errors.New("need user_id and item")
 	}
-	log.Println("1111111111")
+
 	if req.Item.ProductId == 0 {
 		klog.Error("未输入商品信息", err)
 		return nil, errors.New("product_id is 0")
 	}
-	log.Println("222222222")
+
 	if req.Item.Quantity == 0 {
 		klog.Error("未输入商品数量", err)
 		return nil, errors.New("quantity is 0")
 	}
-	log.Println("33333333333")
+
 	// 检查商品是否存在（RPC）
 	ProductReq := product.GetProductReq{Id: req.Item.ProductId}
-	log.Println("444444444444")
+
 	productDetails, err := rpc.ProductClient.GetProduct(s.ctx, &ProductReq)
 	if err != nil || productDetails == nil {
 		klog.Error("商品不存在", err)
 		log.Println("商品不存在", err)
 		return nil, errors.New("the product does not exist")
 	}
-	log.Println("55555555555555")
+
 	// 检查商品库存是否足够
 	if int32(productDetails.Product.Stock) < req.Item.Quantity {
 		klog.Error("商品数量不足", err)
 		log.Println("商品数量不足", err)
 		return nil, errors.New("the stock is not enough")
 	}
-	log.Println("777777777777")
 	// 检查商品是否已存在在购物车
 	var targetItemQuantity int32 = -1
 	err = model.CheckItemsByUserAndProduct(req.UserId, req.Item.ProductId, &targetItemQuantity)
-	log.Println("8888888888888")
+
 	if err != nil {
 		klog.Error("在购物车里未查询到商品", err)
 		log.Println(err)
 		return nil, err
 	}
-	log.Println("99999999999999")
+
 	// 清除 redis 中该用户的商品的缓存。
 	key := fmt.Sprintf("cart:%d", req.UserId)
 	if conf.GetEnv() == "test" {
@@ -84,21 +83,14 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		}
 	}
 
-	log.Println("999988888")
-
 	// 将商品添加到购物车，持久化存储。（如果已存在，则修改原有的）
 	if targetItemQuantity == -1 {
-		log.Println("***************")
 		klog.Info("添加购物车接口相应，添加到购物车成功")
 		err = model.AddItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	} else {
-		log.Println("qqqqqqqqqqqqqqq")
 		klog.Info("商品已存在，更新购物车成功")
 		err = model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	}
-
-	log.Println(err)
-	log.Println("666666666")
 
 	return &cart.AddItemResp{}, err
 }
