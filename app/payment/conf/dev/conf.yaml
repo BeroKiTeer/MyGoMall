@@ -24,7 +24,7 @@ redis:
   db: 0
 
 rabbitmq:
-  rabbitmqURL: "amqp://guest:guest@192.168.101.65:5672/"
+  rabbitmqURL: "amqp://guest:guest@115.190.108.142:5672/"
   paymentExchange: "payment_exchange"
   paymentQueue: "payment_queue"
   paymentDLXExchange: "payment_dlx_exchange"
