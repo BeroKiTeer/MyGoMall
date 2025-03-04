@@ -61,7 +61,7 @@ create table categories
 
 ```mysql
 create index idx_status
-  on categories (status);
+  on category (status);
 ```
 
 ------

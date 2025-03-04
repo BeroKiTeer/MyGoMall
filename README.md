@@ -8,6 +8,8 @@
 
 MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户认证、商品管理、购物车、订单、支付等功能。
 
+详情见：https://taix7w1al12.feishu.cn/wiki/XXupwJXGriFIsJkWAmbcL2N9nQb#share-KfUAd7n74oRRAuxT5bWcauVjnTt
+
 ## ✨ 核心特性
 
 - 🔐 **认证系统** - 基于JWT的用户注册和登录
@@ -313,7 +315,7 @@ cd docs/api
 
 ## 📄 许可证
 
-本项目采用 Apache-2.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+本项目采用 MIT 许可证。
 
 ## 🙋‍♀ 作者
 
