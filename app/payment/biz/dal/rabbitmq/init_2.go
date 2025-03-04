@@ -1,8 +1,8 @@
 package rabbitmq
 
 import (
-	"checkout/conf"
 	"log"
+	"payment/conf"
 
 	"github.com/streadway/amqp"
 ) //导入mq包
@@ -31,7 +31,7 @@ func NewRabbitMQ(queueName, exchange, routingKey string) *RabbitMQ {
 		QueueName:    queueName,
 		RoutingKey:   routingKey,
 		ExchangeType: "Topic",
-		MqURL:        conf.GetConf().RabbitMQ.MqURL,
+		MqURL:        conf.GetConf().RabbitMQ.RabbitMQURL,
 	}}
 	var err error
 	//创建rabbitmq连接

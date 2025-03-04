@@ -2,12 +2,12 @@ package rabbitmq
 
 import (
 	"bytes"
-	"checkout/conf"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
 	"net/http"
+	"payment/conf"
 )
 
 type PaymentReq struct {
