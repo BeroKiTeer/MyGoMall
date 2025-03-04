@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/cloudwego/kitex/tool/internal_pkg/log"
 	"strconv"
 	"strings"
 	"time"
@@ -58,8 +59,16 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 		for _, item := range userCart.Items {
 			value := fmt.Sprintf("%d:%d", item.ProductId, item.Quantity)
 			err = redis.RedisClient.LPush(s.ctx, key, value).Err()
+			if err != nil {
+				log.Error(err)
+				return nil, err
+			}
 		}
 		err = redis.RedisClient.Expire(s.ctx, key, 3600*6*time.Second).Err()
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
 	}
 
 	return &cart.GetCartResp{Cart: &userCart}, err
