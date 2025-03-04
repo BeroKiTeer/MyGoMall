@@ -23,6 +23,7 @@ func NewPlaceOrderService(ctx context.Context) *PlaceOrderService {
 func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrderResp, err error) {
 	// Finish your business logic.
 	// 1. 验证库存 （库存服务RPC调用）
+	klog.Info("order:26.....id:", req.UserId)
 	for idx, item := range req.OrderItems {
 		stk, err := rpc.StockClient.CheckItem(s.ctx, &stock.CheckItemReq{
 			ProductId: item.ProductId,
@@ -36,7 +37,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 			return nil, nil
 		}
 	}
-
+	klog.Info("order:40.....id:", req.UserId)
 	// 2. 将购物车商品移动到订单明细表中
 	// 2.1 获取购物车信息 （购物车服务RPC调用）
 	carts, err := rpc.CartClient.GetCart(s.ctx, &cart.GetCartReq{

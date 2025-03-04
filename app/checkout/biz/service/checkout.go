@@ -33,6 +33,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	var amount int64 = 0
 	var orderItems []*order.OrderItem
 	//获取订单号
+	klog.Info("checkout:", req.UserId)
 	placeOrderResp, err := orderClient.PlaceOrder(s.ctx, &order.PlaceOrderReq{
 		UserId:       req.UserId,
 		UserCurrency: "RMB",
