@@ -153,13 +153,13 @@ MyGoMall/
 │   ├── rpc/             # RPC 客户端
 │   ├── script/         # 执行脚本
 │   ├── serversuite/    # 服务端组件
-│   └── utils/			#工具类
+│   └── utils/			# 工具类
 ├── deploy/             # 容器化部署相关
 │   └── ...      
 ├── docs/				# 说明文件以及相关文档
 │   └── ....
 ├── idl/             # IDL文件(protobuf)
-├── .gitignore			#防止小孩误食
+├── .gitignore			# 防止小孩误食
 └── go.work				# 工作区文件
 ```
 
@@ -182,8 +182,8 @@ MyGoMall/
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/ChanMeng666/douyin-mall-go-template.git
-cd douyin-mall-go-template
+git clone https://github.com/BeroKiTeer/MyGoMall.git
+cd MyGoMall
 ```
 
 2. 安装依赖：
@@ -253,14 +253,12 @@ go run cmd/server/main.go
 
 我们的综合电商数据库包括：
 
-- `users`: 用户账户和认证
-- `products`: 商品目录管理
-- `categories`: 商品分类
-- `orders`: 订单处理
-- `order_items`: 订单详情
-- `shopping_cart_items`: 购物车管理
-- `payment_records`: 支付记录
-- `product_reviews`: 用户评价和评分
+- `user`: 用户账户和认证
+- `product`: 商品基本信息
+- `category`: 商品类别
+- `category_product` : 中间表，在`product`表与`category`表中建立联系
+- `order`: 订单处理
+- `payment`: 支付记录
 
 ## 🤝 贡献指南
 
