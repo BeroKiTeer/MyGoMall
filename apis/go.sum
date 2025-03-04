@@ -229,8 +229,8 @@ github.com/hertz-contrib/obs-opentelemetry/tracing v0.4.1 h1:YOv/UcSHjeAg1CwvcXi
 github.com/hertz-contrib/obs-opentelemetry/tracing v0.4.1/go.mod h1:u+EVWM4dDcudoXY4bCia0EyhaBOsPgRah+FvM75DM7s=
 github.com/hertz-contrib/pprof v0.1.2 h1:eC4jpg8ToSi+9YEOPIr3jki8e/ix3aFPtphCgJ36T6Q=
 github.com/hertz-contrib/pprof v0.1.2/go.mod h1:OKXw5wCUcy1OVwgQLsoCS9JzfcdjoofP+7Uk4c7P9Po=
-github.com/hertz-contrib/registry/consul v0.0.0-20250120124521-8751bc5be5c3 h1:NNogKIlxF2wZGerH11XPFIv+k+DPja7d4gQS3PfHO7s=
-github.com/hertz-contrib/registry/consul v0.0.0-20250120124521-8751bc5be5c3/go.mod h1:bjNZ+0osz/GmRMEXZAMeme+qE7WV6g4DEtX/TdfXzvo=
+github.com/hertz-contrib/registry/consul v0.0.0-20231110170354-519baf74ea6b h1:DIfogbZyBmOYUkkS0jGDNT03jqVPtHypQrZ0mhcASUE=
+github.com/hertz-contrib/registry/consul v0.0.0-20231110170354-519baf74ea6b/go.mod h1:bjNZ+0osz/GmRMEXZAMeme+qE7WV6g4DEtX/TdfXzvo=
 github.com/iancoleman/strcase v0.3.0 h1:nTXanmYxhfFAMjZL34Ov6gkzEsSJZ5DbhxWjvSASxEI=
 github.com/iancoleman/strcase v0.3.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/ianlancetaylor/demangle v0.0.0-20210905161508-09a460cdf81d/go.mod h1:aYm2/VgdVmcIU8iMfdMvDMsRAQjcfZSKFby6HOFvi/w=
@@ -246,8 +246,6 @@ github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7V
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kitex-contrib/obs-opentelemetry v0.2.9 h1:yTW5Y0AdQjZU9sP08gzuQbC6WJRIySP0lBZ6dxLU+x0=
 github.com/kitex-contrib/obs-opentelemetry v0.2.9/go.mod h1:1GERxWxU0IE3+pckV9IcilZDuvvy7fcqhcOphpJkgZc=
-github.com/kitex-contrib/obs-opentelemetry/logging/zap v0.0.0-20241120035129-55da83caab1b h1:td+0YgPBJkuA8srZwO7SjqYqNSW0fEdGDaCEWAmzQGA=
-github.com/kitex-contrib/obs-opentelemetry/logging/zap v0.0.0-20241120035129-55da83caab1b/go.mod h1:NUuhhOLwpinYkidyb6X+e8LS+ccZO4NL95QfTjg0//E=
 github.com/kitex-contrib/registry-consul v0.1.0 h1:G8re9ICA1kNxD/QmjwCt1HMiISwDzfnsaDeSBuIXDQ8=
 github.com/kitex-contrib/registry-consul v0.1.0/go.mod h1:h20aRkcmv0lip1nHDRWkLGzj8DNq47XpRWgsnLwLpbs=
 github.com/klauspost/compress v1.17.9 h1:6KIumPrER1LHsvBVuDa0r5xaG0Es51mhhB9BQB2qeMA=

@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // AddCartItem .
@@ -73,7 +74,11 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp, err := rpc.CartClient.GetCart(ctx, &cart_kitex.GetCartReq{UserId: uint32(rawID.UserId)})
-
+	if err != nil {
+		klog.Error(err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 

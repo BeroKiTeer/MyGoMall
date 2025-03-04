@@ -19,6 +19,7 @@ func NewCreateProductService(ctx context.Context) *CreateProductService {
 // Run create note info
 func (s *CreateProductService) Run(req *product.CreateProductReq) (resp *product.CreateProductResp, err error) {
 	// 开始事务
+	log.Println("-1-1-1-1-1")
 	tx := mysql.DB.Begin()
 	if tx.Error != nil {
 		log.Println("000000000")

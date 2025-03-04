@@ -65,7 +65,7 @@ message ListProductsReq {
 
 // 列出商品的响应消息。
 message ListProductsResp {
-  repeated Product products = 3[json_name="data"];        // 商品列表
+  repeated Product products = 3[json_name="products"];        // 商品列表
 }
 
 // 获取指定商品详细信息的请求消息
@@ -75,7 +75,7 @@ message GetProductReq {
 
 // 获取指定商品详细信息的响应消息
 message GetProductResp {
-  Product product = 1[json_name="data"];          // 商品详细信息。
+  Product product = 1[json_name="product"];          // 商品详细信息。
 }
 
 // 根据商品名搜索商品的请求消息。
@@ -85,7 +85,7 @@ message SearchProductsReq {
 
 // 搜索商品的响应消息。
 message SearchProductsResp {
-  repeated Product results = 1[json_name="data"];     // 搜索结果列表。
+  repeated Product results = 1[json_name="results"];     // 搜索结果列表。
 }
 
 // 创建商品的请求消息。
@@ -100,7 +100,7 @@ message CreateProductResp {
 
 // 修改商品信息的请求消息。
 message UpdateProductReq {
-  Product product = 1[json_name="data"];          // 要修改的商品信息（必须包含ID以标识要修改的商品）
+  Product product = 1[json_name="product"];          // 要修改的商品信息（必须包含ID以标识要修改的商品）
 }
 
 // 修改商品信息的响应消息。
