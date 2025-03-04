@@ -10,6 +10,7 @@ import (
 	"stock/biz/dal/mysql"
 	"stock/biz/dal/redis"
 	"stock/biz/model"
+	"stock/conf"
 	"stock/rpc"
 	"time"
 )
@@ -62,14 +63,22 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			return nil, err
 		}
 		//4. 扣减的放到Redis里
-		if err = redis.RedisClient.Set(s.ctx, key, req.Quantity, 15*time.Minute).Err(); err != nil {
-			// TODO: 补偿机制(RabbitMQ)
-			klog.Error("Redis 写入失败", err)
-			return nil, err
+		if conf.GetEnv() == "test" {
+			if err = redis.RedisClient.Set(s.ctx, key, req.Quantity, 15*time.Minute).Err(); err != nil {
+				// TODO: 补偿机制
+				klog.Error("Redis 写入失败", err)
+				return nil, err
+			}
+		} else if conf.GetEnv() == "dev" {
+			if err = redis.RedisClusterClient.Set(s.ctx, key, req.Quantity, 15*time.Minute).Err(); err != nil {
+				// TODO: 补偿机制
+				klog.Error("Redis 写入失败", err)
+				return nil, err
+			}
 		}
 	}
 	if err = tx.Commit().Error; err != nil {
-		// TODO: 事务提交失败的补偿，回滚Redis（删除Redis新加入的键）
+		// TODO: 事务提交失败的补偿，回滚Redis
 		klog.Error(err)
 		return nil, err
 	}
