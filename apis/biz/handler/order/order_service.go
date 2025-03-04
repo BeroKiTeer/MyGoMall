@@ -3,11 +3,15 @@
 package order
 
 import (
-	"context"
-
+	"apis/biz/utils"
 	common "apis/hertz_gen/api/common"
 	order "apis/hertz_gen/api/order"
+	"apis/rpc"
+	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	order_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
@@ -22,7 +26,31 @@ func PlaceOrder(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		hlog.Error(err)
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+		return
+	}
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		hlog.Error(err)
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
+
+	placeOrder, err := rpc.OrderClient.PlaceOrder(ctx, &order_kitex.PlaceOrderReq{
+		UserId: uint32(rawID.UserId),
+	})
+	hlog.Info(placeOrder)
+	if err != nil {
+		hlog.Error(err)
+		return
+	}
+
 	resp := new(common.Empty)
 
-	c.JSON(consts.StatusOK, resp)
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
