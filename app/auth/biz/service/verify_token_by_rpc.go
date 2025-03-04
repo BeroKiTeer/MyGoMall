@@ -2,12 +2,12 @@ package service
 
 import (
 	"auth/biz/dal/redis"
+	"auth/conf"
 	"context"
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/golang-jwt/jwt/v4"
-	"strconv"
 )
 
 type VerifyTokenByRPCService struct {
@@ -27,10 +27,16 @@ func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.Veri
 	}
 
 	// 查询 userID 在 redis 里面是否存在，如果存在，获取密钥并验证
-	secretKey, err := redis.RedisClient.Get(s.ctx, strconv.Itoa(int(userID))).Result()
-
-	if err != nil {
-		return &auth.VerifyResp{Res: false}, err
+	var secretKey string
+	key := fmt.Sprintf("auth:%d", userID)
+	if conf.GetEnv() == "test" {
+		if secretKey, err = redis.RedisClient.Get(s.ctx, key).Result(); err != nil {
+			return &auth.VerifyResp{Res: false}, err
+		}
+	} else if conf.GetEnv() == "dev" {
+		if secretKey, err = redis.RedisClusterClient.Get(s.ctx, key).Result(); err != nil {
+			return &auth.VerifyResp{Res: false}, err
+		}
 	}
 
 	// 按照查询到的密钥，解析并验证 Token

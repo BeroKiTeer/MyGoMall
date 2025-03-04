@@ -1,6 +1,7 @@
 kitex:
   service: "auth"
-  address: "115.190.108.142:8881"
+  address: ":8881"
+  metrics_port: ":9993"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -17,7 +18,13 @@ mysql:
   dsn: "root:Mygo*Mall6379@tcp(115.190.108.142:3306)/MyGoMall?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "115.190.108.142:6379"
+  addresses:
+    - "115.190.108.142:6379"
+    - "115.190.108.142:6380"
+    - "115.190.108.142:6381"
+    - "115.190.108.142:6382"
+    - "115.190.108.142:6383"
+    - "115.190.108.142:6384"
   username: ""
   password: ""
   db: 0

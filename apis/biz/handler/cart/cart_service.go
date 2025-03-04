@@ -59,13 +59,20 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
-
 	//获取请求头的token
 	token := c.Request.Header.Get("Authorization")
 	if token == "" {
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
+
+	// 验证token是否有效
+	verify, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{Token: token})
+
+	if verify.Res == false || err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+	}
+
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
@@ -101,6 +108,13 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
+	// 验证token是否有效
+	verify, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{Token: token})
+
+	if verify.Res == false || err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+	}
+
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
@@ -139,6 +153,14 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
+
+	// 验证token是否有效
+	verify, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{Token: token})
+
+	if verify.Res == false || err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
+	}
+
 	//获取用户id
 	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
