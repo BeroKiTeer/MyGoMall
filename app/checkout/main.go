@@ -8,6 +8,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"log"
 	"net"
+	"os"
 	"time"
 
 	mq "checkout/biz/dal/RabbitMQ"
@@ -63,7 +64,9 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})

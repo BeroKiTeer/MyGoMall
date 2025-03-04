@@ -63,7 +63,7 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	consoleOutput := zapcore.Lock(os.Stdout) // 线程安全控制台输出
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
 	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
 	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
