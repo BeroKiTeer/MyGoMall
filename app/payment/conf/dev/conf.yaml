@@ -22,3 +22,18 @@ redis:
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  rabbitmqURL: "amqp://guest:guest@115.190.108.142:5672/"
+  paymentExchange: "payment_exchange"
+  paymentQueue: "payment_queue"
+  paymentDLXExchange: "payment_dlx_exchange"
+  paymentDLXQueue: "payment_dlx_queue"
+
+  payment_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys: ["payment.#"]
+        exchange_type: "topic"

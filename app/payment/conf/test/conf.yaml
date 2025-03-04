@@ -29,3 +29,11 @@ rabbitmq:
   paymentQueue: "payment_queue"
   paymentDLXExchange: "payment_dlx_exchange"
   paymentDLXQueue: "payment_dlx_queue"
+
+  payment_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys: ["payment.#"]
+        exchange_type: "topic"
