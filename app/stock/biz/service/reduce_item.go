@@ -7,6 +7,7 @@ import (
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"stock/biz/dal/redis"
+	"stock/conf"
 	"stock/rpc"
 )
 
@@ -27,12 +28,19 @@ func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceIte
 		return &stock.ReduceItemResp{Success: false}, err
 	}
 	for _, item := range items.OrderItems {
-		// TODO: Redis 事务
 		key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), item.ProductId)
-		err = redis.RedisClient.Del(s.ctx, key).Err()
-		if err != nil {
-			klog.Errorf("del predestock failed, err: %v", err)
-			return &stock.ReduceItemResp{Success: false}, err
+		if conf.GetEnv() == "test" {
+			err = redis.RedisClient.Del(s.ctx, key).Err()
+			if err != nil {
+				klog.Errorf("del predestock failed, err: %v", err)
+				return &stock.ReduceItemResp{Success: false}, err
+			}
+		} else if conf.GetEnv() == "dev" {
+			err = redis.RedisClusterClient.Del(s.ctx, key).Err()
+			if err != nil {
+				klog.Errorf("del predestock failed, err: %v", err)
+				return &stock.ReduceItemResp{Success: false}, err
+			}
 		}
 	}
 
