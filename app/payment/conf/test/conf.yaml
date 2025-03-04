@@ -30,7 +30,7 @@ rabbitmq:
   paymentDLXExchange: "payment_dlx_exchange"
   paymentDLXQueue: "payment_dlx_queue"
 
-  payment_consumer:
+  payment_processor:
     processors:
       payment_processor:
         exchange: "payment_exchange"
