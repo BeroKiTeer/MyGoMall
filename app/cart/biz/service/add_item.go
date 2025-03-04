@@ -1,13 +1,16 @@
 package service
 
 import (
+	"cart/biz/dal/redis"
 	"cart/biz/model"
 	"cart/rpc"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"log"
 )
 
 type AddItemService struct {
@@ -56,6 +59,16 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 
 	if err != nil {
 		klog.Error("在购物车里未查询到商品", err)
+		return nil, err
+	}
+
+	// 清除 redis 中该用户的商品的缓存。
+	key := fmt.Sprintf("cart:%d", req.UserId)
+	err = redis.RedisClient.Del(s.ctx, key).Err()
+
+	if err != nil {
+		log.Println(err)
+		log.Println("666666666")
 		return nil, err
 	}
 
