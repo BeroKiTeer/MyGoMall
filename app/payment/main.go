@@ -29,6 +29,7 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	dal.Init()
+	PaymentProducerInit()
 	PaymentConsumerInit()
 	opts := kitexInit()
 
@@ -71,6 +72,23 @@ func kitexInit() (opts []server.Option) {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func PaymentProducerInit() {
+
+	config, err := conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	log.Printf("尝试连接RabbitMQ: %s", config.URL)
+
+	mqConfig := mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		RoutingKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
 }
 
 func PaymentConsumerInit() {

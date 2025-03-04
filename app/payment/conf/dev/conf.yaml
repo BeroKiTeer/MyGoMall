@@ -29,6 +29,14 @@ rabbitmq:
   paymentQueue: "payment_queue"
   paymentDLXExchange: "payment_dlx_exchange"
   paymentDLXQueue: "payment_dlx_queue"
+  payment_producer:
+    methods:
+      creditCard:
+        URL: "payment.card"
+        exchange: "payment_exchange"
+        queue: "creditCard_queue"
+        routing_key: "creditCard_pay"
+        exchange_type: "topic"
 
   payment_consumer:
     processors:
