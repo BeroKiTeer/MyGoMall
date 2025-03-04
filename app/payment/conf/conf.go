@@ -45,7 +45,7 @@ type RabbitMQ struct {
 	PaymentDLXQueue    string `yaml:"paymentDLXQueue"`
 	Consumers          struct {
 		Processors map[string]ConsumerConfig `yaml:"processors"`
-	} `yaml:"checkout_consumer"`
+	} `yaml:"payment_consumer"`
 }
 
 type Kitex struct {
