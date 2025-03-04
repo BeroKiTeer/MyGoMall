@@ -52,15 +52,26 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 
 	// redis 里面没有，或者查找发生错误，从 mysql 中查找
 	if exist == 0 || err != nil {
+		err = nil
 		userCart.UserId = req.UserId
 		err = model.QueryItemsByUser(&userCart)
+
+		if err != nil {
+			return nil, errors.New("购物车数据查询时出现错误")
+		}
+
 		// 存进 redis
 		for _, item := range userCart.Items {
 			value := fmt.Sprintf("%d:%d", item.ProductId, item.Quantity)
 			err = redis.RedisClient.LPush(s.ctx, key, value).Err()
 		}
 		err = redis.RedisClient.Expire(s.ctx, key, 3600*6*time.Second).Err()
+		// 有 err 说明 redis 坏了，撤销缓存操作
+		if err != nil {
+			err = nil
+			redis.RedisClient.Del(s.ctx, key)
+		}
 	}
 
-	return &cart.GetCartResp{Cart: &userCart}, err
+	return &cart.GetCartResp{Cart: &userCart}, nil
 }
