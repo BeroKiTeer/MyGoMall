@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 	"payment/biz/dal"
-	mq "payment/biz/dal/RabbitMQ"
+	mq "payment/biz/dal/rabbitmQ"
 	"time"
 
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
