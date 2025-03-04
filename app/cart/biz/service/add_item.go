@@ -67,8 +67,6 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 	err = redis.RedisClient.Del(s.ctx, key).Err()
 
 	if err != nil {
-		log.Println(err)
-		log.Println("666666666")
 		return nil, err
 	}
 
@@ -80,6 +78,9 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		klog.Info("商品已存在，更新购物车成功")
 		err = model.UpdateItem(req.UserId, req.Item.ProductId, req.Item.Quantity)
 	}
+
+	log.Println(err)
+	log.Println("666666666")
 
 	return &cart.AddItemResp{}, err
 }
