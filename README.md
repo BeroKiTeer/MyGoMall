@@ -1,5 +1,5 @@
 <div align="center">
- <h1>🛍️ MyGoMall<br/><small>一个生产级教学模板</small></h1>
+ <h1>🛍️ MyGoMall<br/></h1>
  <img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white"/>
  <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white"/>
  <img src="https://img.shields.io/badge/cloudwego-%23008ECF.svg?style=for-the-badge&logo=bytedance&logoColor=white"/>
