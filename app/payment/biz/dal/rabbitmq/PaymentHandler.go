@@ -56,7 +56,7 @@ func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) 
 		return fmt.Errorf("marshal response failed: %w", err)
 	}
 	//生成url ToDo
-	_, err = http.Post("115.190.108.142:8080/api/pay/card_pay",
+	_, err = http.Post("http://115.190.108.142:8080/api/pay/card_pay",
 		"application/json",
 		bytes.NewBuffer(resp))
 	return err
