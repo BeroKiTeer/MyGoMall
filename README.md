@@ -111,32 +111,135 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
 
 ```tex
 MyGoMall/
-├── apis/                  # API层
-│   └── ...   				# Hertz 代码
-├── app/                  # 各个微服务
-│   ├── cart/              # 购物车服务
-│   ├── order/              # 订单服务
-│   └── ...              # 其他服务
-├── common/             # 可复用包
-│   ├── clientsuite/     # 客户端组件
-│   ├── constant/         # 统一常量
-│   ├── kitex_gen/          # Kitex 生成的代码
-│   ├── mtl/             # metrics tracer logger
-│   ├── rpc/             # RPC 客户端
-│   ├── script/         # 执行脚本
-│   ├── serversuite/    # 服务端组件
-│   └── utils/			# 工具类
-├── deploy/             # 容器化部署相关
-│   └── ...      
-├── docs/				# 说明文件以及相关文档
-│   └── ....
-├── idl/             # IDL文件(protobuf)
-├── .gitignore			# 防止小孩误食
-└── go.work				# 工作区文件
-```
-
-```
-
+|-- LICENSE
+|-- README.md
+|-- apis
+|   |-- Readme.md
+|   |-- biz
+|   |   |-- handler
+|   |   |   |-- 各个服务与前端交互的代码
+|   |   |-- router
+|   |   |   |-- hertz 生成的文件
+|   |   `-- utils
+|   |       |-- jsonValue.go
+|   |       `-- resp.go
+|   |-- conf
+|   |   |-- 配置文件，用于配置服务需要连接的数据库、注册端口等
+|   |-- go.mod
+|   |-- go.sum
+|   |-- hertz_gen
+|   |   |-- hertz 生成的文件
+|   |-- infra
+|   |   `-- mtl
+|   |-- log
+|   |   `-- hertz.log
+|   |-- main.go
+|   |-- rpc
+|   `-- script
+|-- app
+|   |-- Dockerfile.example
+|   |-- README.md
+|   `-- 各个微服务的源文件夹 (以 user 为例)
+|       |-- Dockerfile
+|       |-- biz
+|       |   |-- dal
+|       |   |   |-- 用于初始化数据库的代码
+|       |   |   |-- init.go
+|       |   |   |-- mysql
+|       |   |   |   `-- init.go
+|       |   |   `-- redis
+|       |   |       `-- init.go
+|       |   |-- model
+|       |   |   |-- 操作数据库的代码、复用性高的语句、结构体标准等
+|       |   |   |-- address.go
+|       |   |   |-- base.go
+|       |   |   |-- user.go
+|       |   |   `-- user_test.go
+|       |   `-- service
+|       |       |-- 各个服务接口的源代码、单测文件
+|       |       |-- delete_user.go
+|       |       |-- delete_user_test.go
+|       |       |-- get_user_info.go
+|       |       |-- get_user_info_test.go
+|       |       |-- login.go
+|       |       |-- login_test.go
+|       |       |-- logout.go
+|       |       |-- logout_test.go
+|       |       |-- register.go
+|       |       |-- register_test.go
+|       |       |-- update_user.go
+|       |       `-- update_user_test.go
+|       |-- build.sh
+|       |-- conf
+|       |   |-- 配置文件，用于配置服务需要连接的数据库、注册端口等
+|       |   |-- conf.go
+|       |   |-- dev
+|       |   |   `-- conf.yaml
+|       |   |-- online
+|       |   |   `-- conf.yaml
+|       |   `-- test
+|       |       `-- conf.yaml
+|       |-- docker-compose.yaml
+|       |-- go.mod
+|       |-- go.sum
+|       |-- handler.go
+|       |-- kitex_info.yaml
+|       |-- log
+|       |   `-- kitex.log
+|       |-- main.go
+|       |-- readme.md
+|       |-- rpc
+|       |   `-- client.go
+|       |-- script
+|       |   `-- bootstrap.sh
+|       `-- utils
+|           `-- constant.go
+|-- common
+|   |-- build.sh
+|   |-- clientsuite
+|   |   `-- clientsuite.go
+|   |-- constant
+|   |   `-- orderconstants.go
+|   |-- go.mod
+|   |-- go.sum
+|   |-- handler.go
+|   |-- kitex_gen
+|   |   |-- kitex 为各个微服务生成的文件
+|   |-- kitex_info.yaml
+|   |-- main.go
+|   |-- mtl
+|   |-- rpc
+|   |-- script
+|   |-- serversuite
+|   `-- utils
+|-- conf
+|   `-- config.yaml.example
+|-- deploy
+|   |-- Consul.md
+|   |-- conf
+|   |   `-- prometheus.yml
+|   |-- docker
+|   |   |-- 各个服务的 Dockerfile
+|   |-- docker-compose.yaml
+|   |-- kubernetes
+|   |   `-- docker-compose.yaml
+|   `-- redis
+|       `-- clusters.md
+|-- docs
+|   |-- api
+|   |   |-- Apifox使用文档
+|   |-- database
+|   |   |-- MyGoMall数据库表设计文档.md
+|   |   |-- area.sql
+|   |   |-- base.sql
+|   |   |-- ...各个数据表独立的设计文档...
+|-- go.work
+|-- go.work.sum
+|-- idl
+|   |-- api
+|   |   |-- 用于 hertz 框架的 proto 文件
+|   |-- 用于 kitex 框架的 proto 文件
+`-- kitex_gen
 ```
 
 ## 🚀 快速开始
