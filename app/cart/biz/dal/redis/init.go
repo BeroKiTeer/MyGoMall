@@ -1,9 +1,8 @@
 package redis
 
 import (
-	"context"
-
 	"cart/conf"
+	"context"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -20,6 +19,9 @@ func Init() {
 			Password: conf.GetConf().Redis.Password,
 			DB:       conf.GetConf().Redis.DB,
 		})
+		if err := RedisClient.Ping(context.Background()).Err(); err != nil {
+			panic(err)
+		}
 	} else if conf.GetEnv() == "dev" {
 		// 创建集群客户端
 		RedisClusterClient = redis.NewClusterClient(&redis.ClusterOptions{
@@ -33,8 +35,8 @@ func Init() {
 			ReadOnly:       false, // 是否开启只读模式
 			RouteByLatency: false, // 是否开启就近路由
 		})
-	}
-	if err := RedisClient.Ping(context.Background()).Err(); err != nil {
-		panic(err)
+		if err := RedisClusterClient.Ping(context.Background()).Err(); err != nil {
+			panic(err)
+		}
 	}
 }
