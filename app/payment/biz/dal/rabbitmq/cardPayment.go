@@ -17,15 +17,14 @@ var (
 
 // 信用卡支付
 type CardPayment struct {
-	OrderID string `json:"order_id"`
-	Amount  int64  `json:"amount"`
-	success bool   `json:"success"`
+	OrderID       string `json:"order_id"`
+	TransactionID string `json:"transaction_id"`
+	Success       bool   `json:"success"`
 }
 
 func (c *CardPayment) GetRoutingKey() string {
 	return CardPaymentProducer.config.RoutingKey // 专属路由键
 }
-
 func (c *CardPayment) Marshal() ([]byte, error) {
 	return json.Marshal(c)
 }

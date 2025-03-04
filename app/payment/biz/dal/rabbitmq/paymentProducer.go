@@ -15,7 +15,6 @@ import (
 type PaymentRequest interface {
 	GetRoutingKey() string
 	Marshal() ([]byte, error)
-	ProduceMessage()
 }
 
 // 生产者基础结构体
