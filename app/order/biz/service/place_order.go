@@ -23,6 +23,7 @@ func NewPlaceOrderService(ctx context.Context) *PlaceOrderService {
 func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrderResp, err error) {
 	// Finish your business logic.
 	// 1. 验证库存 （库存服务RPC调用）
+	klog.Info("order:26.....id:", req.UserId)
 	for idx, item := range req.OrderItems {
 		stk, err := rpc.StockClient.CheckItem(s.ctx, &stock.CheckItemReq{
 			ProductId: item.ProductId,
@@ -36,7 +37,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 			return nil, nil
 		}
 	}
-
+	klog.Info("order:40.....id:", req.UserId)
 	// 2. 将购物车商品移动到订单明细表中
 	// 2.1 获取购物车信息 （购物车服务RPC调用）
 	carts, err := rpc.CartClient.GetCart(s.ctx, &cart.GetCartReq{
@@ -61,27 +62,27 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
+	orderId := orderUUID.String()
 	// 2.2.3 创建空订单表记录
-	model.CreateOrder(tx, &model.Order{
+	_, err = model.CreateOrder(tx, &model.Order{
 		Base: model.Base{
-			ID: orderUUID.String(),
+			ID: orderId,
 		},
-		UserID:          int64(req.UserId),
-		TotalPrice:      0,
-		DiscountPrice:   0,
-		ActualPrice:     0,
-		OrderStatus:     0,
-		PaymentStatus:   0,
-		PaymentMethod:   "",
-		ShippingAddress: "",
-		RecipientName:   "",
-		PhoneNumber:     "",
-		ShippingStatus:  0,
-		PaidAt:          nil,
-		ShippedAt:       nil,
-		CompletedAt:     nil,
-		CanceledAt:      nil,
-		Remark:          nil,
+		UserID:         int64(req.UserId),
+		TotalPrice:     0,
+		DiscountPrice:  0,
+		ActualPrice:    0,
+		OrderStatus:    0,
+		PaymentStatus:  0,
+		PaymentMethod:  "",
+		RecipientName:  "",
+		PhoneNumber:    "",
+		ShippingStatus: 0,
+		PaidAt:         nil,
+		ShippedAt:      nil,
+		CompletedAt:    nil,
+		CanceledAt:     nil,
+		Remark:         nil,
 	})
 	// 2.2.4 创建订单明细表记录
 	for _, cartItem := range carts.Cart.Items {
@@ -102,7 +103,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
-	// TODO: 3. 清空购物车 （购物车服务RPC调用）
+	// 3. 清空购物车 （购物车服务RPC调用）
 	emptyCartResp, err := rpc.CartClient.EmptyCart(s.ctx, &cart.EmptyCartReq{
 		UserId: req.UserId,
 	})
@@ -111,7 +112,9 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		return nil, err
 	}
 
-	// TODO: 4. 计算订单价格 (checkout RPC)
-
-	return
+	return &order.PlaceOrderResp{
+		Order: &order.OrderResult{
+			OrderId: orderId,
+		},
+	}, nil
 }

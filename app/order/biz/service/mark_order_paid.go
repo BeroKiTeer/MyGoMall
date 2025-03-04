@@ -5,10 +5,10 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"order/biz/dal/mysql"
 	"order/biz/dal/redis"
 	"order/biz/model"
 	"order/rpc"
-	"product/biz/dal/mysql"
 	"strconv"
 )
 

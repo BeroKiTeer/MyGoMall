@@ -1,47 +1,49 @@
 package rabbitMq
 
 import (
+	"checkout/conf"
 	"errors"
 	"fmt"
 	"github.com/streadway/amqp"
+	"log"
+	"sync"
 	"time"
 )
 
 // 支付接口抽象
 type PaymentRequest interface {
-	GetRoutineKey() string
+	GetRoutingKey() string
 	Marshal() ([]byte, error)
 }
 
 // 生产者基础结构体
 type PaymentProducer struct {
-	mq     *RabbitMQ
-	config MQConfig
-	//initOnce sync.Once
-}
-
-type MQConfig struct {
-	Exchange     string
-	Queue        string
-	RoutineKey   string
-	ExchangeType string
+	mq       *RabbitMQ
+	config   MQConfig
+	initOnce sync.Once
 }
 
 //初始化生产者
 
 func NewPaymentProducer(config MQConfig) (*PaymentProducer, error) {
 	producer := &PaymentProducer{
-		mq:     NewRabbitMQ(config.Queue, config.Exchange, config.RoutineKey),
+		mq:     NewRabbitMQ(config.QueueName, config.Exchange, config.RoutingKey),
 		config: config,
 	}
 
 	// 预先建立连接
 	var err error
-	producer.mq.Conn, err = amqp.Dial(producer.config.RoutineKey)
+	producer.mq.Conn, err = amqp.Dial(conf.GetConf().RabbitMQ.MqURL)
 	if err != nil {
 		return nil, errors.New("建立连接失败！")
 	}
-
+	log.Printf("连接成功")
+	producer.initOnce.Do(func() {
+		err := producer.initialize()
+		if err != nil {
+			return
+		} // 保证只执行一次
+	})
 	return producer, nil
 }
 
@@ -65,7 +67,7 @@ func (p *PaymentProducer) initialize() error {
 
 	// 2. 声明队列
 	if _, err := p.mq.Channel.QueueDeclare(
-		p.config.Queue,
+		p.config.QueueName,
 		true,  // durable
 		false, // autoDelete
 		false, // exclusive
@@ -78,8 +80,8 @@ func (p *PaymentProducer) initialize() error {
 
 	// 3. 绑定队列
 	if err := p.mq.Channel.QueueBind(
-		p.config.Queue,
-		p.config.RoutineKey,
+		p.config.QueueName,
+		p.config.RoutingKey,
 		p.config.Exchange,
 		false, // noWait
 		nil,   // args
@@ -93,9 +95,6 @@ func (p *PaymentProducer) initialize() error {
 // 发送支付请求
 func (p *PaymentProducer) Send(req PaymentRequest) error {
 	// 1. 确保初始化完成
-	if err := p.initialize(); err != nil {
-		return err
-	}
 
 	// 2. 序列化消息
 	data, err := req.Marshal()
@@ -106,7 +105,7 @@ func (p *PaymentProducer) Send(req PaymentRequest) error {
 	// 3. 发送消息
 	return p.mq.Channel.Publish(
 		p.config.Exchange,
-		req.GetRoutineKey(), // 使用动态路由键
+		req.GetRoutingKey(), // 使用动态路由键
 		false,               // mandatory
 		false,               // immediate
 		amqp.Publishing{

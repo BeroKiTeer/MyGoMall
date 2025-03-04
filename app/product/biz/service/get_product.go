@@ -29,6 +29,7 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 		// 如果缓存没有命中，从数据库获取
 		p, categories, err := model.GetProductWithCategory(mysql.DB, req.GetId())
 		if err != nil {
+			klog.Error(err)
 			return nil, err
 		}
 		// 设置缓存，缓存过期时间为 1 小时

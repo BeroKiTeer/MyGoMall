@@ -8,11 +8,11 @@ import (
 
 type User struct {
 	Base
-	Username       string `gorm:"unique"`
+	Username       string
 	PasswordHashed string
 	PhoneNumber    string `gorm:"unique"`
 	Email          string `gorm:"unique"`
-	Address        string
+	AddressId      int64
 	Status         int8
 	Role           int8
 }
@@ -23,22 +23,22 @@ func (u User) TableName() string {
 
 func GetByEmail(db *gorm.DB, ctx context.Context, email string) (user *User, err error) {
 	err = db.WithContext(ctx).Where("email = ?", email).First(&user).Error
-	return
+	return user, err
 }
 
-// 创建一条新的用户记录
+// CreateUser 创建一条新的用户记录
 func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
 }
 
-// 删除一条用户记录
+// DeleteUser 删除一条用户记录
 func DeleteUser(db *gorm.DB, user *User) error {
 	return db.Delete(user).Error
 }
 
 func GetUserById(db *gorm.DB, ctx context.Context, id int32) (user *User, err error) {
 	err = db.WithContext(ctx).Where("id = ?", id).First(&user).Error
-	return
+	return user, err
 }
 
 // UserExistsByID 检查用户是否存在

@@ -22,3 +22,12 @@ func ReduceItem(db *gorm.DB, ProductID int64, Quantity int64) error {
 		Update("stock", gorm.Expr("stock - ?", Quantity)).Error
 	return err
 }
+
+// RecoverItem 恢复库存里的商品
+func RecoverItem(db *gorm.DB, ProductID int64, Quantity int64) error {
+	err := db.Table("products").
+		Select("stock").
+		Where("id = ?", ProductID).
+		Update("stock", gorm.Expr("stock + ?", Quantity)).Error
+	return err
+}

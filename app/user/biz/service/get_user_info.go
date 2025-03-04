@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 	"user/biz/dal/mysql"
 	"user/biz/model"
@@ -18,9 +19,6 @@ func NewGetUserInfoService(ctx context.Context) *GetUserInfoService {
 // Run create note info
 func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserInfoResp, err error) {
 	// Finish your business logic.
-
-	// TODO: 验证token
-
 	row, err := model.GetUserById(mysql.DB, s.ctx, req.UserId)
 	if err != nil {
 		return
@@ -32,13 +30,25 @@ func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserIn
 	  string created_at = 8;   // 账户创建时间
 	  string updated_at = 9;   // 账户最近更新时间
 	*/
-
+	var address *model.Address
+	if row.AddressId != 0 {
+		address, err = model.GetAddressById(mysql.DB, s.ctx, row.AddressId)
+		if err != nil {
+			klog.Error(err)
+			return nil, err
+		}
+	}
+	if address == nil {
+		address = &model.Address{
+			Address: "",
+		}
+	}
 	resp = &user.GetUserInfoResp{
 		UserId:      int32(row.ID),
-		Email:       string(row.Email),
-		Username:    string(row.Username),
-		PhoneNumber: string(row.PhoneNumber),
-		Address:     string(row.Address),
+		Email:       row.Email,
+		Username:    row.Username,
+		PhoneNumber: row.PhoneNumber,
+		Address:     address.Address,
 		CreatedAt:   row.CreatedAt.Format(time.DateTime),
 		UpdatedAt:   row.UpdatedAt.Format(time.DateTime),
 	}

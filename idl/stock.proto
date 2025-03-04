@@ -11,11 +11,12 @@ service StockService {
   rpc CheckItem(CheckItemReq) returns (CheckItemResp);
   // 预留库存
   rpc ReserveItem(ReserveItemReq) returns (ReserveItemResp);
+  // 恢复库存
+  rpc RecoverItem(RecoverItemReq) returns (RecoverItemResp);
 }
 
 message ReduceItemReq {
   string order_id = 1;
-  int64 product_id = 2;
 }
 
 message ReduceItemResp {
@@ -32,10 +33,17 @@ message CheckItemResp {
 
 message ReserveItemReq {
   string order_id = 1;
-  int64 product_id = 2;
-  int64 quantity = 3;
+  int32 quantity = 2;
 }
 
 message ReserveItemResp {
-  bool Success = 1;
+  bool success = 1;
+}
+
+message RecoverItemReq {
+  string order_id = 1;
+}
+
+message RecoverItemResp {
+  bool success = 1;
 }

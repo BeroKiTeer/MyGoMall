@@ -224,6 +224,11 @@ func (x *ChargeByThirdPartyReq) FastRead(buf []byte, _type int8, number int32) (
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -254,6 +259,11 @@ func (x *ChargeByThirdPartyReq) fastReadField3(buf []byte, _type int8) (offset i
 
 func (x *ChargeByThirdPartyReq) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Way, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *ChargeByThirdPartyReq) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.TransactionId, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -424,6 +434,7 @@ func (x *ChargeByThirdPartyReq) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -456,6 +467,14 @@ func (x *ChargeByThirdPartyReq) fastWriteField4(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 4, x.GetWay())
+	return offset
+}
+
+func (x *ChargeByThirdPartyReq) fastWriteField5(buf []byte) (offset int) {
+	if x.TransactionId == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetTransactionId())
 	return offset
 }
 
@@ -617,6 +636,7 @@ func (x *ChargeByThirdPartyReq) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
 	return n
 }
 
@@ -649,6 +669,14 @@ func (x *ChargeByThirdPartyReq) sizeField4() (n int) {
 		return n
 	}
 	n += fastpb.SizeString(4, x.GetWay())
+	return n
+}
+
+func (x *ChargeByThirdPartyReq) sizeField5() (n int) {
+	if x.TransactionId == "" {
+		return n
+	}
+	n += fastpb.SizeString(5, x.GetTransactionId())
 	return n
 }
 
@@ -699,6 +727,7 @@ var fieldIDToName_ChargeByThirdPartyReq = map[int32]string{
 	2: "OrderId",
 	3: "UserId",
 	4: "Way",
+	5: "TransactionId",
 }
 
 var fieldIDToName_ChargeByThirdPartyResp = map[int32]string{

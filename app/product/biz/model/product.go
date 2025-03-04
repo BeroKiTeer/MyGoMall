@@ -17,7 +17,7 @@ type Product struct {
 }
 
 func (p Product) TableName() string {
-	return "products"
+	return "product"
 }
 
 func GetProduct(db *gorm.DB, id int64) (Product, error) {
@@ -61,7 +61,7 @@ func GetProductWithCategory(db *gorm.DB, id int64) (Product, []string, error) {
 func GetProductsByCategoryName(db *gorm.DB, page int, pageSize int, categoryName string) (products []Product, categories [][]string, err error) {
 	var categoriesId int
 	//根据名称查询标签id
-	db.Table("categories").Select("id").Where("name = ?", categoryName).Scan(&categoriesId)
+	db.Table("category").Select("id").Where("name = ?", categoryName).Scan(&categoriesId)
 	fmt.Printf("%+v\n", categoriesId)
 	var productsId []int64
 	//根据标签id查询商品id
@@ -99,7 +99,7 @@ func GetProductByName(db *gorm.DB, name string) ([]Product, [][]string, error) {
 // UpdateProduct 更新商品
 func UpdateProduct(db *gorm.DB, product *Product) error {
 	fmt.Printf("%+v\n", product)
-	return db.Exec(`update products 
+	return db.Exec(`update product 
 					   set name=? ,
 					       description=?,
 					       price=?,

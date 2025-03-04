@@ -4,11 +4,10 @@ package pay
 
 import (
 	"apis/biz/utils"
-	"apis/rpc"
+
 	"context"
 
 	pay "apis/hertz_gen/api/pay"
-	pay_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -28,19 +27,16 @@ func CardPay(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	reqRpc := pay_kitex.ChargeReq{
-		Amount:     req.CardPayReq.Amount,
-		CreditCard: req.CardPayReq.CreditCard,
-		OrderId:    req.CardPayReq.OrderId,
-		UserId:     req.CardPayReq.UserId,
-	}
+	//reqRpc := pay_kitex.ChargeReq{
+	//	Amount:     req.CardPayReq.Amount,
+	//	CreditCard: req.CardPayReq.CreditCard,
+	//	OrderId:    req.CardPayReq.OrderId,
+	//}
+	//respRpc := pa
 
-	resp, err := rpc.PaymentClient.Charge(ctx, &pay_kitex.ChargeReq{
-		Amount:     reqRpc.Amount,
-		CreditCard: reqRpc.CreditCard,
-		OrderId:    reqRpc.OrderId,
-		UserId:     reqRpc.UserId,
-	})
+	utils.SendSuccessResponse(ctx, c, consts.StatusOK, pay.CardPayResp{})
+}
 
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+func startPaymentConsumer() {
+
 }

@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 )
@@ -28,17 +28,17 @@ func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product
 		return nil, err
 	} else if getProduct.ID <= 0 {
 		resp.Message = "product not found"
-		fmt.Printf("id=%v,删除失败,未找到该商品\n", req.GetId())
+		klog.Errorf("id=%v,删除失败,未找到该商品\n", req.GetId())
 		return resp, nil
 	}
 	err = model.DeleteProductById(mysql.DB, int(req.GetId()))
 	if err != nil {
 		resp.Message = resp.Message + err.Error()
-		fmt.Printf("id=%v,删除失败\n", req.GetId())
+		klog.Errorf("id=%v,删除失败\n", req.GetId())
 		return resp, err
 	}
 	resp.Success = true
 	resp.Message = "success"
-	fmt.Printf("id=%v,删除成功\n", req.GetId())
+	klog.Errorf("id=%v,删除成功\n", req.GetId())
 	return resp, nil
 }

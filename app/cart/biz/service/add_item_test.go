@@ -1,12 +1,14 @@
 package service
 
 import (
+	"cart/biz/dal"
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/cart"
 	"testing"
 )
 
 func TestAddItem_Run(t *testing.T) {
+	dal.Init()
 	ctx := context.Background()
 	s := NewAddItemService(ctx)
 	// init req and assert value

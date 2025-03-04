@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
+	"github.com/cloudwego/kitex/pkg/klog"
 	creditcard "github.com/durango/go-credit-card"
 	"github.com/google/uuid"
 	"payment/biz/dal/mysql"
@@ -33,12 +34,14 @@ func (s *ChargeService) Run(req *payment.ChargeReq) (resp *payment.ChargeResp, e
 	// 验证信用卡是否有效
 	err = card.Validate(true)
 	if err != nil {
+		klog.Error("信用卡无效", err)
 		return nil, errors.New("信用卡无效！" + err.Error())
 	}
 
 	// 生成一个交易 ID （UUID）
 	transactionID, err := uuid.NewRandom()
 	if err != nil {
+		klog.Error("UUID生成失败", err)
 		return nil, errors.New("UUID生成失败：" + err.Error())
 	}
 
@@ -52,6 +55,7 @@ func (s *ChargeService) Run(req *payment.ChargeReq) (resp *payment.ChargeResp, e
 	})
 
 	if err != nil {
+		klog.Error("数据库存储失败", err)
 		return nil, errors.New("数据库存储失败：" + err.Error())
 	}
 

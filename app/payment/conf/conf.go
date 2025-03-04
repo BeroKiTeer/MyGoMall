@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -42,6 +43,12 @@ type RabbitMQ struct {
 	PaymentQueue       string `yaml:"paymentQueue"`
 	PaymentDLXExchange string `yaml:"paymentDLXExchange"`
 	PaymentDLXQueue    string `yaml:"paymentDLXQueue"`
+	Payments           struct {
+		Methods map[string]PaymentConfig `yaml:"methods"`
+	} `yaml:"payment_producer" `
+	Consumers struct {
+		Processors map[string]ConsumerConfig `yaml:"processors"`
+	} `yaml:"payment_consumer"`
 }
 
 type Kitex struct {
@@ -59,6 +66,22 @@ type Registry struct {
 	RegistryAddress []string `yaml:"registry_address"`
 	Username        string   `yaml:"username"`
 	Password        string   `yaml:"password"`
+}
+
+// 生产者配置结构
+type PaymentConfig struct {
+	URL          string `yaml:"URL"`
+	Exchange     string `yaml:"exchange"`
+	Queue        string `yaml:"queue"` //TODO
+	RoutingKey   string `yaml:"routing_key"`
+	ExchangeType string `yaml:"exchange_type"`
+}
+
+type ConsumerConfig struct {
+	Queue        string   `yaml:"queue"`
+	Exchange     string   `yaml:"exchange"`
+	BindingKeys  []string `yaml:"binding_keys"`
+	ExchangeType string   `yaml:"exchange_type"`
 }
 
 // GetConf gets configuration instance
@@ -116,4 +139,43 @@ func LogLevel() klog.Level {
 	default:
 		return klog.LevelInfo
 	}
+}
+
+func GetMQConfig(paymentType string) (PaymentConfig, error) {
+	conf := GetConf()
+
+	// 检查支付类型是否存在
+	config, exists := conf.RabbitMQ.Payments.Methods[paymentType]
+	if !exists {
+		return PaymentConfig{}, fmt.Errorf("payment type [%s] 未配置", paymentType)
+	}
+
+	// 验证必填字段
+	if config.Exchange == "" || config.RoutingKey == "" {
+		return PaymentConfig{}, fmt.Errorf("payment type [%s] 配置不完整", paymentType)
+	}
+
+	return config, nil
+}
+
+func GetQueueConfig(msgType string) (ConsumerConfig, error) {
+	conf := GetConf()
+	// 1. 检查消息类型是否存在
+	config, exists := conf.RabbitMQ.Consumers.Processors[msgType]
+	if !exists {
+		return ConsumerConfig{}, fmt.Errorf("消息类型[%s]未配置", msgType)
+	}
+
+	// 2. 验证必要字段
+	if config.Exchange == "" || config.Queue == "" || len(config.BindingKeys) == 0 {
+		return ConsumerConfig{}, fmt.Errorf("消息类型[%s]配置不完整", msgType)
+	}
+
+	// 3. 设置默认值
+	if config.ExchangeType == "" {
+		config.ExchangeType = "topic" // 默认交换机类型
+	}
+
+	return config, nil
+
 }

@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"github.com/cloudwego/kitex/pkg/klog"
-	"product/biz/model"
 	"product/conf"
 
 	"gorm.io/driver/mysql"
@@ -25,9 +24,9 @@ func Init() {
 		klog.Warnf("mysql连接失败: %v", err)
 		panic(err)
 	}
-	err := DB.AutoMigrate(&model.Product{})
-	if err != nil {
-		klog.Fatal(err)
-		return
-	}
+	//err := DB.AutoMigrate(&model.Product{})
+	//if err != nil {
+	//	klog.Fatal(err)
+	//	return
+	//}
 }

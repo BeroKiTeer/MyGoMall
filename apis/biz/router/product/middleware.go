@@ -55,3 +55,8 @@ func _createproductMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _products0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

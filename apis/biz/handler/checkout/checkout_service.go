@@ -7,9 +7,11 @@ import (
 	"apis/hertz_gen/api/checkout"
 	"apis/rpc"
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	checkout_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // Checkout .
@@ -24,13 +26,27 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	err = utils.BindJson(c, &req)
-	if err != nil {
-		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
+	klog.Info(req.UserId)
+	//获取请求头的token
+	token := c.Request.Header.Get("Authorization")
+	if token == "" {
+		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
 
+	if err != nil {
+
+		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
+		return
+	}
+	//获取用户id
+	rawID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
+	}
 	reqRpc := checkout_kitex.CheckoutReq{
-		UserId:        req.UserId,
+		UserId:        uint32(rawID.UserId),
 		Firstname:     req.Firstname,
 		Lastname:      req.Lastname,
 		Email:         req.Email,
@@ -41,6 +57,7 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 	//调用后端rpc服务的方法返回金额与订单号
 	checkoutResp, err := rpc.CheckoutClient.Checkout(ctx, &reqRpc)
 	if err != nil {
+		klog.Error(err)
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}

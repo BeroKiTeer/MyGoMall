@@ -1,11 +1,11 @@
 package rpc
 
 import (
-	"cart/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/klog"
 	consul "github.com/kitex-contrib/registry-consul"
+	"order/conf"
 )
 
 var (

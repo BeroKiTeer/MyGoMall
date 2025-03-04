@@ -6,6 +6,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"net"
+	"os"
 	"time"
 
 	"auth/conf"
@@ -30,6 +31,7 @@ func main() {
 	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
 
 	err := svr.Run()
+	klog.Info(err)
 	if err != nil {
 		klog.Error(err.Error())
 	}
@@ -59,7 +61,9 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})

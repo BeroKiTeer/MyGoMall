@@ -25,18 +25,18 @@ func (s CommonServerSuite) Options() []server.Option {
 		}),
 		// 增加 Prometheus 中间件
 		server.WithTracer(prometheus.NewServerTracer(
-			"",
-			"",
+			"", // 默认监控地址
+			"", // 默认监控路径
 			prometheus.WithDisableServer(true),
 			prometheus.WithRegistry(mtl.Registry),
 		)),
 		server.WithSuite(tracing.NewServerSuite()),
 	}
-	r, err := consul.NewConsulRegister(s.RegistryAddr)
+	r, err := consul.NewConsulRegister(s.RegistryAddr) // 从配置获取注册中心地址
 	if err != nil {
 		klog.Fatal(err)
 	}
-	opts = append(opts, server.WithRegistry(r))
+	opts = append(opts, server.WithRegistry(r)) // 将服务注册组件加入配置选项
 
 	return opts
 }

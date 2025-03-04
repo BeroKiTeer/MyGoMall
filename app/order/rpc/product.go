@@ -4,7 +4,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
-	"product/conf"
+	"order/conf"
 )
 
 var (

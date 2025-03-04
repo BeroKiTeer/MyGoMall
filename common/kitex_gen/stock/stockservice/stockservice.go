@@ -36,6 +36,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"RecoverItem": kitex.NewMethodInfo(
+		recoverItemHandler,
+		newRecoverItemArgs,
+		newRecoverItemResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -561,6 +568,159 @@ func (p *ReserveItemResult) GetResult() interface{} {
 	return p.Success
 }
 
+func recoverItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(stock.RecoverItemReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(stock.StockService).RecoverItem(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *RecoverItemArgs:
+		success, err := handler.(stock.StockService).RecoverItem(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RecoverItemResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newRecoverItemArgs() interface{} {
+	return &RecoverItemArgs{}
+}
+
+func newRecoverItemResult() interface{} {
+	return &RecoverItemResult{}
+}
+
+type RecoverItemArgs struct {
+	Req *stock.RecoverItemReq
+}
+
+func (p *RecoverItemArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(stock.RecoverItemReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RecoverItemArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RecoverItemArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RecoverItemArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RecoverItemArgs) Unmarshal(in []byte) error {
+	msg := new(stock.RecoverItemReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RecoverItemArgs_Req_DEFAULT *stock.RecoverItemReq
+
+func (p *RecoverItemArgs) GetReq() *stock.RecoverItemReq {
+	if !p.IsSetReq() {
+		return RecoverItemArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RecoverItemArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *RecoverItemArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type RecoverItemResult struct {
+	Success *stock.RecoverItemResp
+}
+
+var RecoverItemResult_Success_DEFAULT *stock.RecoverItemResp
+
+func (p *RecoverItemResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(stock.RecoverItemResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RecoverItemResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RecoverItemResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RecoverItemResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RecoverItemResult) Unmarshal(in []byte) error {
+	msg := new(stock.RecoverItemResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RecoverItemResult) GetSuccess() *stock.RecoverItemResp {
+	if !p.IsSetSuccess() {
+		return RecoverItemResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RecoverItemResult) SetSuccess(x interface{}) {
+	p.Success = x.(*stock.RecoverItemResp)
+}
+
+func (p *RecoverItemResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *RecoverItemResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -596,6 +756,16 @@ func (p *kClient) ReserveItem(ctx context.Context, Req *stock.ReserveItemReq) (r
 	_args.Req = Req
 	var _result ReserveItemResult
 	if err = p.c.Call(ctx, "ReserveItem", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RecoverItem(ctx context.Context, Req *stock.RecoverItemReq) (r *stock.RecoverItemResp, err error) {
+	var _args RecoverItemArgs
+	_args.Req = Req
+	var _result RecoverItemResult
+	if err = p.c.Call(ctx, "RecoverItem", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

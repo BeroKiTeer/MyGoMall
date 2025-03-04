@@ -8,6 +8,7 @@ replace github.com/BeroKiTeer/MyGoMall/common => ../../common
 
 require (
 	github.com/BeroKiTeer/MyGoMall/common v0.0.0-00010101000000-000000000000
+	github.com/cloudwego/fastpb v0.0.5
 	github.com/cloudwego/kitex v0.12.2
 	github.com/durango/go-credit-card v0.0.0-20220404131259-a9e175ba4082
 	github.com/google/uuid v1.6.0
@@ -16,6 +17,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.1
 	github.com/streadway/amqp v1.1.0
 	go.uber.org/zap v1.27.0
+	google.golang.org/protobuf v1.36.3
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/validator.v2 v2.0.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -34,7 +36,6 @@ require (
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/configmanager v0.2.2 // indirect
 	github.com/cloudwego/dynamicgo v0.5.2 // indirect
-	github.com/cloudwego/fastpb v0.0.5 // indirect
 	github.com/cloudwego/frugal v0.2.3 // indirect
 	github.com/cloudwego/gopkg v0.1.4-0.20241217093255-8980b14172b7 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
@@ -111,6 +112,5 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/grpc v1.69.4 // indirect
-	google.golang.org/protobuf v1.36.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type RefreshTokenService struct {
@@ -18,12 +19,14 @@ func (s *RefreshTokenService) Run(req *auth.RefreshTokenReq) (resp *auth.Refresh
 	// 先解码。获得 userID
 	userID, err := GetUserIDFromToken(req.Token)
 	if err != nil {
+		klog.Error("获取token失败", err)
 		return nil, err
 	}
 
 	// 续期，其实就是重新生成一个 token
 	newToken, err := GenerateJWT(userID, req.Seconds, s.ctx)
 	if err != nil {
+		klog.Error("续期token失败", err)
 		return nil, err
 	}
 

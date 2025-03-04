@@ -30,7 +30,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # 从 builder 镜像中复制编译好的应用程序
-COPY --from=builder /app/myapp .
+COPY --from=builder /app/auth .
 
 # 如果有 .env 文件，则复制 .env 文件
 COPY .env .env
@@ -39,4 +39,4 @@ COPY .env .env
 EXPOSE 8080
 
 # 启动程序
-CMD ["./myapp"]
+CMD ["./auth"]

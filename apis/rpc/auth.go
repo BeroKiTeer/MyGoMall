@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"auth/conf"
+	"apis/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
@@ -14,7 +14,7 @@ var (
 func initAuthClient() {
 	opts := []client.Option{
 		client.WithSuite(clientsuite.CommonClientSuite{
-			CurrentServiceName: conf.GetConf().Kitex.Service,
+			CurrentServiceName: conf.GetConf().Hertz.Service,
 			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 		}),
 	}

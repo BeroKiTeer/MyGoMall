@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"stock/biz/dal/mysql"
 	"stock/biz/model"
 )
@@ -19,6 +20,11 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 
 	// 查询商品剩余
 	quantity, err := model.CheckQuantity(mysql.DB, req.ProductId)
+
+	if err != nil {
+		klog.Errorf("check quantity failed, err: %v", err)
+		return nil, err
+	}
 
 	return &stock.CheckItemResp{Quantity: quantity}, err
 }
