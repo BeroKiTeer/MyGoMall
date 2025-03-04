@@ -4,8 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/google/uuid"
 	"github.com/streadway/amqp"
+	"net"
 	"payment/conf"
+	"time"
 )
 
 type MessageHandler interface {
@@ -66,39 +70,141 @@ func (p *PaymentConsumer) BindQueue(QueueName, Exchange, RoutingKey string) erro
 
 // 消费者指定一条队列消费信息
 func (p *PaymentConsumer) Consume(ctx context.Context, msgHandler MessageHandler) error {
-	// 2.从队列获取消息（消费者只关注队列）consume方式会不断的从队列中获取消息
-	QueueName, err := msgHandler.GetQueueName()
-	if err != nil {
-		return err
-	}
-	msgChanl, err := p.mq.Channel.Consume(
-		QueueName, // 队列名
-		"",        // 消费者名，用来区分多个消费者，以实现公平分发或均等分发策略
-		true,      // 是否自动应答
-		false,     // 是否排他
-		false,     // 是否接收只同一个连接中的消息，若为true，则只能接收别的conn中发送的消息
-		true,      // 队列消费是否阻塞
-		nil,       // 额外属性
-	)
-	if err != nil {
-		fmt.Println("获取消息失败", err)
-		return err
-	}
-	for msg := range msgChanl {
-		if err := msgHandler.ProcessMessage(ctx, msg); err != nil {
-			// 处理失败逻辑
-			//msg.Nack(false, shouldRetry(err))
-			err := msg.Nack(false, true)
+	retryCount := 0
+	maxRetries := 10 // 最大重试次数
+
+	for {
+		select {
+		case <-ctx.Done():
+			klog.Info("接收到终止信号，停止消费")
+			return nil
+		default:
+			QueueName, err := msgHandler.GetQueueName()
 			if err != nil {
-				return err
-			} // 重试
-			return err
-		} else {
-			err := msg.Ack(false)
-			if err != nil {
-				return err
+				return fmt.Errorf("获取队列名失败: %w", err)
 			}
+
+			// 重建连接（关键）
+			if err := p.reconnectIfNeeded(); err != nil {
+				klog.Errorf("连接重建失败: %v", err)
+				if retryCount++; retryCount > maxRetries {
+					return fmt.Errorf("超过最大重试次数")
+				}
+				time.Sleep(3 * time.Second)
+				continue
+			}
+
+			// 创建消费通道
+			msgChan, err := p.mq.Channel.Consume(
+				QueueName,
+				"consumer_"+uuid.New().String(), // 唯一消费者标识
+				false,                           // 关闭自动ACK
+				false,
+				false,
+				false,
+				nil,
+			)
+			if err != nil {
+				klog.Errorf("创建消费通道失败: %v", err)
+				time.Sleep(3 * time.Second)
+				continue
+			}
+
+			// 重置重试计数器
+			retryCount = 0
+
+			// 消息处理循环
+			for msg := range msgChan {
+				if err := p.handleMessage(msgHandler, msg); err != nil {
+					klog.Errorf("消息处理失败: %v", err)
+				}
+			}
+
+			klog.Warn("消息通道关闭，等待重连...")
+			time.Sleep(5 * time.Second)
 		}
 	}
+}
+
+// 消息处理封装
+func (p *PaymentConsumer) handleMessage(h MessageHandler, msg amqp.Delivery) error {
+	defer func() {
+		if r := recover(); r != nil {
+			klog.Errorf("消息处理发生panic: %v", r)
+			msg.Nack(false, true) // 要求重试
+		}
+	}()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := h.ProcessMessage(ctx, msg); err != nil {
+		if shouldRetry(err) {
+			msg.Nack(false, true) // 重试消息
+			return err
+		}
+		msg.Nack(false, false) // 丢弃消息
+		return fmt.Errorf("不可恢复错误: %w", err)
+	}
+
+	msg.Ack(false)
 	return nil
+}
+
+// 消息处理封装
+func (p *PaymentConsumer) reconnectIfNeeded() error {
+	// 检查连接状态
+	if p.mq.Conn == nil || p.mq.Conn.IsClosed() {
+		newConn, err := amqp.Dial(conf.GetConf().RabbitMQ.RabbitMQURL)
+		if err != nil {
+			return fmt.Errorf("连接重建失败: %w", err)
+		}
+		p.mq.Conn = newConn
+	}
+
+	// 通道有效性检测（新增核心逻辑）
+	if p.mq.Channel != nil {
+		// 通过无害操作检测通道状态
+		_, err := p.mq.Channel.QueueDeclarePassive(
+			"amq.rabbitmq.reply-to", // RabbitMQ内置队列
+			false,                   // 非持久化
+			true,                    // 自动删除
+			true,                    // 排他队列
+			false,
+			nil,
+		)
+		if err != nil {
+			p.mq.Channel = nil // 标记通道失效
+		}
+	}
+
+	// 重建通道
+	if p.mq.Channel == nil {
+		ch, err := p.mq.Conn.Channel()
+		if err != nil {
+			return fmt.Errorf("通道重建失败: %w", err)
+		}
+		p.mq.Channel = ch
+
+		// 设置通道关闭监听（关键增强）
+		closeChan := make(chan *amqp.Error)
+		p.mq.Channel.NotifyClose(closeChan)
+		go func() {
+			<-closeChan
+			p.mq.Channel = nil // 通道关闭时自动置空
+			klog.Warn("检测到通道异常关闭")
+		}()
+	}
+
+	return nil
+}
+
+func shouldRetry(err error) bool {
+	// 示例逻辑：网络类错误或超时错误允许重试
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		return true
+	}
+	// 可扩展其他重试条件
+	return false
 }
