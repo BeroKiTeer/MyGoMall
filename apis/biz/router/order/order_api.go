@@ -20,8 +20,8 @@ func Register(r *server.Hertz) {
 	{
 		_api := root.Group("/api", _apiMw()...)
 		{
-			_cart := _api.Group("/cart", _cartMw()...)
-			_cart.POST("/add", append(_placeorderMw(), order.PlaceOrder)...)
+			_order := _api.Group("/order", _orderMw()...)
+			_order.POST("/submit", append(_placeorderMw(), order.PlaceOrder)...)
 		}
 	}
 }

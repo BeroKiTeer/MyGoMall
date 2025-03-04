@@ -25,3 +25,8 @@ func _placeorderMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _orderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -7,9 +7,9 @@ option go_package = "/api/order";
 import "api/common.proto";
 import "api.proto";
 
-service CartService {
+service OrderService {
   rpc PlaceOrder(PlaceOrderReq) returns (common.Empty) {
-    option (api.post) = "/api/cart/add";
+    option (api.post) = "/api/order/submit";
   }
 }
 

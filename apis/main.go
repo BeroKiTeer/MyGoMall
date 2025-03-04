@@ -7,6 +7,7 @@ import (
 	"apis/rpc"
 	"context"
 	prometheus "github.com/hertz-contrib/monitor-prometheus"
+	"os"
 	"time"
 
 	"apis/biz/router"
@@ -86,7 +87,9 @@ func registerMiddleware(h *server.Hertz) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	hlog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	hlog.SetOutput(multiOutput)
 	h.OnShutdown = append(h.OnShutdown, func(ctx context.Context) {
 		asyncWriter.Sync()
 	})
