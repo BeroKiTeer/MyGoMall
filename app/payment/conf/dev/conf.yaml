@@ -32,10 +32,10 @@ rabbitmq:
   payment_producer:
     methods:
       creditCard:
-        URL: "payment.card"
         exchange: "payment_exchange"
-        queue: "creditCard_queue"
-        routing_key: "creditCard_pay"
+        queue: "payment.creditCard.process"  # 统一采用点分式
+        routing_key: "payment.method.creditCard.process"  # 三级路由键
+        binding_keys: [ "payment.method.creditCard.#" ]  # 增加通配符绑定
         exchange_type: "topic"
 
   payment_consumer:
