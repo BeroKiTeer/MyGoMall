@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/BeroKiTeer/MyGoMall/common/constant"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -77,6 +78,9 @@ func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) 
 	}
 
 	//TODO: 2. 订单状态改为已支付
-	model.UpdateOrderStatus(mysql.DB, resp.OrderId, "paid")
+	if err = model.UpdateOrderStatus(mysql.DB, resp.OrderId, constant.Paid); err != nil {
+		klog.Errorf("%v", err)
+		return err
+	}
 	return nil
 }

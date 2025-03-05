@@ -44,8 +44,8 @@ func GetProductIdsFromOrder(db *gorm.DB, order string) (productIds []int64) {
 	return productIds
 }
 
-func UpdateOrderStatus(db *gorm.DB, orderID string, status string) {
-
+func UpdateOrderStatus(db *gorm.DB, orderID string, status int8) error {
+	return db.Model(&Order{}).Where("id=?", orderID).Update("order_status", status).Error
 }
 
 func GetOrdersByUserID(db *gorm.DB, UserID int64) ([]Order, error) {
