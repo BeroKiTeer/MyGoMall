@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/streadway/amqp"
-	"log"
 	"payment/conf"
 	"sync"
 	"time"
@@ -39,7 +38,7 @@ func NewPaymentProducer(config MQConfig) (*PaymentProducer, error) {
 	if err != nil {
 		return nil, errors.New("建立连接失败！")
 	}
-	log.Printf("连接成功")
+	klog.Info("连接成功")
 	producer.initOnce.Do(func() {
 		err := producer.initialize()
 		if err != nil {
@@ -124,7 +123,7 @@ func (p *PaymentProducer) Send(req PaymentRequest) error {
 	for i := 0; i < maxRetries; i++ {
 		// 使用带确认的发布
 		confirmation := p.mq.Channel.NotifyPublish(make(chan amqp.Confirmation, 1))
-
+		klog.Info("sendFuncIn...")
 		err = p.mq.Channel.Publish(
 			p.config.Exchange,
 			req.GetRoutingKey(),
