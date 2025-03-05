@@ -25,7 +25,7 @@ func ListProducts(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusBadRequest, err)
 		return
 	}
-	klog.Infof("ListProducts req: %v", req)
+	klog.Infof("ListProducts req: %#v", req)
 	r, err := rpc.ProductClient.ListProducts(ctx, &product_kitex.ListProductsReq{
 		Page:         req.Page,
 		PageSize:     req.PageSize,
@@ -114,19 +114,14 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 			Categories:    req.Product.Categories,
 		},
 	})
-	klog.Info("3333333333333333333\n")
 	if err != nil {
-		klog.Info("311111111111\n")
 		klog.Error(err)
-		klog.Info("322222222222\n")
 		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
-	klog.Info("44444444444444444\n")
 	resp := new(product.CreateProductResp)
 	resp.ProductId = r.ProductId
 
-	klog.Info("55555555555555555\n")
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
