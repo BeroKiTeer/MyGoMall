@@ -31,8 +31,8 @@ func main() {
 	rpc.InitClient()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
+	go ConsumerInit()
 	opts := kitexInit()
-	ConsumerInit()
 
 	svr := orderservice.NewServer(new(OrderServiceImpl), opts...)
 

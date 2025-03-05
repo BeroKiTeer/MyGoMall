@@ -47,6 +47,7 @@ func PlaceOrder(ctx context.Context, c *app.RequestContext) {
 	hlog.Info(placeOrder)
 	if err != nil {
 		hlog.Error(err)
+		utils.SendErrResponse(ctx, c, consts.StatusServiceUnavailable, err)
 		return
 	}
 
