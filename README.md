@@ -45,8 +45,11 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
 
 ## 🛠️ 技术栈
 
+## 🛠️ 技术栈
+
 <div align="center">
   <table>
+    <!-- 第一行 -->
     <tr>
       <td align="center" width="96">
         <img src="https://cdn.simpleicons.org/go" width="48" height="48" alt="Go" />
@@ -68,6 +71,10 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
         <img src="https://cdn.simpleicons.org/bytedance" width="48" height="48" alt="Kitex" />
         <br>Kitex
       </td>
+    </tr>
+    
+    <!-- 第二行 -->
+    <tr>
       <td align="center" width="96">
         <img src="https://cdn.simpleicons.org/go/00ADD8" width="48" height="48" alt="GORM" />
         <br>GORM
@@ -76,6 +83,28 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
         <img src="https://cdn.simpleicons.org/bytedance" width="48" height="48" alt="Hertz" />
         <br>Hertz
       </td>
+      <td align="center" width="96">
+        <img src="https://cdn.simpleicons.org/rabbitmq" width="48" height="48" alt="RabbitMQ" />
+        <br>RabbitMQ
+      </td>
+      <td align="center" width="96">
+        <img src="https://cdn.simpleicons.org/consul" width="48" height="48" alt="Consul" />
+        <br>Consul
+      </td>
+      <td align="center" width="96">
+        <img src="https://cdn.simpleicons.org/docker" width="48" height="48" alt="Docker" />
+        <br>Docker
+      </td>
+    </tr>
+
+    <!-- 第三行 -->
+    <tr>
+      <td align="center" width="96">
+        <img src="https://cdn.simpleicons.org/protocolbuffers" width="48" height="48" alt="Protobuf" />
+        <br>Protobuf
+      </td>
+      <!-- 可扩展空位 -->
+      <td colspan="4"></td>
     </tr>
   </table>
 </div>
