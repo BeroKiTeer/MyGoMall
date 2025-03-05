@@ -8,7 +8,7 @@ import "api.proto";
 
 service PaymentService {
   rpc Charge(ChargeReq) returns (ChargeResp) {
-    option (api.post) = "/api/payment/charge";
+    option (api.post) = "/api/pay/card_pay";
   }
 }
 
