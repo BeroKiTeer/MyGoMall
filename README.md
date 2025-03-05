@@ -338,6 +338,14 @@ cd docs/api
 
 ## 🙋‍♀ 作者
 
+- [金仓鼠](https://github.com/BeroKiTeer) 
+- [Blaze](https://github.com/wzy04)
+- [Muschuang123](https://github.com/Muschuang123)
+- [supermefyz](https://github.com/supermefyz)
+- [CruxZhou](https://github.com/CruxZhou)
+- [图图](https://github.com/youniverse-jk)
+- [kklmars](https://github.com/kklmars)
+
 
 ---
 

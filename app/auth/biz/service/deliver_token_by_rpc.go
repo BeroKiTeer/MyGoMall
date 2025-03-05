@@ -34,7 +34,11 @@ func GenerateJWT(userID int32, seconds int32, ctx context.Context) (string, erro
 	}
 
 	if seconds == 0 {
-		redis.RedisClient.Expire(ctx, strconv.Itoa(int(userID)), 0)
+		if conf.GetEnv() == "test" {
+			redis.RedisClient.Expire(ctx, strconv.Itoa(int(userID)), 0)
+		} else if conf.GetEnv() == "dev" {
+			redis.RedisClusterClient.Expire(ctx, strconv.Itoa(int(userID)), 0)
+		}
 		return "", nil
 	}
 
