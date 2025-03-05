@@ -4,7 +4,6 @@ import (
 	"apis/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
 )
 
@@ -19,7 +18,7 @@ func initPaymentClient() {
 			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 		}),
 	}
-	ProductClient, err = productcatalogservice.NewClient("payment", opts...)
+	PaymentClient, err = paymentservice.NewClient("payment", opts...)
 	if err != nil {
 		panic(err)
 	}
