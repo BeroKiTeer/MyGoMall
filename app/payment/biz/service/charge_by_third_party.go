@@ -21,13 +21,13 @@ func NewChargeByThirdPartyService(ctx context.Context) *ChargeByThirdPartyServic
 // Run create note info
 func (s *ChargeByThirdPartyService) Run(req *payment.ChargeByThirdPartyReq) (resp *payment.ChargeByThirdPartyResp, err error) {
 	//发送消息到队列
-	klog.Info("send.....")
+	klog.Infof("send.....")
 	err = mq.CardPaymentProducer.Send(&mq.CardPayment{
 		OrderID:       req.OrderId,
 		TransactionID: req.TransactionId,
 		Success:       true,
 	})
-	klog.Info("send.....")
+	klog.Infof("send.....")
 	if err != nil {
 		klog.Errorf("消息发送失败%v", err)
 		return nil, err
@@ -39,6 +39,7 @@ func (s *ChargeByThirdPartyService) Run(req *payment.ChargeByThirdPartyReq) (res
 		Amount:        req.Amount,
 		PayAt:         time.Now(),
 		Way:           req.Way,
+		Status:        1,
 	})
 
 	if err != nil {

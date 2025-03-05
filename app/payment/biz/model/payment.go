@@ -19,7 +19,7 @@ type Payment struct {
 
 // 创建订单信息
 func CreatePayment(db *gorm.DB, payment *Payment) error {
-	return db.Model(Payment{}).Table("payments").Create(payment).Error
+	return db.Model(Payment{}).Table("payment").Create(payment).Error
 }
 
 // 查询订单信息

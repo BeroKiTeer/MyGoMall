@@ -5,14 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/constant"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
-	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/streadway/amqp"
 	"order/biz/dal/mysql"
 	"order/biz/model"
 	"order/conf"
-	"order/rpc"
 )
 
 type Message struct {
@@ -59,27 +56,26 @@ func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) 
 		return err
 	}
 	// 获取订单中的商品信息
-	productIds := model.GetProductIdsFromOrder(mysql.DB, resp.OrderId)
+	//productIds := model.GetProductIdsFromOrder(mysql.DB, resp.OrderId)
+	//
+	//products := make([]*product.GetProductResp, 1)
+	//for _, productID := range productIds {
+	//	res, err := rpc.ProductClient.GetProduct(ctx, &product.GetProductReq{Id: productID})
+	//	if err != nil {
+	//		klog.Errorf("get product error: %v", err)
+	//	}
+	//	products = append(products, res)
+	//}
 
-	products := make([]*product.GetProductResp, 1)
-	for _, productID := range productIds {
-		res, err := rpc.ProductClient.GetProduct(ctx, &product.GetProductReq{Id: productID})
-		if err != nil {
-			klog.Errorf("get product error: %v", err)
-		}
-		products = append(products, res)
-	}
+	//_, err = rpc.StockClient.ReduceItem(ctx, &stock.ReduceItemReq{
+	//	OrderId: resp.OrderId,
+	//})
+	//if err != nil {
+	//	klog.Errorf("%v", err)
+	//	return err
+	//}
 
-	// 库存减少（inventory RPC调用）
-	_, err = rpc.StockClient.ReduceItem(ctx, &stock.ReduceItemReq{
-		OrderId: resp.OrderId,
-	})
-	if err != nil {
-		klog.Errorf("%v", err)
-		return err
-	}
-
-	//TODO: 2. 订单状态改为已支付
+	// 2. 订单状态改为已支付
 	if err = model.UpdateOrderStatus(mysql.DB, resp.OrderId, constant.Paid); err != nil {
 		klog.Errorf("%v", err)
 		return err

@@ -6,7 +6,6 @@ import (
 	cart "apis/biz/router/cart"
 	checkout "apis/biz/router/checkout"
 	order "apis/biz/router/order"
-	pay "apis/biz/router/pay"
 	payment "apis/biz/router/payment"
 	product "apis/biz/router/product"
 	"apis/biz/router/user"
@@ -19,8 +18,6 @@ func GeneratedRegister(r *server.Hertz) {
 	order.Register(r)
 
 	payment.Register(r)
-
-	pay.Register(r)
 
 	checkout.Register(r)
 

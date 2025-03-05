@@ -7,20 +7,23 @@ import (
 	payment "apis/hertz_gen/api/payment"
 	"apis/rpc"
 	"context"
+	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	payment_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // Charge .
-// @router /api/payment/charge [POST]
+// @router /api/pay/card_pay [POST]
 func Charge(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req payment.ChargeReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
+		hlog.Errorf("error:%v", err)
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
@@ -28,6 +31,7 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 	// 获取请求头的token
 	token := c.Request.Header.Get("Authorization")
 	if token == "" {
+		hlog.Errorf("token is empty")
 		utils.SendErrResponse(ctx, c, consts.StatusUnauthorized, err)
 		return
 	}
@@ -35,10 +39,19 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 	// 获取用户id
 	userID, err := rpc.AuthClient.DecodeToken(ctx, &auth.DecodeTokenReq{Token: token})
 	if err != nil {
+		klog.Errorf("Failed to decode token: %v", err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
-	klog.Info("sendInHertz")
+
+	// 检查RPC客户端是否初始化
+	if rpc.PaymentClient == nil {
+		klog.Error("PaymentClient is not initialized")
+		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, errors.New("PaymentClient is not initialized"))
+		return
+	}
+
+	klog.Info("Attempting to call ChargeByThirdParty RPC")
 	resp, err := rpc.PaymentClient.ChargeByThirdParty(ctx, &payment_kitex.ChargeByThirdPartyReq{
 		Amount:  req.Amount,
 		OrderId: req.OrderId,
@@ -47,10 +60,11 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 	})
 
 	if err != nil {
-
-		klog.Errorf("error:%v", err)
+		klog.Errorf("Failed to call ChargeByThirdParty RPC: %v", err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
+		return
 	}
 
+	klog.Info("Successfully called ChargeByThirdParty RPC")
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
