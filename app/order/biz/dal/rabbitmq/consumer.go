@@ -13,7 +13,6 @@ import (
 )
 
 type MessageHandler interface {
-	Marshal() ([]byte, error)
 	Unmarshal([]byte, interface{}) error
 	GetQueueName() (string, error)
 	ProcessMessage(ctx context.Context, msg amqp.Delivery) error //对消息进行处理
