@@ -22,6 +22,7 @@ func NewReduceItemService(ctx context.Context) *ReduceItemService {
 func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceItemResp, err error) {
 
 	// TODO: 此处应为消息队列处理分布式事务，暂时使用rpc调用
+	klog.Infof("reduce item, req: %v", req)
 	items, err := rpc.OrderClient.ShowOrderDetail(s.ctx, &order.ShowOrderDetailReq{OrderId: req.OrderId})
 	if err != nil {
 		klog.Errorf("show order detail failed, err: %v", err)
