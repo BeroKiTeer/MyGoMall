@@ -39,6 +39,7 @@ func (s *ChargeByThirdPartyService) Run(req *payment.ChargeByThirdPartyReq) (res
 		Amount:        req.Amount,
 		PayAt:         time.Now(),
 		Way:           req.Way,
+		Status:        1,
 	})
 
 	if err != nil {
