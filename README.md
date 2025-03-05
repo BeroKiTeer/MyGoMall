@@ -121,9 +121,9 @@ MyGoMall 是一个基于分布式微服务架构的电商平台，提供用户�
 
 4. **下单-扣除库存-支付**
 
-   - 准确的服务功能
-   - 操作的先后顺序
-   - Saga分布式事务
+   - 复杂的业务场景需求分析
+   - 高并发场景下的性能问题
+   - Saga分布式事务一致性解决方案
 
    
 
@@ -294,7 +294,7 @@ cd app/[微服务名]/conf/dev
 5. 在`Docker`上构建：
     1. 使用以下路径的 `Dockerfile`：`deploy\docker\[微服务名]\Dockerfile`
     2. 绑定端口，端口号要与 `conf/dev`中的 `yaml`文件填写的一致
-    3. 环境变量，设置`GO_ENV=dev`。
+    3. 环境变量，设置`GO_ENV=dev`绑定开发环境。
 
 ## 📝 API文档
 
@@ -341,7 +341,6 @@ cd docs/api
 ---
 
 <div align="center">
-为 Go 学习者用❤️制作
 <br/>
 ⭐ 在 GitHub 上为我们加注星标 | 📖 阅读 Wiki | 🐛 报告问题
 </div>
