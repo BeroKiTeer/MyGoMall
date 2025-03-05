@@ -36,7 +36,7 @@ CREATE INDEX `idx_user_product` ON `cart`(`user_id`, `product_id`);
 -- 3. 创建 product 表
 CREATE TABLE `product` (
                            `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '商品ID，自增',
-                           `name` LONGTEXT NOT NULL COMMENT '商品名称',
+                           `name` varchar(40) NOT NULL COMMENT '商品名称',
                            `description` LONGTEXT DEFAULT NULL COMMENT '商品描述',
                            `price` BIGINT NOT NULL COMMENT '商品价格',
                            `original_price` BIGINT DEFAULT NULL COMMENT '商品原价',
@@ -131,6 +131,8 @@ CREATE TABLE `payment` (
                            `transaction_id` VARCHAR(36) DEFAULT NULL COMMENT '交易ID（UUID）',
                            `amount` BIGINT NOT NULL COMMENT '交易金额',
                            `pay_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '交易时间',
+                           `way` VARCHAR(255) NOT NULL COMMENT '支付方式',
+                           `status` BIGINT NOT NULL COMMENT '支付状态',
                            `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                            `deleted_at` DATETIME DEFAULT NULL COMMENT '删除时间'
