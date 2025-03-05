@@ -43,17 +43,19 @@ func (p *PaymentHandler) Unmarshal(data []byte, resp interface{}) error {
 }
 func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) error {
 	var resp Message
-
+	klog.Infof("收到消息: %v", string(msg.Body))
 	err := p.Unmarshal(msg.Body, &resp)
 	if err != nil {
 		return err
 	}
 	if resp.Success == false {
+		klog.Errorf("支付失败！")
 		return errors.New("支付失败！")
 	}
 	// Finish your business logic.
 	// 参数验证
 	if resp.OrderId == "" {
+		klog.Errorf("没有OrderID")
 		return err
 	}
 	// 获取订单中的商品信息
@@ -63,7 +65,7 @@ func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) 
 	for _, productID := range productIds {
 		res, err := rpc.ProductClient.GetProduct(ctx, &product.GetProductReq{Id: productID})
 		if err != nil {
-			klog.Error("get product error: ", err)
+			klog.Errorf("get product error: %v", err)
 		}
 		products = append(products, res)
 	}
@@ -82,5 +84,6 @@ func (p *PaymentHandler) ProcessMessage(ctx context.Context, msg amqp.Delivery) 
 		klog.Errorf("%v", err)
 		return err
 	}
+	klog.Infof("订单状态改为已支付")
 	return nil
 }
