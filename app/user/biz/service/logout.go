@@ -25,6 +25,7 @@ func (s *LogoutService) Run(req *user.LogoutReq) (resp *user.LogoutResp, err err
 
 	token, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &TokenReq)
 	if err != nil {
+		klog.Errorf("获取token失败：%v", err)
 		return nil, err
 	}
 	//删除token（时间置零）

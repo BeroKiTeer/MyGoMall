@@ -115,6 +115,6 @@ func PaymentConsumerInit() {
 	ctx := context.Background()
 	handler := &mq.PaymentHandler{}
 	if err := consumer.Consume(ctx, handler); err != nil {
-		log.Printf("消费异常终止: %v", err)
+		klog.Errorf("消费异常终止: %v", err)
 	}
 }

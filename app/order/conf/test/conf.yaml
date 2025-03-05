@@ -22,3 +22,23 @@ redis:
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  mqURL : "amqp://admin:123456@localhost:5673/"
+  payment_producer:
+    methods:
+      creditCard:
+        URL: "payment.card"
+        exchange: "payment_exchange"
+        queue: "creditCard_queue"
+        routing_key: "creditCard_pay"
+        exchange_type: "topic"
+
+
+  order_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys: ["payment.#"]
+        exchange_type: "topic"
