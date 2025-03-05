@@ -8,6 +8,7 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"net"
+	"os"
 	"time"
 
 	"cart/conf"
@@ -26,6 +27,7 @@ func main() {
 	dal.Init()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
+	mtl.InitLog()
 	rpc.InitClient() // 初始化客户端
 	opts := kitexInit()
 
@@ -61,7 +63,9 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})

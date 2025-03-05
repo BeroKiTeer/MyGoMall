@@ -8,7 +8,7 @@ import "api.proto";
 
 service PaymentService {
   rpc Charge(ChargeReq) returns (ChargeResp) {
-    option (api.post) = "/api/payment/charge";
+    option (api.post) = "/api/pay/card_pay";
   }
 }
 
@@ -16,8 +16,9 @@ message ChargeReq {
   int64 amount = 1                 [(api.form) = "amount"];        // 支付金额
   string order_id = 2              [(api.form) = "order_id"];      // 订单 ID
   string way = 3                   [(api.form) = "way"];
+  string transaction_id = 4        [(api.form) = "transaction_id"];
 }
 
 message ChargeResp {
-  string transaction_id = 1        [(api.form) = "transaction_id"];
+    bool success=1   [(api.form) = "success"];
 }

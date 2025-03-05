@@ -15,7 +15,7 @@ registry:
   password: ""
 
 mysql:
-  dsn: "root:root@tcp(127.0.0.1:3306)/mygomall?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:123456@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
   address: "127.0.0.1:6379"
@@ -24,10 +24,21 @@ redis:
   db: 0
 
 rabbitmq:
-  creditCard:
-      URL: "payment.card"
-      exchange: "payment_exchange"
-      queue: "creditCard_queue"
-      routing_key: "payments.creditCard"
-      exchange_type: "topic"
-  aliPay:
+  mqURL : "amqp://admin:123456@localhost:5673/"
+  payment_producer:
+    methods:
+      creditCard:
+          URL: "payment.card"
+          exchange: "payment_exchange"
+          queue: "creditCard_queue"
+          routing_key: "creditCard_pay"
+          exchange_type: "topic"
+
+
+  checkout_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys: ["payment.#"]
+        exchange_type: "topic"

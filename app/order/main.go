@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order/orderservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"github.com/cloudwego/kitex/tool/internal_pkg/log"
 	"net"
 	"order/biz/dal"
+	mq "order/biz/dal/rabbitmq"
 	"order/rpc"
+	"os"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -27,13 +31,14 @@ func main() {
 	rpc.InitClient()
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
+	go ConsumerInit()
 	opts := kitexInit()
 
 	svr := orderservice.NewServer(new(OrderServiceImpl), opts...)
 
 	err := svr.Run()
 	if err != nil {
-		klog.Error(err.Error())
+		log.Error(err.Error())
 	}
 }
 
@@ -61,9 +66,40 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func ConsumerInit() {
+	// 1. 获取MQ配置
+	config := conf.GetConf().RabbitMQ.Consumers.Processors["order_processor"]
+
+	// 2. 创建消费者实例
+	consumer, err := mq.GetOrderConsumer(&mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		ExchangeType: config.ExchangeType,
+	})
+	if err != nil {
+		klog.Fatalf("创建消费者失败: %v", err)
+	}
+
+	// 3. 绑定队列
+	for _, key := range config.BindingKeys {
+		if err := consumer.BindQueue(config.Queue, config.Exchange, key); err != nil {
+			klog.Fatalf("队列绑定失败: %v", err)
+		}
+	}
+
+	// 4. 启动消费监听
+	ctx := context.Background()
+	handler := &mq.PaymentHandler{}
+	if err := consumer.Consume(ctx, handler); err != nil {
+		klog.Errorf("消费异常终止: %v", err)
+	}
 }

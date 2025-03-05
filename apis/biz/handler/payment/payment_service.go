@@ -11,6 +11,7 @@ import (
 	payment_kitex "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // Charge .
@@ -23,7 +24,7 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	err = utils.BindJson(c, &req)
 	// 获取请求头的token
 	token := c.Request.Header.Get("Authorization")
 	if token == "" {
@@ -37,7 +38,7 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 		return
 	}
-
+	klog.Info("sendInHertz")
 	resp, err := rpc.PaymentClient.ChargeByThirdParty(ctx, &payment_kitex.ChargeByThirdPartyReq{
 		Amount:  req.Amount,
 		OrderId: req.OrderId,
@@ -46,6 +47,8 @@ func Charge(ctx context.Context, c *app.RequestContext) {
 	})
 
 	if err != nil {
+
+		klog.Errorf("error:%v", err)
 		utils.SendErrResponse(ctx, c, consts.StatusInternalServerError, err)
 	}
 

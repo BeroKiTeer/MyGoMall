@@ -1,6 +1,6 @@
 kitex:
   service: "checkout"
-  address: ":8888"
+  address: ":8883"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -9,15 +9,36 @@ kitex:
 
 registry:
   registry_address:
-    - 127.0.0.1:2379
+    - 115.190.108.142:8500
   username: ""
   password: ""
 
 mysql:
-  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:Mygo*Mall6379@tcp(115.190.108.142:3306)/MyGoMall?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "127.0.0.1:6379"
+  address: "115.190.108.142:6379"
   username: ""
   password: ""
   db: 0
+
+
+rabbitmq:
+  mqURL : "amqp://guest:guest@115.190.108.142:5672/"
+  payment_producer:
+    methods:
+      creditCard: # 支付方式作为模块名
+        URL: "payment.card"
+        exchange: "payment_exchange"
+        queue: "checkout.payment.creditCard.process"  # 格式: 服务.模块.支付方式.动作
+        routing_key: "payment_method.creditCard.process"  # 路由键分层
+        exchange_type: "topic"
+
+
+  checkout_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "checkout.payment.creditCard.result"  # 与生产者分离处理队列
+        binding_keys: [ "payment_method.creditCard.#" ]  # 通配符匹配所有子事件
+        exchange_type: "topic"

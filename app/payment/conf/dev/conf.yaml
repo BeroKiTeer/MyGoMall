@@ -1,6 +1,7 @@
 kitex:
   service: "payment"
-  address: ":8888"
+  address: ":8885"
+  metrics_port: ":9993"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -9,15 +10,39 @@ kitex:
 
 registry:
   registry_address:
-    - 127.0.0.1:2379
+    - 115.190.108.142:8500
   username: ""
   password: ""
 
 mysql:
-  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:Mygo*Mall6379@tcp(115.190.108.142:3306)/MyGoMall?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "127.0.0.1:6379"
+  address: "115.190.108.142:6379"
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  rabbitmqURL: "amqp://guest:guest@115.190.108.142:5672/"
+  paymentExchange: "payment_exchange"
+  paymentQueue: "payment_queue"
+  paymentDLXExchange: "payment_dlx_exchange"
+  paymentDLXQueue: "payment_dlx_queue"
+  payment_producer:
+    methods:
+      creditCard:
+        exchange: "payment_exchange"
+        queue: "payment.creditCard.process"  # 统一采用点分式
+        routing_key: "payment.method.creditCard.process"  # 三级路由键
+        binding_keys: [ "payment.method.creditCard.#" ]  # 增加通配符绑定
+        exchange_type: "topic"
+
+  payment_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "checkout.payment.creditCard.process"  # 格式: 服务.模块.支付方式.动作
+        routing_key: "payment_method.creditCard.process"  # 路由键分层
+        binding_keys: ["payment_method.creditCard.#"]
+        exchange_type: "topic"

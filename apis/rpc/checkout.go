@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"checkout/conf"
+	"apis/conf"
 	"github.com/BeroKiTeer/MyGoMall/common/clientsuite"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/checkout/checkoutservice"
 
@@ -15,7 +15,7 @@ var (
 func initCheckoutClient() {
 	opts := []client.Option{
 		client.WithSuite(clientsuite.CommonClientSuite{
-			CurrentServiceName: conf.GetConf().Kitex.Service,
+			CurrentServiceName: conf.GetConf().Hertz.Service,
 			RegistryAddr:       conf.GetConf().Registry.RegistryAddress[0],
 		}),
 	}

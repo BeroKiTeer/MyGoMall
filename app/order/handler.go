@@ -43,3 +43,10 @@ func (s *OrderServiceImpl) CancelOrder(ctx context.Context, req *order.CancelOrd
 
 	return resp, err
 }
+
+// ShowOrderDetail implements the OrderServiceImpl interface.
+func (s *OrderServiceImpl) ShowOrderDetail(ctx context.Context, req *order.ShowOrderDetailReq) (resp *order.ShowOrderDetailResp, err error) {
+	resp, err = service.NewShowOrderDetailService(ctx).Run(req)
+
+	return resp, err
+}

@@ -1,13 +1,11 @@
 package main
 
 import (
-	"cart/rpc"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product/productcatalogservice"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
-	consul "github.com/kitex-contrib/registry-consul"
-	"log"
 	"net"
+	"os"
 	"product/biz/dal"
 	"time"
 
@@ -29,7 +27,6 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	opts := kitexInit()
-	rpc.InitClient() //初始化客户端
 	svr := productcatalogservice.NewServer(new(ProductCatalogServiceImpl), opts...)
 	err := svr.Run()
 	if err != nil {
@@ -48,12 +45,6 @@ func kitexInit() (opts []server.Option) {
 		RegistryAddr:       RegistryAddr,
 	}))
 
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
-
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)
@@ -67,7 +58,9 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		err := asyncWriter.Sync()
 		if err != nil {

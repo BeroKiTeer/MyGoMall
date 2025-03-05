@@ -29,3 +29,10 @@ func (s *StockServiceImpl) ReserveItem(ctx context.Context, req *stock.ReserveIt
 
 	return resp, err
 }
+
+// RecoverItem implements the StockServiceImpl interface.
+func (s *StockServiceImpl) RecoverItem(ctx context.Context, req *stock.RecoverItemReq) (resp *stock.RecoverItemResp, err error) {
+	resp, err = service.NewRecoverItemService(ctx).Run(req)
+
+	return resp, err
+}

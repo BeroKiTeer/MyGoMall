@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"order/biz/dal/mysql"
 	"order/biz/model"
-	"product/biz/dal/mysql"
 )
 
 type UpdateOrderService struct {
@@ -31,7 +31,6 @@ func (s *UpdateOrderService) Run(req *order.UpdateOrderReq) (resp *order.UpdateO
 
 	// 更新订单信息
 	if req.Address != nil {
-		ord.ShippingAddress = req.Address.StreetAddress
 		ord.RecipientName = req.Address.Name
 		ord.PhoneNumber = req.Address.TelephoneNumber
 	}

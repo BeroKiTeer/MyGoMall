@@ -1,6 +1,6 @@
 kitex:
   service: "order"
-  address: "127.0.0.1:8884"
+  address: "127.0.0.1:8894"
   metrics_port: "127.0.0.1:9993"
   log_level: info
   log_file_name: "log/kitex.log"
@@ -22,3 +22,23 @@ redis:
   username: ""
   password: ""
   db: 0
+
+rabbitmq:
+  mqURL : "amqp://admin:123456@localhost:5673/"
+  payment_producer:
+    methods:
+      creditCard:
+        URL: "payment.card"
+        exchange: "payment_exchange"
+        queue: "creditCard_queue"
+        routing_key: "creditCard_pay"
+        exchange_type: "topic"
+
+
+  order_consumer:
+    processors:
+      payment_processor:
+        exchange: "payment_exchange"
+        queue: "payment_queue"
+        binding_keys: ["payment.#"]
+        exchange_type: "topic"

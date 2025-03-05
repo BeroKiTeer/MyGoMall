@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"user/biz/dal/mysql"
 	"user/biz/model"
 	"user/rpc"
@@ -31,7 +31,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	})
 
 	if err != nil {
-		log.Fatal("token无效，请重新登录，", err)
+		klog.Fatal("token无效，请重新登录，", err)
 		return nil, err
 	}
 
@@ -39,8 +39,13 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	r, err := rpc.AuthClient.DecodeToken(s.ctx, &auth.DecodeTokenReq{
 		Token: req.Token,
 	})
+	if err != nil {
+		klog.Error(err)
+		return nil, err
+	}
 	row, err := model.UserExistsByID(mysql.DB, r.UserId)
 	if row == false || err != nil {
+		klog.Error("用户不存在")
 		return nil, errors.New("用户不存在")
 	}
 
@@ -55,8 +60,17 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	if req.PhoneNumber != "" {
 		updates["phone_number"] = req.PhoneNumber
 	}
-	if req.Address != "" {
-		updates["address"] = req.Address
+	userById, err := model.GetUserById(mysql.DB, s.ctx, r.UserId)
+	if err != nil {
+		return nil, err
+	}
+	if req.Address != "" || userById.AddressId != 0 {
+		address, err := model.GetAddressByUserId(mysql.DB, s.ctx, r.UserId)
+		if err != nil {
+			klog.Error("获取用户地址失败：", err)
+			return nil, err
+		}
+		updates["address"] = address.Address
 	}
 
 	// 如果没有需要更新的字段，直接返回成功
@@ -67,6 +81,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 
 	// 4️⃣ 执行更新操作
 	if err := model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
+		klog.Error("更新用户SQL语句失败：", err)
 		return nil, err
 	}
 
@@ -79,6 +94,7 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 func hashPassword(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		klog.Error("密码加密错误", err)
 		return "", err
 	}
 	return string(hashed), nil

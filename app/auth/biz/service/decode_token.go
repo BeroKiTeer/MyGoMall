@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"strings"
 )
 
@@ -23,6 +24,7 @@ func GetUserIDFromToken(token string) (int32, error) {
 	// 按照 base64 解码
 	payloadString, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
+		klog.Error("解码错误", err)
 		return 0, err
 	}
 
@@ -30,12 +32,14 @@ func GetUserIDFromToken(token string) (int32, error) {
 	var payloadJSON map[string]interface{}
 	err = json.Unmarshal(payloadString, &payloadJSON)
 	if err != nil {
+		klog.Error(err)
 		return 0, err
 	}
 
 	// 断言 user_id 是 float64，稍后强转为 string
 	userID, ok := payloadJSON["user_id"].(float64)
 	if !ok {
+		klog.Error("userid = ", userID, "错误：", err)
 		return 0, fmt.Errorf("user_id 非法，token 无效。")
 	}
 
@@ -46,6 +50,9 @@ func GetUserIDFromToken(token string) (int32, error) {
 func (s *DecodeTokenService) Run(req *auth.DecodeTokenReq) (resp *auth.DecodeTokenResp, err error) {
 
 	UserID, err := GetUserIDFromToken(req.Token)
-
+	if err != nil {
+		klog.Error(err)
+		return &auth.DecodeTokenResp{}, err
+	}
 	return &auth.DecodeTokenResp{UserId: UserID}, err
 }

@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/mtl"
 	"github.com/BeroKiTeer/MyGoMall/common/serversuite"
+	"log"
 	"net"
+	"os"
 	"payment/biz/dal"
+	mq "payment/biz/dal/rabbitmq"
 	"time"
 
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/payment/paymentservice"
@@ -25,6 +29,8 @@ func main() {
 	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	mtl.InitTracing(ServiceName)
 	dal.Init()
+	PaymentProducerInit()
+	go PaymentConsumerInit()
 	opts := kitexInit()
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
@@ -59,9 +65,57 @@ func kitexInit() (opts []server.Option) {
 		}),
 		FlushInterval: time.Minute,
 	}
-	klog.SetOutput(asyncWriter)
+	consoleOutput := zapcore.Lock(os.Stderr) // 线程安全控制台输出
+	multiOutput := zapcore.NewMultiWriteSyncer(asyncWriter, consoleOutput)
+	klog.SetOutput(multiOutput)
 	server.RegisterShutdownHook(func() {
 		asyncWriter.Sync()
 	})
 	return
+}
+
+func PaymentProducerInit() {
+
+	config, err := conf.GetMQConfig("creditCard")
+	if err != nil {
+		log.Fatalf("获取支付配置失败: %v", err)
+	}
+	log.Printf("尝试连接RabbitMQ: %s", config.URL)
+
+	mqConfig := mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		RoutingKey:   config.RoutingKey,
+		ExchangeType: config.ExchangeType,
+	}
+	mq.CardPaymentProducer, err = mq.NewPaymentProducer(mqConfig)
+}
+
+func PaymentConsumerInit() {
+	// 1. 获取MQ配置
+	config := conf.GetConf().RabbitMQ.Consumers.Processors["payment_processor"]
+
+	// 2. 创建消费者实例
+	consumer, err := mq.GetPaymentConsumer(&mq.MQConfig{
+		Exchange:     config.Exchange,
+		QueueName:    config.Queue,
+		ExchangeType: config.ExchangeType,
+	})
+	if err != nil {
+		log.Fatalf("创建消费者失败: %v", err)
+	}
+
+	// 3. 绑定队列
+	for _, key := range config.BindingKeys {
+		if err := consumer.BindQueue(config.Queue, config.Exchange, key); err != nil {
+			log.Fatalf("队列绑定失败: %v", err)
+		}
+	}
+
+	// 4. 启动消费监听
+	ctx := context.Background()
+	handler := &mq.PaymentHandler{}
+	if err := consumer.Consume(ctx, handler); err != nil {
+		log.Printf("消费异常终止: %v", err)
+	}
 }

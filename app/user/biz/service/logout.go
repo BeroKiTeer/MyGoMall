@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"user/rpc"
 )
 
@@ -24,6 +25,7 @@ func (s *LogoutService) Run(req *user.LogoutReq) (resp *user.LogoutResp, err err
 
 	token, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &TokenReq)
 	if err != nil {
+		klog.Errorf("获取token失败：%v", err)
 		return nil, err
 	}
 	//删除token（时间置零）
@@ -34,13 +36,14 @@ func (s *LogoutService) Run(req *user.LogoutReq) (resp *user.LogoutResp, err err
 
 	_, err = rpc.AuthClient.RefreshToken(s.ctx, &refreshReq)
 	if err != nil {
+		klog.Error("删除token失败", err)
 		return nil, err
 	}
 
-	resp_temp := user.LogoutResp{
+	respTemp := user.LogoutResp{
 		Success: true,
 	}
 
-	return &resp_temp, nil
+	return &respTemp, nil
 
 }

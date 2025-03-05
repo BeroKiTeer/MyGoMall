@@ -16,6 +16,8 @@ service OrderService {
   rpc UpdateOrder(UpdateOrderReq) returns (UpdateOrderResp);
   // 取消订单
   rpc CancelOrder(CancelOrderReq) returns (CancelOrderResp);
+  // 通过订单ID展示订单明细
+  rpc ShowOrderDetail(ShowOrderDetailReq) returns (ShowOrderDetailResp);
 }
 
 // 地址信息。
@@ -78,7 +80,7 @@ message ListOrderResp {
 
 // 标记订单已支付的请求消息。
 message MarkOrderPaidReq {
-  uint32 user_id = 1;             // 用户 ID
+  string transaction_id = 1;      // 交易 ID
   string order_id = 2;            // 订单 ID
 }
 
@@ -107,4 +109,14 @@ message CancelOrderReq {
 // 取消订单的响应消息
 message CancelOrderResp {
   bool success = 1;                       // 是否取消成功
+}
+
+// 显示订单详情的请求消息
+message ShowOrderDetailReq {
+  string order_id = 1;
+}
+
+// 显示订单详情的响应消息
+message ShowOrderDetailResp {
+  repeated OrderItem order_items = 1;
 }

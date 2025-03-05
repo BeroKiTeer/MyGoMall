@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"product/biz/dal/mysql"
 	"product/biz/model"
 )
@@ -51,6 +52,7 @@ func (s *UpdateProductService) Run(req *product.UpdateProductReq) (resp *product
 		}
 		err = model.CreateCPRelation(mysql.DB, newCategoryProduct)
 		if err != nil {
+			klog.Error(err)
 			return nil, err
 		}
 	}
@@ -59,6 +61,7 @@ func (s *UpdateProductService) Run(req *product.UpdateProductReq) (resp *product
 	if err != nil {
 		resp.Success = false
 		resp.Message = err.Error()
+		klog.Error(err)
 		return resp, err
 	}
 	return resp, nil
