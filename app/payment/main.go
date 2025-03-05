@@ -30,7 +30,7 @@ func main() {
 	mtl.InitTracing(ServiceName)
 	dal.Init()
 	PaymentProducerInit()
-	PaymentConsumerInit()
+	go PaymentConsumerInit()
 	opts := kitexInit()
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
