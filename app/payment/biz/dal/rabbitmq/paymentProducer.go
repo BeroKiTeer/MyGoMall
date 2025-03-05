@@ -109,53 +109,25 @@ func (p *PaymentProducer) initialize() error {
 
 // 发送支付结果
 func (p *PaymentProducer) Send(req PaymentRequest) error {
-	const maxRetries = 3
-
-	if err := p.ensureChannel(); err != nil {
-		return fmt.Errorf("通道准备失败: %w", err)
-	}
-
+	// 2. 序列化消息
 	data, err := req.Marshal()
 	if err != nil {
 		return fmt.Errorf("序列化失败: %w", err)
 	}
 
-	for i := 0; i < maxRetries; i++ {
-		// 使用带确认的发布
-		confirmation := p.mq.Channel.NotifyPublish(make(chan amqp.Confirmation, 1))
-		klog.Info("sendFuncIn...")
-		err = p.mq.Channel.Publish(
-			p.config.Exchange,
-			req.GetRoutingKey(),
-			true, // mandatory
-			false,
-			amqp.Publishing{
-				ContentType:  "application/json",
-				Body:         data,
-				DeliveryMode: amqp.Persistent,
-				Timestamp:    time.Now(),
-			},
-		)
-
-		if err == nil {
-			// 等待确认
-			select {
-			case confirmed := <-confirmation:
-				if confirmed.Ack {
-					return nil
-				}
-				klog.Warnf("消息未确认 (tag:%d)", confirmed.DeliveryTag)
-			case <-time.After(5 * time.Second):
-				klog.Warn("等待确认超时")
-			}
-		}
-
-		if i < maxRetries-1 {
-			klog.Warnf("发送失败，第%d次重试 (错误: %v)", i+1, err)
-			time.Sleep(time.Duration(i+1) * time.Second)
-		}
-	}
-	return fmt.Errorf("发送失败（已重试%d次）: %w", maxRetries, err)
+	// 3. 发送消息
+	return p.mq.Channel.Publish(
+		p.config.Exchange,
+		req.GetRoutingKey(), // 使用动态路由键
+		false,               // mandatory
+		false,               // immediate
+		amqp.Publishing{
+			ContentType:  "application/json",
+			Body:         data,
+			DeliveryMode: amqp.Persistent, // 持久化消息
+			Timestamp:    time.Now(),
+		},
+	)
 }
 
 // 新增通道检查方法
