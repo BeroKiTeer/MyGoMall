@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/BeroKiTeer/MyGoMall/common/constant"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -46,7 +47,10 @@ func (s *MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mar
 	}
 
 	//TODO: 2. 订单状态改为已支付
-	model.UpdateOrderStatus(mysql.DB, req.OrderId, "paid")
+	if err = model.UpdateOrderStatus(mysql.DB, req.OrderId, constant.Paid); err != nil {
+		klog.Errorf("update order status error: %v", err)
+		return nil, err
+	}
 
 	return
 }
