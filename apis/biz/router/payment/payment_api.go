@@ -20,8 +20,8 @@ func Register(r *server.Hertz) {
 	{
 		_api := root.Group("/api", _apiMw()...)
 		{
-			_payment := _api.Group("/payment", _paymentMw()...)
-			_payment.POST("/charge", append(_chargeMw(), payment.Charge)...)
+			_pay := _api.Group("/pay", _payMw()...)
+			_pay.POST("/card_pay", append(_chargeMw(), payment.Charge)...)
 		}
 	}
 }
