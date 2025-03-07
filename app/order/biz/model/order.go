@@ -1,8 +1,13 @@
 package model
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
+	"order/biz/dal/redis"
 	"time"
 )
 
@@ -124,4 +129,29 @@ func SelectOrderItemsById(db *gorm.DB, orderID string) (orderItems []*OrderItem,
 		Where("order_id=?", orderID).
 		Find(&orderItems).Error
 	return orderItems, err
+}
+
+func GetCachedOrderById(ctx context.Context, db *gorm.DB, orderID string) (data string, err error) {
+	cachedOrder, err := redis.RedisClusterClient.Get(ctx, orderID).Result()
+	if errors.Is(err, redis.Nil) {
+		row, err := GetOrder(db, orderID)
+		if err != nil {
+			klog.Error(err)
+			return "", err
+		}
+		temp, err := json.Marshal(row)
+		cachedOrder = string(temp)
+		if err != nil {
+			klog.Error("order编码失败", err)
+		}
+		if err := redis.RedisClusterClient.Set(ctx, orderID, temp, 1*time.Hour).Err(); err != nil {
+			klog.Error(err)
+			return "", err
+		}
+
+	} else if err != nil {
+		klog.Error(err)
+		return "", err
+	}
+	return cachedOrder, nil
 }

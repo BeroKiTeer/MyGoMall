@@ -9,6 +9,7 @@ import (
 var (
 	RedisClient        *redis.Client
 	RedisClusterClient *redis.ClusterClient // 修改为集群客户端类型
+	Nil                redis.Error          = redis.Nil
 )
 
 func Init() {
