@@ -8,7 +8,9 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 	"user/biz/dal/mysql"
+	"user/biz/dal/redis"
 	"user/biz/model"
 	"user/rpc"
 )
@@ -91,7 +93,8 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 		return resp, nil
 	}
 
-	// 4️⃣ 执行更新操作
+	// 4️⃣ 执行更新操作,先删缓存
+	redis.RedisClusterClient.Del(s.ctx, string(r.UserId), strconv.FormatInt(User.AddressId, 10))
 	if err = model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
 		klog.Error("更新用户SQL语句失败：", err)
 		return nil, err
