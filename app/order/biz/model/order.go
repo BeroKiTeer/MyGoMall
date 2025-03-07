@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
 	"order/biz/dal/redis"
+	"strconv"
 	"time"
 )
 
@@ -154,4 +155,42 @@ func GetCachedOrderById(ctx context.Context, db *gorm.DB, orderID string) (data 
 		return "", err
 	}
 	return cachedOrder, nil
+}
+
+func GetCachedListedOrdersById(ctx context.Context, db *gorm.DB, userID int64) (data []string, err error) {
+	orders, err := redis.RedisClusterClient.LRange(ctx, strconv.FormatInt(userID, 10), 1, -1).Result()
+	if errors.Is(err, redis.Nil) {
+		ordersSQL, err := GetOrdersByUserID(db, userID)
+		if err != nil {
+			return nil, err
+		}
+		for _, item := range ordersSQL {
+			cachedOrder, err := json.Marshal(item)
+			if err != nil {
+				klog.Error("编码失败", err)
+			}
+			redis.RedisClusterClient.LPush(ctx, strconv.FormatInt(userID, 10), cachedOrder)
+			orders = append(orders, string(cachedOrder))
+		}
+	}
+	return orders, nil
+}
+
+func GetCachedItemsByOrderId(ctx context.Context, db *gorm.DB, orderID string) (data []string, err error) {
+	items, err := redis.RedisClusterClient.LRange(ctx, orderID, 1, -1).Result()
+	if errors.Is(err, redis.Nil) {
+		itemsSQL, err := GetOrderItemByOrderID(db, orderID)
+		if err != nil {
+			return nil, err
+		}
+		for _, item := range itemsSQL {
+			cachedItem, err := json.Marshal(item)
+			if err != nil {
+				klog.Error("编码失败", err)
+			}
+			redis.RedisClusterClient.LPush(ctx, orderID, cachedItem)
+			items = append(items, string(cachedItem))
+		}
+	}
+	return items, nil
 }
