@@ -8,7 +8,9 @@ import (
 )
 
 var (
-	RedisClient *redis.Client
+	RedisClient        *redis.Client
+	RedisClusterClient *redis.ClusterClient
+	Nil                redis.Error = redis.Nil
 )
 
 func Init() {
