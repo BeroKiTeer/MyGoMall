@@ -18,7 +18,9 @@ import (
 
 type CheckItemService struct {
 	ctx context.Context
-} // NewCheckItemService new CheckItemService
+}
+
+// NewCheckItemService new CheckItemService
 func NewCheckItemService(ctx context.Context) *CheckItemService {
 	return &CheckItemService{ctx: ctx}
 }
@@ -89,6 +91,16 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 
 	lockKey := fmt.Sprintf("lock:stock:%d", productID)
 	lockValue := time.Now().UnixNano()
+	// 设置锁（NX模式）
+	result, err := redis.RedisClusterClient.SetNX(s.ctx,
+		fmt.Sprintf("lock:stock:%d", productID),
+		time.Now().UnixNano(),
+		3*time.Second).Result()
+	if err != nil {
+		klog.Errorf("分布式锁操作异常 product:%d error:%v", productID, err)
+	} else if !result {
+		klog.Warnf("分布式锁竞争失败 product:%d", productID)
+	}
 	defer func() {
 		// 使用Lua脚本验证锁值后删除
 		script := Redis.NewScript(`
@@ -137,17 +149,6 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 	}
 	if err != nil {
 		klog.Errorf("缓存重试3次后仍失败 product:%d error:%v", productID, err)
-	}
-
-	// 设置锁（NX模式）
-	result, err := redis.RedisClusterClient.SetNX(s.ctx,
-		fmt.Sprintf("lock:stock:%d", productID),
-		time.Now().UnixNano(),
-		3*time.Second).Result()
-	if err != nil {
-		klog.Errorf("分布式锁操作异常 product:%d error:%v", productID, err)
-	} else if !result {
-		klog.Warnf("分布式锁竞争失败 product:%d", productID)
 	}
 
 	return cacheData, nil
