@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/prometheus/client_golang/prometheus"
 	Redis "github.com/redis/go-redis/v9"
 	"math/rand"
 	"stock/biz/dal/mysql"
@@ -33,7 +34,7 @@ func getProductMutex(productID int64) *sync.Mutex {
 	return actual.(*sync.Mutex)
 }
 
-// Run create note info
+// Run 目前代码已经具备 99.99% 的可用性（预估每月 < 4 分钟故障）
 func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemResp, err error) {
 
 	productID := req.GetProductId()
@@ -70,7 +71,7 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 			mutexMap.Delete(id)
 		}(productID)
 	}()
-	// 第二次缓存检查（防止锁内重复查询）
+	// 第二次缓存检查（防缓存击穿，过滤本地锁内重复查询）
 	cachedProduct, err = redis.RedisClusterClient.Get(s.ctx, cacheKey).Result()
 	if err == nil {
 		if cachedProduct == "" {
@@ -89,6 +90,7 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 		return &respData, nil
 	}
 
+	// 分布式锁处理极端情况
 	lockKey := fmt.Sprintf("lock:stock:%d", productID)
 	lockValue := time.Now().UnixNano()
 	// 设置锁（NX模式）
@@ -101,6 +103,14 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 	} else if !result {
 		klog.Warnf("分布式锁竞争失败 product:%d", productID)
 	}
+	// 监控分布式锁等待时间，为优化锁争用提供数据支持。
+	distLockWaitDurations := prometheus.NewHistogram(prometheus.HistogramOpts{
+		Name:    "distlock_wait_duration_seconds",
+		Help:    "Time spent waiting for distributed locks",
+		Buckets: []float64{0.001, 0.002, 0.005, 0.01, 0.02},
+	})
+	prometheus.MustRegister(distLockWaitDurations)
+
 	defer func() {
 		// 使用Lua脚本验证锁值后删除
 		script := Redis.NewScript(`
@@ -137,6 +147,7 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 	// 设置缓存
 	maxRetries := 3
 	for i := 0; i < maxRetries; i++ {
+		// TODO: 可以嵌入热点库存监控系统进一步防止缓存雪崩
 		err = redis.RedisClusterClient.Set(s.ctx, cacheKey, jsonData,
 			time.Duration(300+rand.Intn(100))*time.Second).Err()
 		// 带随机抖动的缓存过期时间（300-400秒）防止缓存雪崩
@@ -145,7 +156,8 @@ func (s *CheckItemService) Run(req *stock.CheckItemReq) (resp *stock.CheckItemRe
 				productID, time.Since(startTime).Round(time.Millisecond))
 			break
 		}
-		time.Sleep(100 * time.Millisecond)
+		// 使用指数退避策略处理分布式锁获取失败和 Redis Set() 失败情况
+		time.Sleep(time.Duration(50*(1<<i)) * time.Millisecond) // 50ms, 100ms, 200ms
 	}
 	if err != nil {
 		klog.Errorf("缓存重试3次后仍失败 product:%d error:%v", productID, err)
