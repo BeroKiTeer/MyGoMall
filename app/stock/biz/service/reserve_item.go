@@ -76,6 +76,8 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			select {
 			case <-done:
 				// 超时
+				klog.Error(redis.ErrTimeOut)
+				tx.Rollback()
 				return nil, redis.ErrTimeOut
 			case <-ticker.C:
 
