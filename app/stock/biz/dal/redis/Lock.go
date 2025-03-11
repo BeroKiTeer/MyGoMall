@@ -13,11 +13,11 @@ var (
 )
 
 type Lock struct {
-	lockKey    string
-	lockValue  string
-	lockttl    time.Duration
-	watchDog   chan struct{}      // 看门狗通知通道
-	stopCancel context.CancelFunc // 控制续期协程
+	lockKey   string
+	lockValue string
+	lockttl   time.Duration
+	watchDog  chan struct{} // 看门狗通知通道
+
 }
 
 func NewLock(key, value string, ttl time.Duration) *Lock {
