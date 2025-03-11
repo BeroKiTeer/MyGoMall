@@ -40,7 +40,7 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 		//上本地锁
 		mtx := getProductMutex(productId)
 		mtx.Lock()
-		defer mtx.Unlock()
+
 		key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), productId)
 		exists, err := redis.RedisClient.Exists(s.ctx, key).Result()
 		if err != nil {
@@ -63,47 +63,26 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			tx.Rollback()
 			return nil, err
 		}
-		const tryLockInterval = 500 * time.Millisecond
 
-		// 添加单独的done通道处理
-		done := make(chan struct{})
-		defer close(done)
-		// 加锁失败，不断尝试
-		ticker := time.NewTicker(tryLockInterval)
-		flag := false
-		defer ticker.Stop()
-		for {
-			select {
-			case <-done:
-				// 超时
-				klog.Error(redis.ErrTimeOut)
+		// 设置缓存
+		maxRetries := 3
+		for i := 0; i < maxRetries; i++ {
+			err := lock.TryLock(s.ctx)
+			if !errors.Is(err, redis.ErrLocked) {
+				klog.Error(err)
 				tx.Rollback()
-				return nil, redis.ErrTimeOut
-			case <-ticker.C:
-
-				// 重新尝试加锁
-				err := lock.TryLock(s.ctx)
-				if err == nil { // 加锁成功
-					flag = true
-					break
-				}
-				if !errors.Is(err, redis.ErrLocked) {
-					klog.Error(err)
-					tx.Rollback()
-					return nil, err
-				}
-			}
-			if flag {
-				break
+				return nil, err
+			} else {
+				// 使用指数退避策略处理分布式锁获取失败
+				time.Sleep(time.Duration(50*(1<<i)) * time.Millisecond) // 50ms, 100ms, 200ms
+				continue
 			}
 		}
-		defer func(ctx context.Context) {
-			err := lock.UnLock(ctx)
-			if err != nil {
-				klog.Error(err)
-				return
-			}
-		}(s.ctx)
+
+		if err != nil {
+			klog.Errorf("缓存重试3次后仍失败 product:%d error:%v", productId, err)
+		}
+
 		// 2. 查询库存是否充足
 		quantity, err := model.CheckQuantity(tx, productId)
 		if err != nil {
@@ -142,6 +121,12 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			} else {
 				preDelStockKeys = append(preDelStockKeys, lockKey)
 			}
+		}
+		mtx.Unlock()
+		err = lock.UnLock(s.ctx)
+		if err != nil {
+			klog.Error(err)
+			return
 		}
 	}
 	if err = tx.Commit().Error; err != nil {
