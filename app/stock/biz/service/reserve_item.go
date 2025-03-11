@@ -51,36 +51,61 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			klog.Error("库存已预扣")
 			return nil, errors.New("库存已预扣")
 		}
-		//查询之前加分布式锁
-		// 1. 生成分布式锁的 Key 和随机值（防止误删）
+		// 尝试加锁
 		lockKey := fmt.Sprintf("stock_lock:%d", productId)
 		lockValue := fmt.Sprintf("%d:%s", productId, time.Now().String()) // 随机值
-		lockTimeout := 10 * time.Second                                   // 锁超时时间
 
-		// 2. 尝试获取分布式锁（使用 SETNX + EXPIRE）
-		locked, err := redis.RedisClient.SetNX(s.ctx, lockKey, lockValue, lockTimeout).Result()
-		if err != nil {
-			klog.Error("获取分布式锁失败:", err)
+		err = redis.TryLock(s.ctx, lockKey, lockValue)
+		//并非加锁失败，出现其他故障，回滚事务
+		if !errors.Is(err, redis.ErrLocked) {
+			klog.Error(err)
 			tx.Rollback()
-			return nil, errors.New("系统繁忙，请重试")
+			return nil, err
 		}
-		if !locked {
-			klog.Error("其他实例正在操作库存")
-			tx.Rollback()
-			return nil, errors.New("操作冲突，请稍后重试")
+		const tryLockInterval = 500 * time.Millisecond
+		maxRetries := 5
+		retryCount := 0
+		// 添加单独的done通道处理
+		done := make(chan struct{})
+		defer close(done)
+		// 加锁失败，不断尝试
+		ticker := time.NewTicker(tryLockInterval)
+		flag := false
+		defer ticker.Stop()
+		for {
+			select {
+			case <-done:
+				// 超时
+				return nil, redis.ErrTimeOut
+			case <-ticker.C:
+				retryCount++
+				if retryCount > maxRetries {
+					tx.Rollback()
+					return nil, errors.New("超过最大重试次数")
+				}
+				// 重新尝试加锁
+				err := redis.TryLock(s.ctx, lockKey, lockValue)
+				if err == nil { // 加锁成功
+					flag = true
+					break
+				}
+				if !errors.Is(err, redis.ErrLocked) {
+					klog.Error(err)
+					tx.Rollback()
+					return nil, err
+				}
+			}
+			if flag {
+				break
+			}
 		}
-
-		// 3. 确保最终释放锁（使用 defer + Lua 脚本保证原子性）
-		defer func() {
-			script := `
-			if redis.call("get", KEYS[1]) == ARGV[1] then
-				return redis.call("del", KEYS[1])
-			else
-				return 0
-			end
-			`
-			redis.RedisClient.Eval(s.ctx, script, []string{lockKey}, lockValue).Result()
-		}()
+		defer func(ctx context.Context, Key string, Value string) {
+			err := redis.UnLock(ctx, Key, Value)
+			if err != nil {
+				klog.Error(err)
+				return
+			}
+		}(s.ctx, lockKey, lockValue)
 		// 2. 查询库存是否充足
 		quantity, err := model.CheckQuantity(tx, productId)
 		if err != nil {
