@@ -52,10 +52,11 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			return nil, errors.New("库存已预扣")
 		}
 		// 尝试加锁
+
 		lockKey := fmt.Sprintf("stock_lock:%d", productId)
 		lockValue := fmt.Sprintf("%d:%s", productId, time.Now().String()) // 随机值
-
-		err = redis.TryLock(s.ctx, lockKey, lockValue)
+		lock := redis.NewLock(lockKey, lockValue, 5*time.Second)
+		err = lock.TryLock(s.ctx)
 		//并非加锁失败，出现其他故障，回滚事务
 		if !errors.Is(err, redis.ErrLocked) {
 			klog.Error(err)
@@ -63,8 +64,7 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			return nil, err
 		}
 		const tryLockInterval = 500 * time.Millisecond
-		maxRetries := 5
-		retryCount := 0
+
 		// 添加单独的done通道处理
 		done := make(chan struct{})
 		defer close(done)
@@ -78,13 +78,9 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 				// 超时
 				return nil, redis.ErrTimeOut
 			case <-ticker.C:
-				retryCount++
-				if retryCount > maxRetries {
-					tx.Rollback()
-					return nil, errors.New("超过最大重试次数")
-				}
+
 				// 重新尝试加锁
-				err := redis.TryLock(s.ctx, lockKey, lockValue)
+				err := lock.TryLock(s.ctx)
 				if err == nil { // 加锁成功
 					flag = true
 					break
@@ -99,13 +95,13 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 				break
 			}
 		}
-		defer func(ctx context.Context, Key string, Value string) {
-			err := redis.UnLock(ctx, Key, Value)
+		defer func(ctx context.Context) {
+			err := lock.UnLock(ctx)
 			if err != nil {
 				klog.Error(err)
 				return
 			}
-		}(s.ctx, lockKey, lockValue)
+		}(s.ctx)
 		// 2. 查询库存是否充足
 		quantity, err := model.CheckQuantity(tx, productId)
 		if err != nil {
