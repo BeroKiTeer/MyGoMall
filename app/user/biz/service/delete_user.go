@@ -24,7 +24,6 @@ func (s *DeleteUserService) Run(req *user.DeleteUserReq) (resp *user.DeleteUserR
 		return nil, errors.New("无效的用户ID！")
 	}
 
-	//查询用户是否存在
 	exist, err := model.UserExistsByID(mysql.DB, req.UserId)
 	if exist == false {
 		klog.Error("用户不存在！")

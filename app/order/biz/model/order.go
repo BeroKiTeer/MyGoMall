@@ -1,8 +1,14 @@
 package model
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
+	"order/biz/dal/redis"
+	"strconv"
 	"time"
 )
 
@@ -124,4 +130,67 @@ func SelectOrderItemsById(db *gorm.DB, orderID string) (orderItems []*OrderItem,
 		Where("order_id=?", orderID).
 		Find(&orderItems).Error
 	return orderItems, err
+}
+
+func GetCachedOrderById(ctx context.Context, db *gorm.DB, orderID string) (data string, err error) {
+	cachedOrder, err := redis.RedisClusterClient.Get(ctx, orderID).Result()
+	if errors.Is(err, redis.Nil) {
+		row, err := GetOrder(db, orderID)
+		if err != nil {
+			klog.Error(err)
+			return "", err
+		}
+		temp, err := json.Marshal(row)
+		cachedOrder = string(temp)
+		if err != nil {
+			klog.Error("order编码失败", err)
+		}
+		if err := redis.RedisClusterClient.Set(ctx, orderID, temp, 1*time.Hour).Err(); err != nil {
+			klog.Error(err)
+			return "", err
+		}
+
+	} else if err != nil {
+		klog.Error(err)
+		return "", err
+	}
+	return cachedOrder, nil
+}
+
+func GetCachedListedOrdersById(ctx context.Context, db *gorm.DB, userID int64) (data []string, err error) {
+	orders, err := redis.RedisClusterClient.LRange(ctx, strconv.FormatInt(userID, 10), 1, -1).Result()
+	if errors.Is(err, redis.Nil) {
+		ordersSQL, err := GetOrdersByUserID(db, userID)
+		if err != nil {
+			return nil, err
+		}
+		for _, item := range ordersSQL {
+			cachedOrder, err := json.Marshal(item)
+			if err != nil {
+				klog.Error("编码失败", err)
+			}
+			redis.RedisClusterClient.LPush(ctx, strconv.FormatInt(userID, 10), cachedOrder)
+			orders = append(orders, string(cachedOrder))
+		}
+	}
+	return orders, nil
+}
+
+func GetCachedItemsByOrderId(ctx context.Context, db *gorm.DB, orderID string) (data []string, err error) {
+	items, err := redis.RedisClusterClient.LRange(ctx, orderID, 1, -1).Result()
+	if errors.Is(err, redis.Nil) {
+		itemsSQL, err := GetOrderItemByOrderID(db, orderID)
+		if err != nil {
+			return nil, err
+		}
+		for _, item := range itemsSQL {
+			cachedItem, err := json.Marshal(item)
+			if err != nil {
+				klog.Error("编码失败", err)
+			}
+			redis.RedisClusterClient.LPush(ctx, orderID, cachedItem)
+			items = append(items, string(cachedItem))
+		}
+	}
+	return items, nil
 }
