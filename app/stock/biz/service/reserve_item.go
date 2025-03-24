@@ -42,15 +42,28 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 		mtx.Lock()
 
 		key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), productId)
-		exists, err := redis.RedisClient.Exists(s.ctx, key).Result()
-		if err != nil {
-			klog.Error(err)
-			return nil, err
+		if conf.GetEnv() == "test" {
+			exists, err := redis.RedisClient.Exists(s.ctx, key).Result()
+			if err != nil {
+				klog.Error(err)
+				return nil, err
+			}
+			if exists == 1 {
+				klog.Error("库存已预扣")
+				return nil, errors.New("库存已预扣")
+			}
+		} else if conf.GetEnv() == "dev" {
+			exists, err := redis.RedisClusterClient.Exists(s.ctx, key).Result()
+			if err != nil {
+				klog.Error(err)
+				return nil, err
+			}
+			if exists == 1 {
+				klog.Error("库存已预扣")
+				return nil, errors.New("库存已预扣")
+			}
 		}
-		if exists == 1 {
-			klog.Error("库存已预扣")
-			return nil, errors.New("库存已预扣")
-		}
+
 		// 尝试加锁
 
 		lockKey := fmt.Sprintf("stock_lock:%d", productId)
