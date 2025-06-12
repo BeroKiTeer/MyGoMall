@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"testing"
 	order "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
+	"testing"
 )
 
 func TestShowOrderDetail_Run(t *testing.T) {

@@ -21,6 +21,9 @@ func GetUserIDFromToken(token string) (int32, error) {
 
 	// 把 token 分为好几段，其中第二段（parts[1]）是 payload
 	parts := strings.Split(token, ".")
+	if len(parts) < 2 {
+		return 0, fmt.Errorf("token 格式非法")
+	}
 	// 按照 base64 解码
 	payloadString, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
