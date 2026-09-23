@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-
 	"github.com/redis/go-redis/v9"
 	"stock/conf"
 )
@@ -14,6 +13,7 @@ var (
 )
 
 func Init() {
+
 	if conf.GetEnv() == "test" {
 		RedisClient = redis.NewClient(&redis.Options{
 			Addr:     conf.GetConf().Redis.Address,
@@ -41,4 +41,5 @@ func Init() {
 			panic(err)
 		}
 	}
+
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
@@ -23,23 +24,25 @@ func NewLoginService(ctx context.Context) *LoginService {
 func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error) {
 	// Finish your business logic.
 	klog.Info("LoginService Run")
-
+	var User model.User
 	if req.Email == "" || req.Password == "" {
 		return nil, errors.New("email or password is empty")
 	}
-	row, err := model.GetByEmail(mysql.DB, s.ctx, req.Email)
-	if err != nil {
-		klog.Error("查询用户失败", err)
+	//先从redis中查询
+	UserCached, err := model.GetCachedUserByEmail(s.ctx, mysql.DB, req.Email)
+	if err = json.Unmarshal([]byte(UserCached), &User); err != nil {
+		klog.Error("用户反序列化失败:", err)
 		return nil, err
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(row.PasswordHashed), []byte(req.Password))
+
+	err = bcrypt.CompareHashAndPassword([]byte(User.PasswordHashed), []byte(req.Password))
 	if err != nil {
 		klog.Error("密码错误", err)
 		return nil, err
 	}
 	// 调用auth服务，生成 token
 	token, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{
-		UserId: int32(row.ID),
+		UserId: int32(User.ID),
 	})
 
 	if err != nil {

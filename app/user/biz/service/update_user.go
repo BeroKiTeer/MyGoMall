@@ -2,12 +2,15 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/auth"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 	"user/biz/dal/mysql"
+	"user/biz/dal/redis"
 	"user/biz/model"
 	"user/rpc"
 )
@@ -60,14 +63,25 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 	if req.PhoneNumber != "" {
 		updates["phone_number"] = req.PhoneNumber
 	}
-	userById, err := model.GetUserById(mysql.DB, s.ctx, r.UserId)
+	var User model.User
+	userById, err := model.GetCachedUserById(s.ctx, mysql.DB, r.UserId)
 	if err != nil {
+		klog.Error(err)
 		return nil, err
 	}
-	if req.Address != "" || userById.AddressId != 0 {
-		address, err := model.GetAddressByUserId(mysql.DB, s.ctx, r.UserId)
+	if err = json.Unmarshal([]byte(userById), &User); err != nil {
+		klog.Error("用户反序列化失败:", err)
+		return nil, err
+	}
+	if req.Address != "" || User.AddressId != 0 {
+		var address model.Address
+		addressCached, err := model.GetCachedAddressById(s.ctx, mysql.DB, User.AddressId)
 		if err != nil {
 			klog.Error("获取用户地址失败：", err)
+			return nil, err
+		}
+		if err = json.Unmarshal([]byte(addressCached), &address); err != nil {
+			klog.Error("地址反序列化失败:", err)
 			return nil, err
 		}
 		updates["address"] = address.Address
@@ -79,8 +93,9 @@ func (s *UpdateUserService) Run(req *user.UpdateUserReq) (resp *user.UpdateUserR
 		return resp, nil
 	}
 
-	// 4️⃣ 执行更新操作
-	if err := model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
+	// 4️⃣ 执行更新操作,先删缓存
+	redis.RedisClusterClient.Del(s.ctx, string(r.UserId), strconv.FormatInt(User.AddressId, 10))
+	if err = model.UpdateUser(mysql.DB, s.ctx, r.UserId, updates); err != nil {
 		klog.Error("更新用户SQL语句失败：", err)
 		return nil, err
 	}

@@ -12,6 +12,7 @@ import (
 	"stock/biz/model"
 	"stock/conf"
 	"stock/rpc"
+	"sync"
 	"time"
 )
 
@@ -25,23 +26,74 @@ func NewReserveItemService(ctx context.Context) *ReserveItemService {
 // Run create note info
 func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.ReserveItemResp, err error) {
 	// Finish your business logic.
+
 	items, err := rpc.OrderClient.ShowOrderDetail(s.ctx, &order.ShowOrderDetailReq{OrderId: req.OrderId})
 	if err != nil {
 		return &stock.ReserveItemResp{Success: false}, err
 	}
 	tx := mysql.DB.Begin()
+	//先存储加入到redis中的预扣商品的键值
+	var preDelStockKeys []string
 	for _, item := range items.OrderItems {
 		// 1. 幂等性检查: 查询Redis中是否有该订单的库存预扣信息
 		productId := item.GetProductId()
+		//上本地锁
+		mtx := getProductMutex(productId)
+		mtx.Lock()
+
 		key := fmt.Sprintf("predestock:%s:%d", req.GetOrderId(), productId)
-		exists, err := redis.RedisClient.Exists(s.ctx, key).Result()
-		if err != nil {
+		if conf.GetEnv() == "test" {
+			exists, err := redis.RedisClient.Exists(s.ctx, key).Result()
+			if err != nil {
+				klog.Error(err)
+				return nil, err
+			}
+			if exists == 1 {
+				klog.Error("库存已预扣")
+				return nil, errors.New("库存已预扣")
+			}
+		} else if conf.GetEnv() == "dev" {
+			exists, err := redis.RedisClusterClient.Exists(s.ctx, key).Result()
+			if err != nil {
+				klog.Error(err)
+				return nil, err
+			}
+			if exists == 1 {
+				klog.Error("库存已预扣")
+				return nil, errors.New("库存已预扣")
+			}
+		}
+
+		// 尝试加锁
+
+		lockKey := fmt.Sprintf("stock_lock:%d", productId)
+		lockValue := fmt.Sprintf("%d:%s", productId, time.Now().String()) // 随机值
+		lock := redis.NewLock(lockKey, lockValue, 5*time.Second)
+		err = lock.TryLock(s.ctx)
+		//并非加锁失败，出现其他故障，回滚事务
+		if !errors.Is(err, redis.ErrLocked) {
 			klog.Error(err)
+			tx.Rollback()
 			return nil, err
 		}
-		if exists == 1 {
-			klog.Error("库存已预扣")
-			return nil, errors.New("库存已预扣")
+
+		// 设置缓存
+		maxRetries := 3
+		for i := 0; i < maxRetries; i++ {
+			err := lock.TryLock(s.ctx)
+			if !errors.Is(err, redis.ErrLocked) {
+				klog.Error(err)
+				tx.Rollback()
+				return nil, err
+			} else {
+				// 使用指数退避策略处理分布式锁获取失败
+				time.Sleep(time.Duration(50*(1<<i)) * time.Millisecond) // 50ms, 100ms, 200ms
+				continue
+			}
+		}
+
+		if err != nil {
+			klog.Errorf("缓存重试3次后仍失败 product:%d error:%v", productId, err)
 		}
 
 		// 2. 查询库存是否充足
@@ -56,6 +108,7 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 			tx.Rollback()
 			return nil, err
 		}
+
 		// 3. 预扣库存，首先数据库中扣减库存 TODO: SQL 待修改
 		if err = model.ReduceItem(tx, productId, int64(req.Quantity)); err != nil {
 			klog.Error(err)
@@ -66,19 +119,48 @@ func (s *ReserveItemService) Run(req *stock.ReserveItemReq) (resp *stock.Reserve
 		if conf.GetEnv() == "test" {
 			if err = redis.RedisClient.Set(s.ctx, key, req.Quantity, 15*time.Minute).Err(); err != nil {
 				// TODO: 补偿机制
+				redis.RedisClient.Del(s.ctx, key)
 				klog.Error("Redis 写入失败", err)
 				return nil, err
+			} else {
+				preDelStockKeys = append(preDelStockKeys, lockKey)
 			}
 		} else if conf.GetEnv() == "dev" {
 			if err = redis.RedisClusterClient.Set(s.ctx, key, req.Quantity, 15*time.Minute).Err(); err != nil {
 				// TODO: 补偿机制
+				redis.RedisClient.Del(s.ctx, key)
 				klog.Error("Redis 写入失败", err)
 				return nil, err
+			} else {
+				preDelStockKeys = append(preDelStockKeys, lockKey)
 			}
+		}
+		mtx.Unlock()
+		err = lock.UnLock(s.ctx)
+		if err != nil {
+			klog.Error(err)
+			return
 		}
 	}
 	if err = tx.Commit().Error; err != nil {
-		// TODO: 事务提交失败的补偿，回滚Redis
+		// 并行删除所有关联的Redis键
+		var wg sync.WaitGroup
+		for _, key := range preDelStockKeys {
+			wg.Add(1)
+			go func(k string) {
+				defer wg.Done()
+				if conf.GetEnv() == "test" {
+					if err := redis.RedisClient.Del(s.ctx, k).Err(); err != nil {
+						klog.Errorf("Redis键删除失败 key:%s error:%v", k, err)
+					}
+				} else {
+					if err := redis.RedisClusterClient.Del(s.ctx, k).Err(); err != nil {
+						klog.Errorf("Redis键删除失败 key:%s error:%v", k, err)
+					}
+				}
+			}(key)
+		}
+		wg.Wait()
 		klog.Error(err)
 		return nil, err
 	}

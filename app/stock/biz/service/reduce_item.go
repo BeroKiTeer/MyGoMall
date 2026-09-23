@@ -6,7 +6,9 @@ import (
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/order"
 	stock "github.com/BeroKiTeer/MyGoMall/common/kitex_gen/stock"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"stock/biz/dal/mysql"
 	"stock/biz/dal/redis"
+	"stock/biz/model"
 	"stock/conf"
 	"stock/rpc"
 )
@@ -42,6 +44,12 @@ func (s *ReduceItemService) Run(req *stock.ReduceItemReq) (resp *stock.ReduceIte
 				klog.Errorf("del predestock failed, err: %v", err)
 				return &stock.ReduceItemResp{Success: false}, err
 			}
+		}
+		// 这里真正扣减库存
+		err = model.ReduceItem(mysql.DB, item.ProductId, int64(item.Quantity))
+		if err != nil {
+			klog.Errorf("reduce item failed, err: %v", err)
+			return &stock.ReduceItemResp{Success: false}, err
 		}
 	}
 

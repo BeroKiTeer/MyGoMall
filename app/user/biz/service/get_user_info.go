@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/BeroKiTeer/MyGoMall/common/kitex_gen/user"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"time"
+	"strconv"
 	"user/biz/dal/mysql"
 	"user/biz/model"
 )
@@ -19,52 +20,48 @@ func NewGetUserInfoService(ctx context.Context) *GetUserInfoService {
 // Run create note info
 func (s *GetUserInfoService) Run(req *user.GetUserInfoReq) (resp *user.GetUserInfoResp, err error) {
 	// Finish your business logic.
-	row, err := model.GetUserById(mysql.DB, s.ctx, req.UserId)
-	if err != nil {
-		return
+	//查询用户是否存在
+	var User model.User
+	var addressStr string
+	//根据userid查询
+	cachedUser, err := model.GetCachedUserById(s.ctx, mysql.DB, req.UserId)
+	if err := json.Unmarshal([]byte(cachedUser), &User); err != nil {
+		klog.Error("用户反序列化失败:", err)
+		return nil, err
 	}
-	/**
-	string address = 5;      // 地址
-	  string role = 6;         // 角色（如"admin", "user"）
-	  string status = 7;       // 账户状态（如"active", "banned", "pending"）
-	  string created_at = 8;   // 账户创建时间
-	  string updated_at = 9;   // 账户最近更新时间
-	*/
-	var address *model.Address
-	if row.AddressId != 0 {
-		address, err = model.GetAddressById(mysql.DB, s.ctx, row.AddressId)
+	//address为nil怎么办
+	if User.AddressId != 0 {
+		addressStr, err = model.GetCachedAddressById(s.ctx, mysql.DB, User.AddressId)
 		if err != nil {
 			klog.Error(err)
 			return nil, err
 		}
 	}
-	if address == nil {
-		address = &model.Address{
-			Address: "",
-		}
-	}
-	resp = &user.GetUserInfoResp{
-		UserId:      int32(row.ID),
-		Email:       row.Email,
-		Username:    row.Username,
-		PhoneNumber: row.PhoneNumber,
-		Address:     address.Address,
-		CreatedAt:   row.CreatedAt.Format(time.DateTime),
-		UpdatedAt:   row.UpdatedAt.Format(time.DateTime),
-	}
+
 	// 0-普通用户, 1-管理员
-	if row.Role == 0 {
+	if User.Role == 0 {
 		resp.Role = "user"
 	} else {
 		resp.Role = "admin"
 	}
 	// 0-正常, 1-禁用, 2-待审核
-	if row.Status == 0 {
+	if User.Status == 0 {
 		resp.Status = "active"
-	} else if row.Status == 1 {
+	} else if User.Status == 1 {
 		resp.Status = "banned"
-	} else if row.Status == 2 {
+	} else if User.Status == 2 {
 		resp.Status = "pending"
+	}
+	resp = &user.GetUserInfoResp{
+		UserId:      int32(User.ID),
+		Email:       User.Email,
+		Username:    User.Username,
+		PhoneNumber: User.PhoneNumber,
+		Address:     addressStr,
+		Role:        strconv.Itoa(int(User.Role)),
+		Status:      strconv.Itoa(int(User.Status)),
+		CreatedAt:   User.CreatedAt.String(),
+		UpdatedAt:   User.UpdatedAt.String(),
 	}
 	return resp, err
 }
